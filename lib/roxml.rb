@@ -443,9 +443,7 @@ module ROXML # :nodoc:
         opts = syms.extract_options!
         syms.map do |sym|
           Definition.new(sym, opts, &block).tap do |attr|
-            if roxml_attrs.map(&:accessor).include? attr.accessor
-              raise "Accessor #{attr.accessor} is already defined as XML accessor in class #{self.name}"
-            end
+            roxml_attrs ### FIXME: remove this call.
             @roxml_attrs << attr
           end
         end
