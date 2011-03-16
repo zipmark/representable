@@ -13,18 +13,21 @@ end
 module ROXML
   class ContradictoryNamespaces < StandardError
   end
-
   class Definition # :nodoc:
-    attr_reader :name, :sought_type, :wrapper, :accessor, :attr_name, :namespace
+    attr_reader :name, :sought_type, :wrapper, :accessor, :namespace
     bool_attr_reader :name_explicit, :array, :cdata
 
     def initialize(sym, opts = {}, &block)
-      opts.assert_valid_keys(:from, :in, :as, :namespace, :cdata)
-      @namespace = opts.delete(:namespace)
-
-      @accessor = sym.to_s
+      @namespace  = opts.delete(:namespace)
+      @accessor   = sym.to_s
       
-      @array = opts[:as].is_a?(Array)
+      if opts[:as].is_a?(Array) # DISCUSS: move to ArrayDefinition.
+        @array      = true
+        @name       = (opts[:tag] || @accessor).to_s
+      else
+        @name = accessor.to_s.chomp('?')
+        @name = (opts[:from] || @name).to_s
+      end
 
       @sought_type = extract_type(opts[:as])
       if @sought_type.respond_to?(:roxml_tag_name)
@@ -46,19 +49,17 @@ module ROXML
         opts[:from].sub!('@', '')
       end
 
-      @name = @attr_name = accessor.to_s.chomp('?')
-      @name = @name.singularize if array?
-      @name = (opts[:from] || @name).to_s
-      raise ContradictoryNamespaces if @name.include?(':') && (@namespace.present? || @namespace == false)
+      
+      #raise ContradictoryNamespaces if @name.include?(':') && (@namespace.present? || @namespace == false)
 
     end
 
     def instance_variable_name
-      :"@#{attr_name}"
+      :"@#{accessor}"
     end
 
     def setter
-      :"#{attr_name}="
+      :"#{accessor}="
     end
 
     def name?
@@ -82,7 +83,6 @@ module ROXML
       when :attr          then XMLAttributeRef
       when :text          then XMLTextRef
       when :namespace     then XMLNameSpaceRef
-      when HashDefinition then XMLHashRef
       when Symbol         then raise ArgumentError, "Invalid type argument #{sought_type}"
       else                     XMLObjectRef
       end.new(self, inst)

@@ -29,16 +29,14 @@ module ROXML # :nodoc:
     # Returns an XML object representing this object
     def to_xml(params = {})
       params.reverse_merge!(:name => self.class.tag_name, :namespace => self.class.roxml_namespace)
-      params[:namespace] = nil if ['*', 'xmlns'].include?(params[:namespace])
+      
       XML.new_node([params[:namespace], params[:name]].compact.join(':')).tap do |root|
-        refs = (self.roxml_references.present? \
-          ? self.roxml_references \
-          : self.class.roxml_attrs.map {|attr| attr.to_ref(self) })
+        refs = self.class.roxml_attrs.map {|attr| attr.to_ref(self) } # FIXME: refactor to_ref.
+        
         refs.each do |ref|
-          value = ref.to_xml(self)
-          unless value.nil?
-            ref.update_xml(root, value)
-          end
+          value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
+          puts "#{value} from #{ref.accessor}"
+          ref.update_xml(root, value) if value
         end
       end
     end
@@ -468,7 +466,7 @@ module ROXML # :nodoc:
       def xml_accessor(*syms, &block)
         xml_attr(*syms, &block).each do |attr|
           add_reader(attr)
-          attr_writer(attr.attr_name)
+          attr_writer(attr.accessor)
         end
       end
 

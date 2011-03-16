@@ -11,12 +11,7 @@ module ROXML
       @opts = definition
       @instance = instance  # FIXME: i hate that dependency.
     end
-
-    def to_xml(instance)
-      val = instance.public_send(accessor)
-      opts.to_xml.respond_to?(:call) ? opts.to_xml.call(val) : val
-    end
-
+    
     def value_in(xml)
       xml = XML::Node.from(xml)
       value = fetch_value(xml)
@@ -25,7 +20,6 @@ module ROXML
   private
 
     def xpath
-      return "contributor" if name == "contributors"  # FIXME: haha.
       name
     end
 

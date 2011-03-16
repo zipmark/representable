@@ -191,14 +191,14 @@ RESTful applications, Web Services, and XML-RPC.
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
       s.add_development_dependency(%q<activerecord>, [">= 2.2.2"])
     else
-      s.add_dependency(%q<activesupport>, [">= 2.3.0"])
+      s.add_dependency(%q<activesupport>, [">= 3.0.0"])
       s.add_dependency(%q<nokogiri>, [">= 1.3.3"])
       s.add_dependency(%q<rspec>, [">= 2.0.0"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
       s.add_dependency(%q<activerecord>, [">= 2.2.2"])
     end
   else
-    s.add_dependency(%q<activesupport>, [">= 2.3.0"])
+    s.add_dependency(%q<activesupport>, [">= 3.0.0"])
     s.add_dependency(%q<nokogiri>, [">= 1.3.3"])
     s.add_dependency(%q<rspec>, [">= 2.0.0"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 1.2.4"])
