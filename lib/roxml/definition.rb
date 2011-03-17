@@ -87,15 +87,6 @@ module ROXML
     end
 
   private
-    def self.all(items, &block)
-      array = items.is_a?(Array)
-      results = (array ? items : [items]).map do |item|
-        yield item
-      end
-
-      array ? results : results.first
-    end
-
     def extract_type(as)
       return as.first if as.is_a?(Array) and as.size > 0  # TODO: move to ArrayDefinition.
       
