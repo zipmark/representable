@@ -1,4 +1,6 @@
-require_relative './spec_helper'
+require 'spec_helper'
+
+require 'test_xml/spec'
 
 describe ROXML, "#xml" do
   class Contributor
@@ -15,29 +17,23 @@ describe ROXML, "#xml" do
       class Book
         include ROXML
 
-        xml_name :book
-        xml_reader :isbn, :from => :attr
+
         xml_accessor :contributors, :as => [Contributor], :tag => :contributor
-        
-        #def contributors=(list)
-        #  @contributors = list
-        #end
-        
       end
 
       it ".from_xml should push collection items to array" do
         book = Book.from_xml(%{
-          <book isbn="0974514055">
-            <contributor role="author"><name>David Thomas</name></contributor>
-            <contributor role="supporting author"><name>Andrew Hunt</name></contributor>
-            <contributor role="supporting author"><name>Chad Fowler</name></contributor>
+          <book>
+            <contributor><name>David Thomas</name></contributor>
+            <contributor><name>Andrew Hunt</name></contributor>
+            <contributor><name>Chad Fowler</name></contributor>
           </book>
         })
         puts book.inspect
         book.contributors.map(&:name).sort.should == ["David Thomas","Andrew Hunt","Chad Fowler"].sort
       end
       
-      it "" do
+      it "responds to #to_xml" do
         book = Book.new
         david = Contributor.new
         david.name= "David Thomas"
@@ -45,13 +41,10 @@ describe ROXML, "#xml" do
         chad.name= "Chad Fowler"
         book.contributors = [david, chad]
         
-        puts "#{book.inspect}"
-        puts book.contributors.inspect
-        
-        book.to_xml.to_s.should == ROXML::XML.parse_string(%{<book isbn="0974514055">
-            <contributor role="author"><name>David Thomas</name></contributor>
-            <contributor role="supporting author"><name>Chad Fowler</name></contributor>
-          </book>}).root.to_s
+        book.to_xml.to_s.should exactly_match_xml %{<book>
+            <contributor><name>David Thomas</name></contributor>
+            <contributor><name>Chad Fowler</name></contributor>
+          </book>}
       end
     end
     

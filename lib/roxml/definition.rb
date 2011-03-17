@@ -1,5 +1,3 @@
-require 'roxml/hash_definition'
-
 class Module
   def bool_attr_reader(*attrs)
     attrs.each do |attr|
