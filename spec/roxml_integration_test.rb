@@ -74,7 +74,7 @@ describe ROXML, "#xml" do
   
   
   describe "Definition" do
-    context ":as => [Item]" do
+    context ":as => []" do
       subject do
         ROXML::Definition.new(:songs, :as => [], :tag => :song)
       end
@@ -97,6 +97,22 @@ describe ROXML, "#xml" do
       
       it "responds to #setter" do
         subject.setter.should == :"songs="
+      end
+      
+      it "responds to #sought_type" do
+        subject.sought_type.should == :text
+      end
+    end
+    
+    
+    context ":as => [Item]" do
+      subject do
+        class Song; end
+        ROXML::Definition.new(:songs, :as => [Song])
+      end
+      
+      it "responds to #sought_type" do
+        subject.sought_type.should == Song
       end
     end
   end

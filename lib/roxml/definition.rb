@@ -97,14 +97,9 @@ module ROXML
     end
 
     def extract_type(as)
-      if as.respond_to?(:from_xml)
-        return as
-      elsif as.is_a?(Array) && as.first.respond_to?(:from_xml)
-        @array = true
-        return as.first
-      else
-        :text
-      end
+      return as.first if as.is_a?(Array) and as.size > 0  # TODO: move to ArrayDefinition.
+      
+      :text
     end
   end
 end
