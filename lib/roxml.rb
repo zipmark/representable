@@ -1,7 +1,6 @@
 require 'uri'
 
 require 'active_support'
-#require 'active_support/core_ext/object/duplicable'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash'
@@ -542,15 +541,11 @@ module ROXML # :nodoc:
 
           inst.roxml_references.each do |ref|
             value = ref.value_in(xml)
-            inst.respond_to?(ref.opts.setter) \
-              ? inst.send(ref.opts.setter, value) \
-              : inst.instance_variable_set(ref.opts.instance_variable_name, value)
+            inst.send(ref.opts.setter, value)
           end
-          inst.send(:after_parse) if inst.respond_to?(:after_parse, true)
         end
-      rescue ArgumentError => e
-        raise e, e.message + " for class #{self}"
       end
+      
     end
   end
 end

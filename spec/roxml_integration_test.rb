@@ -6,7 +6,7 @@ describe ROXML, "#xml" do
   class Contributor
     include ROXML
 
-    xml_reader :role, :from => :attr
+    xml_accessor :role, :from => :attr
     xml_accessor :name
   end
 
@@ -29,7 +29,6 @@ describe ROXML, "#xml" do
             <contributor><name>Chad Fowler</name></contributor>
           </book>
         })
-        puts book.inspect
         book.contributors.map(&:name).sort.should == ["David Thomas","Andrew Hunt","Chad Fowler"].sort
       end
       
@@ -53,7 +52,7 @@ describe ROXML, "#xml" do
       class Album
         include ROXML
         
-        xml_reader :songs, :as => [], :tag => :song
+        xml_accessor :songs, :as => [], :tag => :song
       end
 
       it "collects untyped items" do
