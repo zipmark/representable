@@ -36,13 +36,12 @@ module ROXML
 
     def nodes_in(xml)
       puts "getting nodes from #{self.name}"
-      vals = xml.roxml_search(xpath, @instance.class.roxml_namespaces)
+      vals = xml.roxml_search(xpath, "")  # TODO: handle namespace.
       
       if vals.empty?
-        ""#default
+        ""  # TODO: handle default.
       elsif array?
         vals.map do |val|
-          puts "yielding #{val.inspect}"
           yield val
         end
       else
@@ -145,25 +144,33 @@ module ROXML
     # the value provided.
     def update_xml(xml, value)
       wrap(xml).tap do |xml|
-        params = {:name => name, :namespace => opts.namespace}
+        #params = {:name => name}
         if array?
           value.each do |v|
-            XML.add_child(xml, v.to_xml(params))
+            XML.add_child(xml, serialize(v))
           end
         elsif value.is_a?(ROXML)
-          XML.add_child(xml, value.to_xml(params))
+          XML.add_child(xml, serialize(v))
         else
           XML.add_node(xml, name).tap do |node|
-            XML.set_content(node, value.to_xml)
+            XML.set_content(node, serialize(v))# DISCUSS: how can we know all objects respond to #to_xml?
           end
         end
       end
     end
 
   private
+    def serialize(object)
+      object.to_xml
+    end
+    
+    def deserialize(node_class, xml)
+      node_class.from_xml(xml)
+    end
+    
     def fetch_value(xml)
       nodes_in(xml) do |node|
-        sought_type.from_xml(node)
+        deserialize(sought_type, node)
       end
     end
   end
