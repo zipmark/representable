@@ -537,9 +537,9 @@ module ROXML # :nodoc:
         xml = XML::Node.from(data)
 
         new(*initialization_args).tap do |inst|
-          inst.roxml_references = roxml_attrs.map {|attr| attr.to_ref(inst) }
-
-          inst.roxml_references.each do |ref|
+          refs = roxml_attrs.map {|attr| attr.to_ref(inst) }
+          
+          refs.each do |ref|
             value = ref.value_in(xml)
             inst.send(ref.opts.setter, value)
           end
