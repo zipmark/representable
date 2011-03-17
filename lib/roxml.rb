@@ -533,10 +533,10 @@ module ROXML # :nodoc:
       #
       # See also: xml_initialize
       #
-      def from_xml(data, *initialization_args)
+      def from_xml(data, *args)
         xml = XML::Node.from(data)
 
-        new(*initialization_args).tap do |inst|
+        create_from_xml(*args).tap do |inst|
           refs = roxml_attrs.map {|attr| attr.to_ref(inst) }
           
           refs.each do |ref|
@@ -544,6 +544,11 @@ module ROXML # :nodoc:
             inst.send(ref.opts.setter, value)
           end
         end
+      end
+      
+    private
+      def create_from_xml(*args)
+        new(*args)
       end
       
     end
