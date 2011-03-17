@@ -115,5 +115,17 @@ describe ROXML, "#xml" do
         subject.sought_type.should == Song
       end
     end
+    
+    
+    context ":as => Item" do
+      subject do
+        class Song; end
+        ROXML::Definition.new(:songs, :as => Song)
+      end
+      
+      it "responds to #sought_type" do
+        subject.sought_type.should == Song
+      end
+    end
   end
 end

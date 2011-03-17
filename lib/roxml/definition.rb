@@ -88,9 +88,9 @@ module ROXML
 
   private
     def extract_type(as)
-      return as.first if as.is_a?(Array) and as.size > 0  # TODO: move to ArrayDefinition.
+      as = as.first if as.is_a?(Array)  # TODO: move to ArrayDefinition.
       
-      :text
+      as || :text
     end
   end
 end
