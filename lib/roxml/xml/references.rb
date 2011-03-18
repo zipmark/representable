@@ -173,14 +173,16 @@ module ROXML
     end
     
     def update_xml_for_entity(xml, entity)
-      if entity.is_a?(ROXML)
-        XML.add_child(xml, serialize(entity))
-      else  # applies to strings, etc.
-        XML.add_node(xml, name).tap do |node|     # DISCUSS: why do we add a wrapping node here?
-          XML.set_content(node, serialize(entity))# DISCUSS: how can we know all objects respond to #to_xml?
-        end
+      return XML.add_child(xml, serialize(entity)) if entity.is_a?(ROXML)
+      update_xml_for_string_entity(xml, entity)
+    end
+    
+    def update_xml_for_string_entity(xml, entity)
+      XML.add_node(xml, name).tap do |node|     # DISCUSS: why do we add a wrapping node here?
+        XML.set_content(node, serialize(entity))# DISCUSS: how can we know all objects respond to #to_xml?
       end
     end
+    
     
   end
 end
