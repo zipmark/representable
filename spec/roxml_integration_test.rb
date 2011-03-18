@@ -10,7 +10,43 @@ describe ROXML, "#xml" do
     xml_accessor :name
   end
 
-
+  
+  describe ":as => Item" do
+    class Band
+      include ROXML
+      xml_accessor :name
+    end
+    
+    class Album
+      include ROXML
+      xml_accessor :band, :as => Band
+    end
+    
+    context ".from_xml" do
+      it "creates one Item instance" do
+        album = Album.from_xml(%{
+          <album>
+            <band><name>Bad Religion</name></band>
+          </album>
+        })
+        album.band.name.should == "Bad Religion"
+      end
+      
+      it "responds to #to_xml" do
+        band = Band.new
+        band.name = "Bad Religion"
+        album = Album.new
+        album.band = band
+        
+        album.to_xml.to_s.should exactly_match_xml %{<album>
+         <band>
+           <name>Bad Religion</name>
+         </band>
+       </album>}
+      end
+    end
+  end
+  
 
   describe "collections" do
     context ":as => [Item]" do

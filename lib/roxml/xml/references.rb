@@ -140,21 +140,13 @@ module ROXML
   class XMLObjectRef < XMLTextRef # :nodoc:
     delegate :sought_type, :to => :opts
 
-    # Updates the composed XML object in the given XML block to
-    # the value provided.
+    # Adds the reference's markup to +xml+. 
     def update_xml(xml, value)
       wrap(xml).tap do |xml|
-        #params = {:name => name}
         if array?
-          value.each do |v|
-            XML.add_child(xml, serialize(v))
-          end
-        elsif value.is_a?(ROXML)
-          XML.add_child(xml, serialize(v))
+          update_xml_for_collection(xml, value)
         else
-          XML.add_node(xml, name).tap do |node|
-            XML.set_content(node, serialize(v))# DISCUSS: how can we know all objects respond to #to_xml?
-          end
+          update_xml_for_entity(xml, value)
         end
       end
     end
@@ -173,5 +165,22 @@ module ROXML
         deserialize(sought_type, node)
       end
     end
+    
+    def update_xml_for_collection(xml, collection)
+      collection.each do |v|
+        XML.add_child(xml, serialize(v))
+      end
+    end
+    
+    def update_xml_for_entity(xml, entity)
+      if entity.is_a?(ROXML)
+        XML.add_child(xml, serialize(entity))
+      else  # applies to strings, etc.
+        XML.add_node(xml, name).tap do |node|     # DISCUSS: why do we add a wrapping node here?
+          XML.set_content(node, serialize(entity))# DISCUSS: how can we know all objects respond to #to_xml?
+        end
+      end
+    end
+    
   end
 end
