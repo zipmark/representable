@@ -18,11 +18,9 @@ module ROXML
     end
 
   private
-
     def xpath
       name
     end
-
 
     def wrap(xml, opts = {:always_create => false})
       wrap_with = @auto_vals ? auto_wrapper : wrapper
@@ -35,7 +33,6 @@ module ROXML
     end
 
     def nodes_in(xml)
-      puts "getting nodes from #{self.name}"
       vals = xml.roxml_search(xpath, "")  # TODO: handle namespace.
       
       if vals.empty?
@@ -78,10 +75,6 @@ module ROXML
       nodes_in(xml) do |node|
         node.value
       end
-    end
-
-    def xpath_name
-      "@#{name}"
     end
   end
 
@@ -135,12 +128,11 @@ module ROXML
       end
   end
 
-  
 
   class XMLObjectRef < XMLTextRef # :nodoc:
     delegate :sought_type, :to => :opts
 
-    # Adds the reference's markup to +xml+. 
+    # Adds the ref's markup to +xml+. 
     def update_xml(xml, value)
       wrap(xml).tap do |xml|
         if array?
@@ -160,6 +152,7 @@ module ROXML
       node_class.from_xml(xml)
     end
     
+    # Deserializes the ref's element from +xml+.
     def fetch_value(xml)
       nodes_in(xml) do |node|
         deserialize(sought_type, node)
@@ -182,7 +175,6 @@ module ROXML
         XML.set_content(node, serialize(entity))# DISCUSS: how can we know all objects respond to #to_xml?
       end
     end
-    
     
   end
 end

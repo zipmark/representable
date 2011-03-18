@@ -33,7 +33,6 @@ module ROXML # :nodoc:
         
         refs.each do |ref|
           value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
-          puts "#{value} from #{ref.accessor}"
           ref.update_xml(root, value) if value
         end
       end
