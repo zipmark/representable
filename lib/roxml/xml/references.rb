@@ -57,16 +57,8 @@ module ROXML
     # Updates the attribute in the given XML block to
     # the value provided.
     def update_xml(xml, values)
-      if array?
-        values.each do |value|
-          wrap(xml, :always_create => true).tap do |node|
-            XML.set_attribute(node, name, value.to_s)
-          end
-        end
-      else
-        wrap(xml).tap do |xml|
-          XML.set_attribute(xml, name, values.to_s)
-        end
+      wrap(xml).tap do |xml|
+        xml[name] = values.to_s
       end
     end
 
