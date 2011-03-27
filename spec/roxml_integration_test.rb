@@ -26,6 +26,33 @@ describe ROXML, "#xml" do
   end
   
   
+  describe ":from => @rel" do
+    class Link
+      include ROXML
+      xml_accessor :href,   :from => "@href"
+      xml_accessor :title,  :from => "@title"
+    end
+    
+    context ".from_xml" do
+      it "creates correct accessors" do
+        link = Link.from_xml(%{
+          <a href="http://apotomo.de" title="Home, sweet home" />
+        })
+        link.href.should == "http://apotomo.de"
+        link.title.should == "Home, sweet home"
+      end
+    end
+    
+    context "#to_xml" do
+      it "serializes correctly" do
+        link = Link.new
+        link.href = "http://apotomo.de/"
+        
+        link.to_xml.to_s.should exactly_match_xml %{<link href="http://apotomo.de/">}
+      end
+    end
+  end
+  
   
   describe ":as => Item" do
     class Album
