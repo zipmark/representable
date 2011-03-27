@@ -13,7 +13,7 @@ module ROXML
     end
     
     def value_in(xml)
-      xml = XML::Node.from(xml)
+      xml = XML::Node.from(xml) or return
       value = fetch_value(xml)
     end
 

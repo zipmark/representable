@@ -9,14 +9,25 @@ describe ROXML, "#xml" do
     xml_accessor :role, :from => :attr
     xml_accessor :name
   end
-
+  
+  class Band
+    include ROXML
+    xml_accessor :name
+  end
+    
+  
+  describe "generic tests" do
+    context ".from_xml" do
+      it "works with nil string" do
+        album = Album.from_xml(nil)
+        album.band.should == nil
+      end
+    end
+  end
+  
+  
   
   describe ":as => Item" do
-    class Band
-      include ROXML
-      xml_accessor :name
-    end
-    
     class Album
       include ROXML
       xml_accessor :band, :as => Band
