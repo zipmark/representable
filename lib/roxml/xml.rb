@@ -2,6 +2,7 @@ module ROXML
   require 'nokogiri'
   require 'roxml/xml/parsers/nokogiri'
 
+# FIXME: remove switch.
   module XML
     class Node
       def self.from(data)

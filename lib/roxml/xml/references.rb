@@ -4,20 +4,25 @@ module ROXML
 
   # Internal base class that represents an XML - Class binding.
   class XMLRef
-    attr_reader :opts
-    delegate :required?, :array?, :accessor, :default, :wrapper, :name, :to => :opts
+    attr_reader :definition
+    delegate :required?, :array?, :accessor, :wrapper, :name, :to => :definition
 
     def initialize(definition, instance)
-      @opts = definition
-      @instance = instance  # FIXME: i hate that dependency.
+      @definition = definition
+      @instance   = instance  # FIXME: i hate that dependency.
     end
     
     def value_in(xml)
-      xml = XML::Node.from(xml) or return
-      value = fetch_value(xml)
+      xml = XML::Node.from(xml) or return default
+      
+      fetch_value(xml) or default
     end
-
+    
   private
+    def default
+      ""
+    end
+    
     def xpath
       name
     end
@@ -35,15 +40,11 @@ module ROXML
     def nodes_in(xml)
       vals = xml.roxml_search(xpath, "")  # TODO: handle namespace.
       
-      if vals.empty?
-        ""  # TODO: handle default.
-      elsif array?
-        vals.map do |val|
-          yield val
-        end
-      else
-        yield(vals.first)
+      vals = vals.collect do |val|
+        yield val
       end
+      
+      array? ? vals : vals.first  # FIXME: two different classes.
     end
   end
 
@@ -75,7 +76,7 @@ module ROXML
   #   XMLTextRef
   #  </element>
   class XMLTextRef < XMLRef # :nodoc:
-    delegate :cdata?, :content?, :name?, :to => :opts
+    delegate :cdata?, :content?, :name?, :to => :definition
 
     # Updates the text in the given _xml_ block to
     # the _value_ provided.
@@ -120,7 +121,7 @@ module ROXML
 
 
   class XMLObjectRef < XMLTextRef # :nodoc:
-    delegate :sought_type, :to => :opts
+    delegate :sought_type, :to => :definition
 
     # Adds the ref's markup to +xml+. 
     def update_xml(xml, value)
@@ -134,6 +135,10 @@ module ROXML
     end
 
   private
+    def default
+      []
+    end
+    
     def serialize(object)
       object.to_xml
     end

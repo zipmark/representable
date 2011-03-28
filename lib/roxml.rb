@@ -540,7 +540,7 @@ module ROXML # :nodoc:
           
           refs.each do |ref|
             value = ref.value_in(xml)
-            inst.send(ref.opts.setter, value)
+            inst.send(ref.definition.setter, value)
           end
         end
       end

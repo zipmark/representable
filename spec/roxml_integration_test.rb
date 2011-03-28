@@ -18,9 +18,9 @@ describe ROXML, "#xml" do
   
   describe "generic tests" do
     context ".from_xml" do
-      it "works with nil string" do
-        album = Album.from_xml(nil)
-        album.band.should == nil
+      it "works with empty string" do
+        album = Album.from_xml("")
+        album.band.should == []
       end
     end
   end
@@ -95,7 +95,7 @@ describe ROXML, "#xml" do
         xml_accessor :contributors, :as => [Contributor], :tag => :contributor
       end
 
-      it ".from_xml should push collection items to array" do
+      it ".from_xml pushes collection items to array" do
         book = Book.from_xml(%{
           <book>
             <contributor><name>David Thomas</name></contributor>
@@ -104,6 +104,14 @@ describe ROXML, "#xml" do
           </book>
         })
         book.contributors.map(&:name).sort.should == ["David Thomas","Andrew Hunt","Chad Fowler"].sort
+      end
+      
+      it "collections can be empty" do
+        book = Book.from_xml(%{
+          <book>
+          </book>
+        })
+        book.contributors.should == []
       end
       
       it "responds to #to_xml" do
@@ -142,9 +150,32 @@ describe ROXML, "#xml" do
     end
   end
   
+  def parse_xml(xml); ROXML::XML::Node.from(xml); end
   
-  
-  
+  describe "Reference" do
+    context "ObjectRef with []" do
+      subject do
+        ROXML::XMLObjectRef.new(ROXML::Definition.new(:songs, :as => [Album]), nil)
+      end
+      
+      it "responds to #default" do
+        subject.send(:default).should == []
+      end
+      
+    end
+    
+    
+    context "TextRef#value_in" do
+      subject do
+        ROXML::XMLTextRef.new(ROXML::Definition.new(:song), nil)
+      end
+      
+      it "returns found value" do
+        subject.value_in(parse_xml("<a><song>Unkoil</song></a>")).should == "Unkoil"
+      end
+      
+    end
+  end    
   
   
   describe "Definition" do
