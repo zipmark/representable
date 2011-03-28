@@ -1,18 +1,6 @@
 module ROXML
-  PARSERS = %w[nokogiri libxml].freeze
-  unless const_defined? 'XML_PARSER'
-    parsers = PARSERS.dup
-    begin
-      require parsers.first
-      XML_PARSER = parsers.first # :nodoc:
-    rescue LoadError
-      parsers.shift
-      retry unless parsers.empty?
-      raise "Could not load a parser. Tried #{PARSERS.to_sentence}"
-    end
-  end
-
-  require File.join('roxml/xml/parsers', XML_PARSER)
+  require 'nokogiri'
+  require 'roxml/xml/parsers/nokogiri'
 
   module XML
     class Node
