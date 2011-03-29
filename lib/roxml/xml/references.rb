@@ -155,21 +155,13 @@ module ROXML
     end
     
     def update_xml_for_collection(xml, collection)
-      collection.each do |v|
-        XML.add_child(xml, serialize(v))
+      collection.each do |item|
+        update_xml_for_entity(xml, item)
       end
     end
     
     def update_xml_for_entity(xml, entity)
-      return XML.add_child(xml, serialize(entity)) if entity.is_a?(ROXML)
-      update_xml_for_string_entity(xml, entity)
+      XML.add_child(xml, serialize(entity))
     end
-    
-    def update_xml_for_string_entity(xml, entity)
-      XML.add_node(xml, name).tap do |node|     # DISCUSS: why do we add a wrapping node here?
-        XML.set_content(node, serialize(entity))# DISCUSS: how can we know all objects respond to #to_xml?
-      end
-    end
-    
   end
 end

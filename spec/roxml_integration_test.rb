@@ -14,6 +14,12 @@ describe ROXML, "#xml" do
     include ROXML
     xml_accessor :name
   end
+  
+  class Label
+    def to_xml
+      "<label>Fat Wreck</label>"
+    end
+  end
     
   
   describe "generic tests" do
@@ -58,6 +64,7 @@ describe ROXML, "#xml" do
     class Album
       include ROXML
       xml_accessor :band, :as => Band
+      xml_accessor :label, :as => Label
     end
     
     context ".from_xml" do
@@ -69,8 +76,10 @@ describe ROXML, "#xml" do
         })
         album.band.name.should == "Bad Religion"
       end
-      
-      it "responds to #to_xml" do
+    end
+    
+    context "#to_xml" do
+      it "doesn't escape xml from Band#to_xml" do
         band = Band.new
         band.name = "Bad Religion"
         album = Album.new
@@ -81,6 +90,15 @@ describe ROXML, "#xml" do
            <name>Bad Religion</name>
          </band>
        </album>}
+      end
+      
+      it "doesn't escape string from Label#to_xml" do
+        album = Album.new
+        album.label = Label.new
+        
+        album.to_xml.to_s.should exactly_match_xml %{<album>
+          <label>Fat Wreck</label>
+        </album>}
       end
     end
   end
