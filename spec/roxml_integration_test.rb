@@ -54,7 +54,7 @@ describe ROXML, "#xml" do
         link = Link.new
         link.href = "http://apotomo.de/"
         
-        link.to_xml.to_s.should exactly_match_xml %{<link href="http://apotomo.de/">}
+        link.to_xml.to_s.should equal_xml %{<link href="http://apotomo.de/">}
       end
     end
   end
@@ -85,18 +85,18 @@ describe ROXML, "#xml" do
         album = Album.new
         album.band = band
         
-        album.to_xml.to_s.should exactly_match_xml %{<album>
+        album.to_xml.to_s.should equal_xml %{<album>
          <band>
            <name>Bad Religion</name>
          </band>
        </album>}
       end
       
-      it "doesn't escape string from Label#to_xml" do
+      it "doesn't escape and wrap string from Label#to_xml" do
         album = Album.new
         album.label = Label.new
         
-        album.to_xml.to_s.should exactly_match_xml %{<album>
+        album.to_xml.to_s.should equal_xml %{<album>
           <label>Fat Wreck</label>
         </album>}
       end
@@ -140,7 +140,7 @@ describe ROXML, "#xml" do
         chad.name= "Chad Fowler"
         book.contributors = [david, chad]
         
-        book.to_xml.to_s.should exactly_match_xml %{<book>
+        book.to_xml.to_s.should equal_xml %{<book>
             <contributor><name>David Thomas</name></contributor>
             <contributor><name>Chad Fowler</name></contributor>
           </book>}
@@ -179,8 +179,9 @@ describe ROXML, "#xml" do
       it "responds to #default" do
         subject.send(:default).should == []
       end
-      
     end
+    
+    
     
     
     context "TextRef#value_in" do
@@ -197,6 +198,44 @@ describe ROXML, "#xml" do
   
   
   describe "Definition" do
+    context "generic API" do
+      subject do
+        ROXML::Definition.new(:songs) do "1" end
+      end
+      
+      it "responds to #block" do
+        subject.block.call.should == "1"
+      end
+      
+      it "responds to #typed?" do
+        subject.typed? == false
+        ROXML::Definition.new(:songs, :as => Album).typed? == true
+        ROXML::Definition.new(:songs, :as => [Album]).typed? == true
+      end
+      
+      
+      context "#apply" do
+        subject do
+          ROXML::Definition.new(:song)
+        end
+        
+        it "works with a single item" do
+          subject.apply(1) { |v| v+1 }.should == 2
+        end
+        
+        it "works with collection" do
+          d = ROXML::Definition.new(:song, :as => [])
+          d.apply([1,2,3]) { |v| v+1 }.should == [2,3,4]
+        end
+        
+        it "skips with collection and nil" do
+          d = ROXML::Definition.new(:song, :as => [])
+          d.apply(nil) { |v| v+1 }.should == nil
+        end
+        
+      end
+    end
+    
     context ":as => []" do
       subject do
         ROXML::Definition.new(:songs, :as => [], :tag => :song)
