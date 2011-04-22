@@ -6,7 +6,6 @@ class RoxmlTest < MiniTest::Spec
       include ROXML
       xml_accessor :name
     end
-    
     class PunkBand < Band
       xml_accessor :street_cred
     end
@@ -16,13 +15,11 @@ class RoxmlTest < MiniTest::Spec
       assert_equal "name", Band.roxml_attrs.first.name
     end
     
-    
     it "inherits correctly" do
       assert_equal 2, PunkBand.roxml_attrs.size
       assert_equal "name", PunkBand.roxml_attrs.first.name
       assert_equal "street_cred", PunkBand.roxml_attrs.last.name
     end
-    
   end
   
 end
