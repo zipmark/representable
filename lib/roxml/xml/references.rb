@@ -98,7 +98,7 @@ module ROXML
 
   private
     def fetch_value(xml)
-      nodes_in(xml) do |node|
+      nodes_in(xml) do |node| 
         node.content
       end
     end

@@ -14,16 +14,17 @@ module ROXML
   class Definition # :nodoc:
     attr_reader :name, :sought_type, :wrapper, :accessor, :namespace
     bool_attr_reader :name_explicit, :array, :cdata
-
-    def initialize(sym, opts = {}, &block)
-      @namespace  = opts.delete(:namespace)
+    
+    def initialize(sym, opts={})
       @accessor   = sym.to_s
+      @namespace  = opts.delete(:namespace)
+      
       
       if opts[:as].is_a?(Array) # DISCUSS: move to ArrayDefinition.
         @array      = true
         @name       = (opts[:tag] || @accessor).to_s
       else
-        @name = accessor.to_s.chomp('?')
+        @name = accessor
         @name = (opts[:from] || @name).to_s
       end
 
@@ -59,7 +60,12 @@ module ROXML
     def setter
       :"#{accessor}="
     end
-
+    
+    def typed?
+      sought_type.is_a?(Class)
+    end
+    
+    
     def name?
       @name == '*'
     end
@@ -67,15 +73,22 @@ module ROXML
     def content?
       @name == '.'
     end
-
-    def default
-      if @default.nil?
-        @default = [] if array?
-        @default = {} if hash?
+    
+    # Applies the block to +value+ which might also be a collection.
+    def apply(value)
+      return value unless value # DISCUSS: is that ok here?
+      
+      if array?
+        value = value.collect do |item|
+          yield item
+        end
+      else
+        value = yield value
       end
-      @default.duplicable? ? @default.dup : @default
+      
+      value
     end
-
+    
     def to_ref(inst)
       case sought_type
       when :attr          then XMLAttributeRef

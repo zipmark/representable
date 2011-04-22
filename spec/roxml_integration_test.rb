@@ -61,7 +61,7 @@ describe ROXML, "#xml" do
   
   
   describe ":as => Item" do
-    class Album
+    class Albumy
       include ROXML
       xml_accessor :band, :as => Band
       xml_accessor :label, :as => Label
@@ -69,7 +69,7 @@ describe ROXML, "#xml" do
     
     context ".from_xml" do
       it "creates one Item instance" do
-        album = Album.from_xml(%{
+        album = Albumy.from_xml(%{
           <album>
             <band><name>Bad Religion</name></band>
           </album>
@@ -82,8 +82,10 @@ describe ROXML, "#xml" do
       it "doesn't escape xml from Band#to_xml" do
         band = Band.new
         band.name = "Bad Religion"
-        album = Album.new
+        album = Albumy.new
         album.band = band
+        
+        puts album.class.roxml_attrs.inspect
         
         album.to_xml.to_s.should equal_xml %{<album>
          <band>
@@ -93,7 +95,7 @@ describe ROXML, "#xml" do
       end
       
       it "doesn't escape and wrap string from Label#to_xml" do
-        album = Album.new
+        album = Albumy.new
         album.label = Label.new
         
         album.to_xml.to_s.should equal_xml %{<album>
@@ -200,11 +202,7 @@ describe ROXML, "#xml" do
   describe "Definition" do
     context "generic API" do
       subject do
-        ROXML::Definition.new(:songs) do "1" end
-      end
-      
-      it "responds to #block" do
-        subject.block.call.should == "1"
+        ROXML::Definition.new(:songs)
       end
       
       it "responds to #typed?" do
