@@ -5,6 +5,7 @@ require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/string/starts_ends_with'
+require 'hooks/inheritable_attribute'
 
 require 'roxml/definition'
 require 'roxml/xml'
@@ -20,6 +21,10 @@ module ROXML # :nodoc:
       include InstanceMethods
 
       attr_accessor :roxml_references
+      
+      extend Hooks::InheritableAttribute
+      inheritable_attr :roxml_attrs
+      self.roxml_attrs = []
     end
   end
 
@@ -438,8 +443,7 @@ module ROXML # :nodoc:
         opts = syms.extract_options!
         syms.map do |sym|
           Definition.new(sym, opts, &block).tap do |attr|
-            roxml_attrs ### FIXME: remove this call.
-            @roxml_attrs << attr
+            roxml_attrs << attr
           end
         end
       end
@@ -503,13 +507,6 @@ module ROXML # :nodoc:
           superclass.roxml_namespace if superclass.respond_to?(:roxml_namespace)
         end
       end
-
-      # Returns array of internal reference objects, such as attributes
-      # and composed XML objects
-      def roxml_attrs
-        @roxml_attrs ||= []
-        (@roxml_attrs + (superclass.respond_to?(:roxml_attrs) ? superclass.roxml_attrs : [])).freeze
-      end
     end
 
     module Operations
@@ -540,6 +537,7 @@ module ROXML # :nodoc:
           
           refs.each do |ref|
             value = ref.value_in(xml)
+            
             inst.send(ref.definition.setter, value)
           end
         end
