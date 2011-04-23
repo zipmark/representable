@@ -174,6 +174,11 @@ module ROXML # :nodoc:
           superclass.roxml_naming_convention if superclass.respond_to?(:roxml_naming_convention)
         end).freeze
       end
+      
+      def definition_class
+        Definition
+      end
+      
 
       # Declares a reference to a certain xml element, whether an attribute, a node,
       # or a typed collection of nodes.  This method does not add a corresponding accessor
@@ -443,7 +448,7 @@ module ROXML # :nodoc:
       def xml_attr(*syms, &block)
         opts = syms.extract_options!
         syms.map do |sym|
-          Definition.new(sym, opts, &block).tap do |attr|
+          definition_class.new(sym, opts, &block).tap do |attr|
             roxml_attrs << attr
           end
         end
