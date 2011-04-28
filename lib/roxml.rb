@@ -31,10 +31,10 @@ module ROXML # :nodoc:
 
   module InstanceMethods # :nodoc:
     # Returns an XML object representing this object
-    def to_xml(params = {})
-      params.reverse_merge!(:name => self.class.tag_name, :namespace => self.class.roxml_namespace)
+    def to_xml(params={})
+      params.reverse_merge!(:name => self.class.tag_name)
       
-      XML.new_node([params[:namespace], params[:name]].compact.join(':')).tap do |root|
+      Nokogiri::XML::Node.new(params[:name], Nokogiri::XML::Document.new).tap do |root|
         refs = self.class.roxml_attrs.map {|attr| attr.to_ref(self) } # FIXME: refactor to_ref.
         
         refs.each do |ref|

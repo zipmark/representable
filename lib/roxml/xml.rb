@@ -1,18 +1,18 @@
-module ROXML
-  require 'nokogiri'
-  require 'roxml/xml/parsers/nokogiri'
+require 'nokogiri'
+require 'roxml/nokogiri_extensions'
 
+module ROXML  
 # FIXME: remove switch. where is #from used with nodes?
   module XML
     class Node
       def self.from(data)
         case data
-        when XML::Node
+        when Nokogiri::XML::Node
           data
-        when XML::Document
+        when Nokogiri::XML::Document
           data.root
         else
-          XML.parse_string(data).root
+          Nokogiri::XML(data).root
         end
       end
     end

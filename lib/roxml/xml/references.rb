@@ -34,11 +34,11 @@ module ROXML
       if !opts[:always_create] && (child = xml.children.find {|c| c.name == wrap_with })
        return child
       end
-      XML.add_node(xml, wrap_with.to_s)
+      xml.add_node(wrap_with.to_s)
     end
 
     def nodes_in(xml)
-      vals = xml.roxml_search(xpath, "")  # TODO: handle namespace.
+      vals = xml.search("./#{xpath}")
       
       vals = vals.collect do |val|
         yield val
@@ -88,10 +88,10 @@ module ROXML
           xml.name = value
         elsif array?
           value.each do |v|
-            add(XML.add_node(xml, name), v)
+            add(xml.add_node(name), v)
           end
         else
-          add(XML.add_node(xml, name), value)
+          add(xml.add_node(name), value)
         end
       end
     end
@@ -105,9 +105,9 @@ module ROXML
 
     def add(dest, value)
       if cdata?
-        XML.add_cdata(dest, value.to_s)
+        dest.add_child(Nokogiri::XML::CDATA.new(dest.document, content))
       else
-        XML.set_content(dest, value.to_s)
+        dest.content = value.to_s
       end
     end
   end
@@ -161,7 +161,7 @@ module ROXML
     end
     
     def update_xml_for_entity(xml, entity)
-      XML.add_child(xml, serialize(entity))
+      xml.add_child(serialize(entity))
     end
   end
 end
