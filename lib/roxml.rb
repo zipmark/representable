@@ -1,10 +1,10 @@
-require 'uri'
-
 require 'active_support'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/string/starts_ends_with'
-require 'active_support/core_ext/hash'  # FIXME: why does this need i18n?
+require 'active_support/core_ext/string/inflections.rb'
+require 'active_support/core_ext/hash/reverse_merge.rb'
+
 require 'hooks/inheritable_attribute'
 
 
