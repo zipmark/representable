@@ -170,7 +170,7 @@ describe ROXML, "#xml" do
     end
   end
   
-  def parse_xml(xml); ROXML::XML::Node.from(xml); end
+  def parse_xml(xml); Nokogiri::XML::Node.from(xml); end
   
   describe "Reference" do
     context "ObjectRef with []" do

@@ -9,7 +9,8 @@ require 'hooks/inheritable_attribute'
 
 
 require 'roxml/definition'
-require 'roxml/xml'
+require 'roxml/nokogiri_extensions'
+require 'roxml/xml/references'
 
 module ROXML
   VERSION = '3.1.5'
@@ -34,7 +35,7 @@ module ROXML
     def to_xml(params={})
       params.reverse_merge!(:name => self.class.tag_name)
       
-      Nokogiri::XML::Node.new(params[:name], Nokogiri::XML::Document.new).tap do |root|
+      Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
         refs = self.class.roxml_attrs.map {|attr| attr.to_ref(self) } # FIXME: refactor to_ref.
         
         refs.each do |ref|
@@ -308,7 +309,7 @@ module ROXML
       # See also: xml_initialize
       #
       def from_xml(data, *args)
-        xml = XML::Node.from(data)
+        xml = Nokogiri::XML::Node.from(data)
 
         create_from_xml(*args).tap do |inst|
           refs = roxml_attrs.map {|attr| attr.to_ref(inst) }
