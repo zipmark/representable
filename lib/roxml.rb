@@ -10,7 +10,7 @@ require 'hooks/inheritable_attribute'
 
 require 'roxml/definition'
 require 'roxml/nokogiri_extensions'
-require 'roxml/xml/references'
+require 'roxml/references'
 
 module ROXML
   VERSION = '3.1.5'
