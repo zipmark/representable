@@ -7,15 +7,14 @@ module ROXML
     attr_reader :definition
     delegate :required?, :array?, :accessor, :wrapper, :name, :to => :definition
 
-    def initialize(definition, instance)
+    def initialize(definition)
       @definition = definition
-      @instance   = instance  # FIXME: i hate that dependency.
     end
     
     def value_in(xml)
       xml = Nokogiri::XML::Node.from(xml) or return default
       
-      fetch_value(xml) or default
+      value_from_node(xml) or default
     end
     
   private
@@ -38,13 +37,10 @@ module ROXML
     end
 
     def nodes_in(xml)
-      vals = xml.search("./#{xpath}")
+      nodes = xml.search("./#{xpath}")
+      vals  = nodes.collect { |node| yield node }
       
-      vals = vals.collect do |val|
-        yield val
-      end
-      
-      array? ? vals : vals.first  # FIXME: two different classes.
+      array? ? vals : vals.first
     end
   end
 
@@ -64,7 +60,7 @@ module ROXML
     end
 
   private
-    def fetch_value(xml)
+    def value_from_node(xml)
       xml[name]
     end
   end
@@ -97,7 +93,7 @@ module ROXML
     end
 
   private
-    def fetch_value(xml)
+    def value_from_node(xml)
       nodes_in(xml) do |node| 
         node.content
       end
@@ -114,7 +110,7 @@ module ROXML
 
   class XMLNameSpaceRef < XMLRef # :nodoc:
     private
-      def fetch_value(xml)
+      def value_from_node(xml)
         xml.namespace.prefix
       end
   end
@@ -148,7 +144,7 @@ module ROXML
     end
     
     # Deserializes the ref's element from +xml+.
-    def fetch_value(xml)
+    def value_from_node(xml)
       nodes_in(xml) do |node|
         deserialize(sought_type, node)
       end

@@ -36,7 +36,7 @@ module ROXML
       params.reverse_merge!(:name => self.class.tag_name)
       
       Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-        refs = self.class.roxml_attrs.map {|attr| attr.to_ref(self) } # FIXME: refactor to_ref.
+        refs = self.class.roxml_attrs.map {|attr| attr.to_ref }
         
         refs.each do |ref|
           value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
@@ -312,7 +312,7 @@ module ROXML
         xml = Nokogiri::XML::Node.from(data)
 
         create_from_xml(*args).tap do |inst|
-          refs = roxml_attrs.map {|attr| attr.to_ref(inst) }
+          refs = roxml_attrs.map {|attr| attr.to_ref }
           
           refs.each do |ref|
             value = ref.value_in(xml)

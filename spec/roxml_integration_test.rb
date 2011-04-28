@@ -175,7 +175,7 @@ describe ROXML, "#xml" do
   describe "Reference" do
     context "ObjectRef with []" do
       subject do
-        ROXML::XMLObjectRef.new(ROXML::Definition.new(:songs, :as => [Album]), nil)
+        ROXML::XMLObjectRef.new(ROXML::Definition.new(:songs, :as => [Album]))
       end
       
       it "responds to #default" do
@@ -188,7 +188,7 @@ describe ROXML, "#xml" do
     
     context "TextRef#value_in" do
       subject do
-        ROXML::XMLTextRef.new(ROXML::Definition.new(:song), nil)
+        ROXML::XMLTextRef.new(ROXML::Definition.new(:song))
       end
       
       it "returns found value" do

@@ -89,14 +89,14 @@ module ROXML
       value
     end
     
-    def to_ref(inst)
+    def to_ref
       case sought_type
       when :attr          then XMLAttributeRef
       when :text          then XMLTextRef
       when :namespace     then XMLNameSpaceRef
       when Symbol         then raise ArgumentError, "Invalid type argument #{sought_type}"
       else                     XMLObjectRef
-      end.new(self, inst)
+      end.new(self)
     end
 
   private
