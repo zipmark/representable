@@ -36,21 +36,16 @@ module ROXML
       xml.add_node(wrap_with.to_s)
     end
 
-    def nodes_in(xml)
+    def collect_for(xml)
       nodes = xml.search("./#{xpath}")
       vals  = nodes.collect { |node| yield node }
       
       array? ? vals : vals.first
     end
   end
-
-  # Interal class representing an XML attribute binding
-  #
-  # In context:
-  #  <element attribute="XMLAttributeRef">
-  #   XMLTextRef
-  #  </element>
-  class XMLAttributeRef < XMLRef # :nodoc:
+  
+  # Represents a tag attribute.
+  class XMLAttributeRef < XMLRef
     # Updates the attribute in the given XML block to
     # the value provided.
     def update_xml(xml, values)
@@ -64,14 +59,9 @@ module ROXML
       xml[name]
     end
   end
-
-  # Interal class representing XML content text binding
-  #
-  # In context:
-  #  <element attribute="XMLAttributeRef">
-  #   XMLTextRef
-  #  </element>
-  class XMLTextRef < XMLRef # :nodoc:
+  
+  # Represents text content in a tag.
+  class XMLTextRef < XMLRef
     delegate :cdata?, :content?, :name?, :to => :definition
 
     # Updates the text in the given _xml_ block to
@@ -94,7 +84,7 @@ module ROXML
 
   private
     def value_from_node(xml)
-      nodes_in(xml) do |node| 
+      collect_for(xml) do |node| 
         node.content
       end
     end
@@ -108,15 +98,15 @@ module ROXML
     end
   end
 
-  class XMLNameSpaceRef < XMLRef # :nodoc:
+  class XMLNameSpaceRef < XMLRef
     private
       def value_from_node(xml)
         xml.namespace.prefix
       end
   end
 
-
-  class XMLObjectRef < XMLTextRef # :nodoc:
+  # Represents a tag with object binding.
+  class XMLObjectRef < XMLTextRef
     delegate :sought_type, :to => :definition
 
     # Adds the ref's markup to +xml+. 
@@ -145,7 +135,7 @@ module ROXML
     
     # Deserializes the ref's element from +xml+.
     def value_from_node(xml)
-      nodes_in(xml) do |node|
+      collect_for(xml) do |node|
         deserialize(sought_type, node)
       end
     end
