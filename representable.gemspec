@@ -2,17 +2,17 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-#require 'cells/version'
+require 'representable/version'
 
 Gem::Specification.new do |s|
-  s.name        = "roxml"
-  s.version     = "0.1.0"
+  s.name        = "representable"
+  s.version     = Representable::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Nick Sutterer"]
   s.email       = ["apotonick@gmail.com"]
-  s.homepage    = "http://cells.rubyforge.org"
-  s.summary     = %q{View Components for Rails.}
-  s.description = %q{Cells are view components for Rails. They are lightweight controllers, can be rendered in views and thus provide an elegant and fast way for encapsulation and component-orientation.}
+  s.homepage    = "http://representable.apotomo.de"
+  s.summary     = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties and compositions.}
+  s.description = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties and compositions.}
   
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
