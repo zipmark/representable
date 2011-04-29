@@ -1,6 +1,6 @@
 require 'bundler'
 Bundler.setup
 
-require 'roxml'
+require 'representable'
 require 'test/unit'
 require 'minitest/spec'

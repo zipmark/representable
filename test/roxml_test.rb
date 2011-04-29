@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RoxmlTest < MiniTest::Spec
   class Band
-    include ROXML
+    include Representable
     xml_accessor :name
   end
     
@@ -26,11 +26,11 @@ class RoxmlTest < MiniTest::Spec
   
   describe "#representation_name" do
     class SoundSystem
-      include ROXML
+      include Representable
     end
     
     class HardcoreBand
-      include ROXML
+      include Representable
     end
   
     class SoftcoreBand < HardcoreBand
@@ -50,7 +50,7 @@ class RoxmlTest < MiniTest::Spec
   
   describe "#definition_class" do
     it "returns Definition class" do
-      assert_equal ROXML::Definition, Band.definition_class
+      assert_equal Representable::Definition, Band.definition_class
     end
     
   end

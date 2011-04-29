@@ -1,4 +1,4 @@
-module ROXML
+module Representable
   class RequiredElementMissing < Exception # :nodoc:
   end
 

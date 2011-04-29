@@ -8,7 +8,7 @@ class Module
   end
 end
 
-module ROXML
+module Representable
   class ContradictoryNamespaces < StandardError
   end
   class Definition # :nodoc:

@@ -8,13 +8,13 @@ require 'active_support/core_ext/hash/reverse_merge.rb'
 require 'hooks/inheritable_attribute'
 
 
-require 'roxml/definition'
-require 'roxml/nokogiri_extensions'
-require 'roxml/references'
+require 'representable/definition'
+require 'representable/nokogiri_extensions'
+require 'representable/references'
 
-require 'roxml/xml'
+require 'representable/xml' # TODO: do that dynamically.
 
-module ROXML
+module Representable
   VERSION = '3.1.5'
   
   

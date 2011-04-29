@@ -1,4 +1,4 @@
-module ROXML
+module Representable
   module Xml
     module Declarations
       # Sets the name of the XML element that represents this class. Use this

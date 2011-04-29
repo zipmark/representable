@@ -2,16 +2,16 @@ require 'spec_helper'
 
 require 'test_xml/spec'
 
-describe ROXML, "#xml" do
+describe Representable, "#xml" do
   class Contributor
-    include ROXML
+    include Representable
 
     xml_accessor :role, :from => :attr
     xml_accessor :name
   end
   
   class Band
-    include ROXML
+    include Representable
     xml_accessor :name
   end
   
@@ -34,7 +34,7 @@ describe ROXML, "#xml" do
   
   describe ":from => @rel" do
     class Link
-      include ROXML
+      include Representable
       xml_accessor :href,   :from => "@href"
       xml_accessor :title,  :from => "@title"
     end
@@ -62,7 +62,7 @@ describe ROXML, "#xml" do
   
   describe ":as => Item" do
     class Albumy
-      include ROXML
+      include Representable
       xml_accessor :band, :as => Band
       xml_accessor :label, :as => Label
     end
@@ -107,7 +107,7 @@ describe ROXML, "#xml" do
   describe "collections" do
     context ":as => [Item]" do
       class Book
-        include ROXML
+        include Representable
 
 
         xml_accessor :contributors, :as => [Contributor], :tag => :contributor
@@ -150,7 +150,7 @@ describe ROXML, "#xml" do
     
     context ":as => []" do
       class Album
-        include ROXML
+        include Representable
         
         xml_accessor :songs, :as => [], :tag => :song
       end
@@ -173,7 +173,7 @@ describe ROXML, "#xml" do
   describe "Reference" do
     context "ObjectRef with []" do
       subject do
-        ROXML::XMLObjectRef.new(ROXML::Definition.new(:songs, :as => [Album]))
+        Representable::XMLObjectRef.new(Representable::Definition.new(:songs, :as => [Album]))
       end
       
       it "responds to #default" do
@@ -186,7 +186,7 @@ describe ROXML, "#xml" do
     
     context "TextRef#value_in" do
       subject do
-        ROXML::XMLTextRef.new(ROXML::Definition.new(:song))
+        Representable::XMLTextRef.new(Representable::Definition.new(:song))
       end
       
       it "returns found value" do
@@ -200,19 +200,19 @@ describe ROXML, "#xml" do
   describe "Definition" do
     context "generic API" do
       subject do
-        ROXML::Definition.new(:songs)
+        Representable::Definition.new(:songs)
       end
       
       it "responds to #typed?" do
         subject.typed? == false
-        ROXML::Definition.new(:songs, :as => Album).typed? == true
-        ROXML::Definition.new(:songs, :as => [Album]).typed? == true
+        Representable::Definition.new(:songs, :as => Album).typed? == true
+        Representable::Definition.new(:songs, :as => [Album]).typed? == true
       end
       
       
       context "#apply" do
         subject do
-          ROXML::Definition.new(:song)
+          Representable::Definition.new(:song)
         end
         
         it "works with a single item" do
@@ -220,12 +220,12 @@ describe ROXML, "#xml" do
         end
         
         it "works with collection" do
-          d = ROXML::Definition.new(:song, :as => [])
+          d = Representable::Definition.new(:song, :as => [])
           d.apply([1,2,3]) { |v| v+1 }.should == [2,3,4]
         end
         
         it "skips with collection and nil" do
-          d = ROXML::Definition.new(:song, :as => [])
+          d = Representable::Definition.new(:song, :as => [])
           d.apply(nil) { |v| v+1 }.should == nil
         end
         
@@ -234,7 +234,7 @@ describe ROXML, "#xml" do
     
     context ":as => []" do
       subject do
-        ROXML::Definition.new(:songs, :as => [], :tag => :song)
+        Representable::Definition.new(:songs, :as => [], :tag => :song)
       end
       
       it "responds to #accessor" do
@@ -266,7 +266,7 @@ describe ROXML, "#xml" do
     context ":as => [Item]" do
       subject do
         class Song; end
-        ROXML::Definition.new(:songs, :as => [Song])
+        Representable::Definition.new(:songs, :as => [Song])
       end
       
       it "responds to #sought_type" do
@@ -278,7 +278,7 @@ describe ROXML, "#xml" do
     context ":as => Item" do
       subject do
         class Song; end
-        ROXML::Definition.new(:songs, :as => Song)
+        Representable::Definition.new(:songs, :as => Song)
       end
       
       it "responds to #sought_type" do
