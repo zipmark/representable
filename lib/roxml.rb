@@ -27,8 +27,8 @@ module ROXML
       attr_accessor :roxml_references
       
       extend Hooks::InheritableAttribute
-      inheritable_attr :roxml_attrs
-      self.roxml_attrs = []
+      inheritable_attr :representable_attrs
+      self.representable_attrs = []
       
       inheritable_attr :explicit_representation_name  # FIXME: move to Accessors.
       
@@ -204,11 +204,11 @@ module ROXML
       # [:cdata] true for values which should be input from or output as cdata elements
       # [:to_xml] this proc is applied to the attributes value outputting the instance via #to_xml
       #
-      def xml_attr(*syms, &block)
+      def representable_attr(*syms, &block)
         opts = syms.extract_options!
         syms.map do |sym|
           definition_class.new(sym, opts, &block).tap do |attr|
-            roxml_attrs << attr
+            representable_attrs << attr
           end
         end
       end
@@ -218,8 +218,8 @@ module ROXML
       # Note that while xml_reader does not create a setter for this attribute,
       # its value can be modified indirectly via methods.  For more complete
       # protection, consider the :frozen option.
-      def xml_reader(*syms, &block)
-        xml_attr(*syms, &block).each do |attr|
+      def representable_reader(*syms, &block)
+        representable_attr(*syms, &block).each do |attr|
           add_reader(attr)
         end
       end
@@ -229,8 +229,8 @@ module ROXML
       # Note that while xml_accessor does create a setter for this attribute,
       # you can use the :frozen option to prevent its value from being
       # modified indirectly via methods.
-      def xml_accessor(*syms, &block)
-        xml_attr(*syms, &block).each do |attr|
+      def representable_accessor(*syms, &block)
+        representable_attr(*syms, &block).each do |attr|
           add_reader(attr)
           attr_writer(attr.accessor)
         end

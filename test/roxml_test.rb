@@ -6,21 +6,21 @@ class RoxmlTest < MiniTest::Spec
     xml_accessor :name
   end
     
-  describe "#roxml_attrs" do
+  describe "#representable_attrs" do
     
     class PunkBand < Band
       xml_accessor :street_cred
     end
     
-    it "responds to #roxml_attrs" do
-      assert_equal 1, Band.roxml_attrs.size
-      assert_equal "name", Band.roxml_attrs.first.name
+    it "responds to #representable_attrs" do
+      assert_equal 1, Band.representable_attrs.size
+      assert_equal "name", Band.representable_attrs.first.name
     end
     
     it "inherits correctly" do
-      assert_equal 2, PunkBand.roxml_attrs.size
-      assert_equal "name", PunkBand.roxml_attrs.first.name
-      assert_equal "street_cred", PunkBand.roxml_attrs.last.name
+      assert_equal 2, PunkBand.representable_attrs.size
+      assert_equal "name", PunkBand.representable_attrs.first.name
+      assert_equal "street_cred", PunkBand.representable_attrs.last.name
     end
   end
   

@@ -13,6 +13,11 @@ module ROXML
       def xml_name(name)
         self.explicit_representation_name = name
       end
+      
+      def xml_accessor(*args) # TODO: remove me, just for back-compat.
+        representable_accessor(*args)
+      end
+      
     end
     
     module ClassMethods
@@ -39,7 +44,7 @@ module ROXML
         xml = Nokogiri::XML::Node.from(data)
 
         create_from_xml(*args).tap do |inst|
-          refs = roxml_attrs.map {|attr| attr.to_ref }
+          refs = representable_attrs.map {|attr| attr.to_ref }
           
           refs.each do |ref|
             value = ref.value_in(xml)
@@ -61,7 +66,7 @@ module ROXML
         params.reverse_merge!(:name => self.class.representation_name)
         
         Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-          refs = self.class.roxml_attrs.map {|attr| attr.to_ref }
+          refs = self.class.representable_attrs.map {|attr| attr.to_ref }
           
           refs.each do |ref|
             value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.

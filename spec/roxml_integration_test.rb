@@ -85,8 +85,6 @@ describe ROXML, "#xml" do
         album = Albumy.new
         album.band = band
         
-        puts album.class.roxml_attrs.inspect
-        
         album.to_xml.to_s.should equal_xml %{<album>
          <band>
            <name>Bad Religion</name>
