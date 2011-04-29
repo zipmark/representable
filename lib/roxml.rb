@@ -12,61 +12,35 @@ require 'roxml/definition'
 require 'roxml/nokogiri_extensions'
 require 'roxml/references'
 
+require 'roxml/xml'
+
 module ROXML
   VERSION = '3.1.5'
-
+  
+  
   def self.included(base)
     base.class_eval do
-      extend  ClassMethods::Accessors,
-              ClassMethods::Declarations,
-              ClassMethods::Operations
-      include InstanceMethods
+      extend  ClassMethods::Accessors, ClassMethods::Declarations
+              
+      
 
       attr_accessor :roxml_references
       
       extend Hooks::InheritableAttribute
       inheritable_attr :roxml_attrs
       self.roxml_attrs = []
-    end
-  end
-
-  module InstanceMethods # :nodoc:
-    # Returns an XML object representing this object
-    def to_xml(params={})
-      params.reverse_merge!(:name => self.class.tag_name)
       
-      Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-        refs = self.class.roxml_attrs.map {|attr| attr.to_ref }
-        
-        refs.each do |ref|
-          value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
-          ref.update_xml(root, value) if value
-        end
-      end
+      inheritable_attr :explicit_representation_name  # FIXME: move to Accessors.
+      
+      
+      extend Xml::Declarations  # DISCUSS: do that dynamically?
+      extend Xml::ClassMethods  # DISCUSS: do that dynamically?
+      include Xml::InstanceMethods  # DISCUSS: do that dynamically?
     end
   end
-
-  # This class defines the annotation methods that are mixed into your
-  # Ruby classes for XML mapping information and behavior.
-  #
-  # See xml_name, xml_initialize, xml, xml_reader and xml_accessor for
-  # available annotations.
-  #
+  
   module ClassMethods # :nodoc:
     module Declarations
-      # Sets the name of the XML element that represents this class. Use this
-      # to override the default lowercase class name.
-      #
-      # Example:
-      #  class BookWithPublisher
-      #   xml_name :book
-      #  end
-      #
-      # Without the xml_name annotation, the XML mapped tag would have been "bookwithpublisher".
-      def xml_name(name)
-        @roxml_tag_name = name
-      end
-
       def definition_class
         Definition
       end
@@ -271,60 +245,12 @@ module ROXML
     end
 
     module Accessors
-      # Returns the tag name (also known as xml_name) of the class.
-      # If no tag name is set with xml_name method, returns default class name
-      # in lowercase.
-      def tag_name
-        return roxml_tag_name if roxml_tag_name
-        
-        name.split('::').last.underscore
-      end
-
-      def roxml_tag_name # :nodoc:
-        @roxml_tag_name || begin  # FIXME: test, inherit.
-          superclass.roxml_tag_name if superclass.respond_to?(:roxml_tag_name)
-        end
-      end
-
-    end
-
-    module Operations
-      #
-      # Creates a new Ruby object from XML using mapping information
-      # annotated in the class.
-      #
-      # The input data is either an XML::Node, String, Pathname, or File representing
-      # the XML document.
-      #
-      # Example
-      #  book = Book.from_xml(File.read("book.xml"))
-      # or
-      #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
-      #
-      # _initialization_args_ passed into from_xml will be passed into
-      # the object's .new, prior to populating the xml_attrs.
-      #
-      # After the instatiation and xml population
-      #
-      # See also: xml_initialize
-      #
-      def from_xml(data, *args)
-        xml = Nokogiri::XML::Node.from(data)
-
-        create_from_xml(*args).tap do |inst|
-          refs = roxml_attrs.map {|attr| attr.to_ref }
-          
-          refs.each do |ref|
-            value = ref.value_in(xml)
-            
-            inst.send(ref.definition.setter, value)
-          end
-        end
+      def representation_name=(name)
+        self.explicit_representation_name = name
       end
       
-    private
-      def create_from_xml(*args)
-        new(*args)
+      def representation_name
+        explicit_representation_name or name.split('::').last.underscore
       end
     end
   end
