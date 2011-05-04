@@ -3,7 +3,7 @@ require 'test_helper'
 class ReferenceTest < MiniTest::Spec
   describe "ObjectRef with []" do
     before do
-      @ref = Representable::XMLObjectRef.new(Representable::Definition.new(:songs, :as => [Hash]))
+      @ref = Representable::Xml::ObjectBinding.new(Representable::Definition.new(:songs, :as => [Hash]))
     end
       
     it "responds to #default" do
@@ -16,7 +16,7 @@ class ReferenceTest < MiniTest::Spec
     def parse_xml(xml); Nokogiri::XML::Node.from(xml); end
     
     before do
-      @ref = Representable::XMLTextRef.new(Representable::Definition.new(:song))
+      @ref = Representable::Xml::TextBinding.new(Representable::Definition.new(:song))
     end
     
     it "returns found value" do

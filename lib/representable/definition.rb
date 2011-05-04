@@ -65,7 +65,6 @@ module Representable
       sought_type.is_a?(Class)
     end
     
-    
     def name?
       @name == '*'
     end
@@ -87,16 +86,6 @@ module Representable
       end
       
       value
-    end
-    
-    def to_ref
-      case sought_type
-      when :attr          then XMLAttributeRef
-      when :text          then XMLTextRef
-      when :namespace     then XMLNameSpaceRef
-      when Symbol         then raise ArgumentError, "Invalid type argument #{sought_type}"
-      else                     XMLObjectRef
-      end.new(self)
     end
 
   private

@@ -15,15 +15,11 @@ require 'representable/references'
 require 'representable/xml' # TODO: do that dynamically.
 
 module Representable
-  VERSION = '3.1.5'
-  
-  
   def self.included(base)
     base.class_eval do
       extend  ClassMethods::Accessors, ClassMethods::Declarations
-              
       
-
+      
       attr_accessor :roxml_references
       
       extend Hooks::InheritableAttribute

@@ -1,5 +1,14 @@
 module Representable
   module Xml
+    def self.binding_for_definition(definition)
+      case definition.sought_type
+      when :attr          then AttributeBinding
+      when :text          then TextBinding
+      when :namespace     then NamespaceBinding
+      else                     ObjectBinding
+      end.new(definition)
+    end
+    
     module Declarations
       # Sets the name of the XML element that represents this class. Use this
       # to override the default lowercase class name.
@@ -17,34 +26,18 @@ module Representable
       def xml_accessor(*args) # TODO: remove me, just for back-compat.
         representable_accessor(*args)
       end
-      
     end
     
     module ClassMethods
+      # Creates a new Ruby object from XML using mapping information declared in the class.
       #
-      # Creates a new Ruby object from XML using mapping information
-      # annotated in the class.
-      #
-      # The input data is either an XML::Node, String, Pathname, or File representing
-      # the XML document.
-      #
-      # Example
-      #  book = Book.from_xml(File.read("book.xml"))
-      # or
+      # Example:
       #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
-      #
-      # _initialization_args_ passed into from_xml will be passed into
-      # the object's .new, prior to populating the xml_attrs.
-      #
-      # After the instatiation and xml population
-      #
-      # See also: xml_initialize
-      #
       def from_xml(data, *args)
         xml = Nokogiri::XML::Node.from(data)
 
         create_from_xml(*args).tap do |inst|
-          refs = representable_attrs.map {|attr| attr.to_ref }
+          refs = representable_attrs.map {|attr| Xml.binding_for_definition(attr) }
           
           refs.each do |ref|
             value = ref.value_in(xml)
@@ -61,12 +54,12 @@ module Representable
     end
     
     module InstanceMethods # :nodoc:
-      # Returns an XML object representing this object
+      # Returns a Nokogiri::XML object representing this object.
       def to_xml(params={})
         params.reverse_merge!(:name => self.class.representation_name)
         
         Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-          refs = self.class.representable_attrs.map {|attr| attr.to_ref }
+          refs = self.class.representable_attrs.map {|attr| Xml.binding_for_definition(attr) }
           
           refs.each do |ref|
             value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
