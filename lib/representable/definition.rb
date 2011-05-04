@@ -43,7 +43,7 @@ module Representable
       elsif opts[:from] == :namespace
         opts[:from] = '*'
         @sought_type = :namespace
-      elsif opts[:from].to_s.starts_with?('@')
+      elsif opts[:from].to_s =~ /^@/  # FIXME: move me to xml.
         @sought_type = :attr
         opts[:from].sub!('@', '')
       end
