@@ -1,12 +1,12 @@
 module Representable
   module Xml
+    BINDING_FOR_TYPE = {
+      :attr     => AttributeBinding,
+      :text     => TextBinding,
+      :namespace=> NamespaceBinding,
+    }
     def self.binding_for_definition(definition)
-      case definition.sought_type
-      when :attr          then AttributeBinding
-      when :text          then TextBinding
-      when :namespace     then NamespaceBinding
-      else                     ObjectBinding
-      end.new(definition)
+      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
     
     module Declarations
