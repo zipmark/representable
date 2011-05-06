@@ -1,5 +1,5 @@
 require 'representable'
-require 'representable/bindings/xml'
+require 'representable/bindings/xml_bindings'
 
 module Representable
   module Xml
@@ -17,9 +17,9 @@ module Representable
       base.class_eval do
         include Representable
         include Xml::InstanceMethods
+        extend Xml::Declarations
+        extend Xml::ClassMethods
       end
-      base.extend Xml::Declarations  # DISCUSS: do that dynamically?
-      base.extend Xml::ClassMethods  # DISCUSS: do that dynamically?
     end
     
     
