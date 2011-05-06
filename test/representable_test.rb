@@ -1,26 +1,14 @@
 require 'test_helper'
 
-class Band
-  include Representable
-  xml_accessor :name
-  
-  def initialize(name=nil)
-    name and self.name = name
-  end
-end
-
-class Label
-  def to_xml
-    "<label>Fat Wreck</label>"
-  end
-end
-  
-  
 class RepresentableTest < MiniTest::Spec
   describe "#representable_attrs" do
+    class Band
+      include Representable
+      representable_accessor :name
+    end
     
     class PunkBand < Band
-      xml_accessor :street_cred
+      representable_accessor :street_cred
     end
     
     it "responds to #representable_attrs" do

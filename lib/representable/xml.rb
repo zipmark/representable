@@ -1,3 +1,6 @@
+require 'representable'
+require 'representable/bindings/xml'
+
 module Representable
   module Xml
     BINDING_FOR_TYPE = {
@@ -5,9 +8,20 @@ module Representable
       :text     => TextBinding,
       :namespace=> NamespaceBinding,
     }
+    
     def self.binding_for_definition(definition)
       (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
+    
+    def self.included(base)
+      base.class_eval do
+        include Representable
+        include Xml::InstanceMethods
+      end
+      base.extend Xml::Declarations  # DISCUSS: do that dynamically?
+      base.extend Xml::ClassMethods  # DISCUSS: do that dynamically?
+    end
+    
     
     module Declarations
       # Sets the name of the XML element that represents this class. Use this
@@ -28,7 +42,15 @@ module Representable
       end
     end
     
+    class Definition < Representable::Definition
+      # FIXME: extract xml-specific from Definition.
+    end
+    
     module ClassMethods
+    def definition_class
+      Definition
+    end
+    
       # Creates a new Ruby object from XML using mapping information declared in the class.
       #
       # Example:

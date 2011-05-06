@@ -9,9 +9,8 @@ require 'hooks/inheritable_attribute'
 
 require 'representable/definition'
 require 'representable/nokogiri_extensions'
-require 'representable/references'
 
-require 'representable/xml' # TODO: do that dynamically.
+#require 'representable/xml' # TODO: do that dynamically.
 
 module Representable
   def self.included(base)
@@ -19,18 +18,16 @@ module Representable
       extend  ClassMethods::Accessors, ClassMethods::Declarations
       
       
-      attr_accessor :roxml_references
-      
       extend Hooks::InheritableAttribute
       inheritable_attr :representable_attrs
       self.representable_attrs = []
       
       inheritable_attr :explicit_representation_name  # FIXME: move to Accessors.
       
-      
-      extend Xml::Declarations  # DISCUSS: do that dynamically?
-      extend Xml::ClassMethods  # DISCUSS: do that dynamically?
-      include Xml::InstanceMethods  # DISCUSS: do that dynamically?
+      #
+      #extend Xml::Declarations  # DISCUSS: do that dynamically?
+      #extend Xml::ClassMethods  # DISCUSS: do that dynamically?
+      #include Xml::InstanceMethods  # DISCUSS: do that dynamically?
     end
   end
   

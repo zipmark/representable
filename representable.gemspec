@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "hooks"
   s.add_dependency "nokogiri"
   s.add_dependency "i18n"
+  s.add_dependency "json"
   
   s.add_development_dependency "rspec"
   s.add_development_dependency "test_xml"
