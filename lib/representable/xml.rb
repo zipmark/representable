@@ -2,7 +2,7 @@ require 'representable'
 require 'representable/bindings/xml_bindings'
 
 module Representable
-  module Xml
+  module XML
     BINDING_FOR_TYPE = {
       :attr     => AttributeBinding,
       :text     => TextBinding,
@@ -16,9 +16,9 @@ module Representable
     def self.included(base)
       base.class_eval do
         include Representable
-        include Xml::InstanceMethods
-        extend Xml::Declarations
-        extend Xml::ClassMethods
+        include XML::InstanceMethods
+        extend XML::Declarations
+        extend XML::ClassMethods
       end
     end
     
@@ -59,7 +59,7 @@ module Representable
         xml = Nokogiri::XML::Node.from(data)
 
         create_from_xml(*args).tap do |inst|
-          refs = representable_attrs.map {|attr| Xml.binding_for_definition(attr) }
+          refs = representable_attrs.map {|attr| XML.binding_for_definition(attr) }
           
           refs.each do |ref|
             value = ref.value_in(xml)
@@ -81,7 +81,7 @@ module Representable
         params.reverse_merge!(:name => self.class.representation_name)
         
         Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-          refs = self.class.representable_attrs.map {|attr| Xml.binding_for_definition(attr) }
+          refs = self.class.representable_attrs.map {|attr| XML.binding_for_definition(attr) }
           
           refs.each do |ref|
             value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.

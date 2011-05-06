@@ -3,17 +3,17 @@ require 'representable/json'
 
 module JsonTest
   class APITest < MiniTest::Spec
-    Json = Representable::Json
+    Json = Representable::JSON
     Def = Representable::Definition
     
     describe "Xml module" do
       describe "#binding_for_definition" do
         it "returns ObjectBinding" do
-          assert_kind_of Json::ObjectBinding, Json.binding_for_definition(Def.new(:band, :as => Hash))
+          assert_kind_of JSON::ObjectBinding, Json.binding_for_definition(Def.new(:band, :as => Hash))
         end
         
         it "returns TextBinding" do
-          assert_kind_of Json::TextBinding, Json.binding_for_definition(Def.new(:band))
+          assert_kind_of JSON::TextBinding, JSON.binding_for_definition(Def.new(:band))
         end
       end
     end
@@ -22,7 +22,7 @@ module JsonTest
   class PropertyTest < MiniTest::Spec
     describe "property :name" do
       class Band
-        include Representable::Json
+        include Representable::JSON
         json_accessor :name
       end
       
@@ -41,7 +41,7 @@ module JsonTest
     
     describe "property :name, :as => []" do
       class CD
-        include Representable::Json
+        include Representable::JSON
         json_accessor :songs, :as => []
       end
       
@@ -62,12 +62,12 @@ module JsonTest
   class TypedPropertyTest < MiniTest::Spec
     describe ":as => Item" do
       class Label
-        include Representable::Json
+        include Representable::JSON
         json_accessor :name
       end
       
       class Album
-        include Representable::Json
+        include Representable::JSON
         json_accessor :label, :as => Label
       end
       
@@ -91,7 +91,7 @@ module JsonTest
   class CollectionTest < MiniTest::Spec
     describe ":as => [Band]" do
       class Band
-        include Representable::Json
+        include Representable::JSON
         json_accessor :name
         
         def initialize(name="")
@@ -100,7 +100,7 @@ module JsonTest
       end
       
       class Compilation
-        include Representable::Json
+        include Representable::JSON
         json_accessor :bands, :as => [Band]
       end
       

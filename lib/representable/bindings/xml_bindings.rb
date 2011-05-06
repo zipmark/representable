@@ -1,5 +1,5 @@
 module Representable
-  module Xml
+  module XML
     class Binding
       attr_reader :definition
       delegate :required?, :array?, :accessor, :wrapper, :name, :to => :definition

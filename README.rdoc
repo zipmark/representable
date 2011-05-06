@@ -85,7 +85,7 @@ It comes with parser and renderer for XML and JSON and can easily be extended (W
 
 == Copyright
 
-Representable is a simplified fork of the ROXML gem.
+Representable is a simplified fork of the ROXML gem. Big thanks to Ben Woosley for his work.
 
 Copyright (c) 2011 Nick Sutterer <apotonick@gmail.com>
 Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.

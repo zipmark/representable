@@ -1,5 +1,5 @@
 module Representable
-  module Json
+  module JSON
     class Binding
       attr_reader :definition
       delegate :required?, :array?, :accessor, :wrapper, :name, :to => :definition

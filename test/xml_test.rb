@@ -2,7 +2,7 @@ require 'test_helper'
 require 'representable/xml'
 
 class Band
-  include Representable::Xml
+  include Representable::XML
   representable_accessor :name
   
   def initialize(name=nil)
@@ -18,27 +18,27 @@ end
   
   
 class XmlTest < MiniTest::Spec
-  Xml = Representable::Xml
+  XML = Representable::XML
   Def = Representable::Definition
   
   describe "Xml module" do
     class Band
-      include Representable::Xml
+      include Representable::XML
       xml_accessor :href,   :from => "@href"
       xml_accessor :title,  :from => "@title"
     end
     
     it "#definition_class returns Definition class" do
-      assert_equal Xml::Definition, Band.definition_class
+      assert_equal XML::Definition, Band.definition_class
     end
   
     describe "#binding_for_definition" do
       it "returns AttributeBinding" do
-        assert_kind_of Xml::AttributeBinding, Xml.binding_for_definition(Def.new(:band, :from => "@band"))
+        assert_kind_of XML::AttributeBinding, XML.binding_for_definition(Def.new(:band, :from => "@band"))
       end
       
       it "returns ObjectBinding" do
-        assert_kind_of Xml::ObjectBinding, Xml.binding_for_definition(Def.new(:band, :as => Hash))
+        assert_kind_of XML::ObjectBinding, XML.binding_for_definition(Def.new(:band, :as => Hash))
       end
       
       #it "returns NamespaceBinding" do
@@ -46,7 +46,7 @@ class XmlTest < MiniTest::Spec
       #end
       
       it "returns TextBinding" do
-        assert_kind_of Xml::TextBinding, Xml.binding_for_definition(Def.new(:band, :from => :content))
+        assert_kind_of XML::TextBinding, XML.binding_for_definition(Def.new(:band, :from => :content))
       end
     end
   end
@@ -55,7 +55,7 @@ end
 class AttributesTest < MiniTest::Spec
   describe ":from => @rel" do
     class Link
-      include Representable::Xml
+      include Representable::XML
       xml_accessor :href,   :from => "@href"
       xml_accessor :title,  :from => "@title"
     end
@@ -80,7 +80,7 @@ end
 class TypedPropertyTest < MiniTest::Spec
   describe ":as => Item" do
     class Album
-      include Representable::Xml
+      include Representable::XML
       xml_accessor :band, :as => Band
       xml_accessor :label, :as => Label
     end
@@ -124,7 +124,7 @@ end
 class CollectionTest < MiniTest::Spec
   describe ":as => [Band], :tag => :band" do
     class Compilation
-      include Representable::Xml
+      include Representable::XML
       xml_accessor :bands, :as => [Band], :tag => :band
     end
     
@@ -162,7 +162,7 @@ class CollectionTest < MiniTest::Spec
     
   describe ":as => []" do
     class Album
-      include Representable::Xml
+      include Representable::XML
       xml_accessor :songs, :as => [], :tag => :song
     end
 
