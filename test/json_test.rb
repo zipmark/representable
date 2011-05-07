@@ -9,11 +9,11 @@ module JsonTest
     describe "Xml module" do
       describe "#binding_for_definition" do
         it "returns ObjectBinding" do
-          assert_kind_of JSON::ObjectBinding, Json.binding_for_definition(Def.new(:band, :as => Hash))
+          assert_kind_of Json::ObjectBinding, Json.binding_for_definition(Def.new(:band, :as => Hash))
         end
         
         it "returns TextBinding" do
-          assert_kind_of JSON::TextBinding, JSON.binding_for_definition(Def.new(:band))
+          assert_kind_of Json::TextBinding, Json.binding_for_definition(Def.new(:band))
         end
       end
     end

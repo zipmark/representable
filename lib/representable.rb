@@ -17,17 +17,11 @@ module Representable
     base.class_eval do
       extend  ClassMethods::Accessors, ClassMethods::Declarations
       
-      
       extend Hooks::InheritableAttribute
       inheritable_attr :representable_attrs
       self.representable_attrs = []
       
       inheritable_attr :explicit_representation_name  # FIXME: move to Accessors.
-      
-      #
-      #extend Xml::Declarations  # DISCUSS: do that dynamically?
-      #extend Xml::ClassMethods  # DISCUSS: do that dynamically?
-      #include Xml::InstanceMethods  # DISCUSS: do that dynamically?
     end
   end
   
