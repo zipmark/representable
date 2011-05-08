@@ -28,14 +28,14 @@ Now, parsing manually is simple, but error-prone as well. In the end, you have a
   class Order
     include Representable::XML
     
-    property :id
-    collection :items, :tag => :item, :with => Item
+    representable_property :id
+    representable_collection :items, :tag => :item, :as => Item
   end
   
   class Item
     include Representable::XML
     
-    property :name
+    representable_property :name
   end
     
 == Consuming Representations
