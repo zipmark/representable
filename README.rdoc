@@ -23,7 +23,7 @@ When writing a REST service you'd have to parse and extract data from an incomin
     </item>
   </order>  
 
-Now, parsing manually is simple, but error-prone as well. In the end, you have a nested hash data structure. Try this with Representable.
+Now, parsing manually starts simple but gets complex soon. In the end, you have a nested hash data structure. Try this with Representable.
 
   class Order
     include Representable::XML
@@ -78,9 +78,9 @@ Representable makes working with representations extremely easy and testable.
 
 == More
 
-Representable was written with REST representations in mind. It is a generic module for working with documents. If you do consider using it for a REST project, check out the {Roar framework}[http://github.com/apotonick/roar], which comes with representers, built-in hypermedia support and more.
+Representable was written with REST representations in mind. However, it is a generic module for working with documents. If you do consider using it for a REST project, check out the {Roar framework}[http://github.com/apotonick/roar], which comes with representers, built-in hypermedia support and more. It internally uses Representable and streamlines the process for building hypermedia-driven REST applications.
 
-It comes with parser and renderer for XML and JSON and can easily be extended (Warning: internal API still changing).
+Representable comes with parser and renderer for XML and JSON and can easily be extended (Warning: internal API still changing).
 
 
 == Copyright
