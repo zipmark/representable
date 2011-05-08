@@ -23,7 +23,7 @@ module JsonTest
     describe "property :name" do
       class Band
         include Representable::JSON
-        json_accessor :name
+        representable_property :name
       end
       
       it "#from_json creates correct accessors" do
@@ -42,7 +42,7 @@ module JsonTest
     describe "property :name, :as => []" do
       class CD
         include Representable::JSON
-        json_accessor :songs, :as => []
+        representable_property :songs, :as => []
       end
       
       it "#from_json creates correct accessors" do
@@ -63,12 +63,12 @@ module JsonTest
     describe ":as => Item" do
       class Label
         include Representable::JSON
-        json_accessor :name
+        representable_property :name
       end
       
       class Album
         include Representable::JSON
-        json_accessor :label, :as => Label
+        representable_property :label, :as => Label
       end
       
       it "#from_json creates one Item instance" do
@@ -92,7 +92,7 @@ module JsonTest
     describe ":as => [Band]" do
       class Band
         include Representable::JSON
-        json_accessor :name
+        representable_property :name
         
         def initialize(name="")
           self.name = name
@@ -101,7 +101,7 @@ module JsonTest
       
       class Compilation
         include Representable::JSON
-        json_accessor :bands, :as => [Band]
+        representable_property :bands, :as => [Band]
       end
       
       describe "#from_json" do

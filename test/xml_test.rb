@@ -3,7 +3,7 @@ require 'representable/xml'
 
 class Band
   include Representable::XML
-  representable_accessor :name
+  representable_property :name
   
   def initialize(name=nil)
     name and self.name = name
@@ -24,8 +24,8 @@ class XmlTest < MiniTest::Spec
   describe "Xml module" do
     class Band
       include Representable::XML
-      xml_accessor :href,   :from => "@href"
-      xml_accessor :title,  :from => "@title"
+      representable_property :href,   :from => "@href"
+      representable_property :title,  :from => "@title"
     end
     
     it "#definition_class returns Definition class" do
@@ -56,8 +56,8 @@ class AttributesTest < MiniTest::Spec
   describe ":from => @rel" do
     class Link
       include Representable::XML
-      xml_accessor :href,   :from => "@href"
-      xml_accessor :title,  :from => "@title"
+      representable_property :href,   :from => "@href"
+      representable_property :title,  :from => "@title"
     end
     
     it "#from_xml creates correct accessors" do
@@ -81,8 +81,8 @@ class TypedPropertyTest < MiniTest::Spec
   describe ":as => Item" do
     class Album
       include Representable::XML
-      xml_accessor :band, :as => Band
-      xml_accessor :label, :as => Label
+      representable_property :band, :as => Band
+      representable_property :label, :as => Label
     end
     
     it "#from_xml creates one Item instance" do
@@ -125,7 +125,7 @@ class CollectionTest < MiniTest::Spec
   describe ":as => [Band], :tag => :band" do
     class Compilation
       include Representable::XML
-      xml_accessor :bands, :as => [Band], :tag => :band
+      representable_property :bands, :as => [Band], :tag => :band
     end
     
     describe "#from_xml" do
@@ -163,7 +163,7 @@ class CollectionTest < MiniTest::Spec
   describe ":as => []" do
     class Album
       include Representable::XML
-      xml_accessor :songs, :as => [], :tag => :song
+      representable_property :songs, :as => [], :tag => :song
     end
 
     it "collects untyped items" do

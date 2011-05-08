@@ -4,11 +4,11 @@ class RepresentableTest < MiniTest::Spec
   describe "#representable_attrs" do
     class Band
       include Representable
-      representable_accessor :name
+      representable_property :name
     end
     
     class PunkBand < Band
-      representable_accessor :street_cred
+      representable_property :street_cred
     end
     
     it "responds to #representable_attrs" do
@@ -21,6 +21,13 @@ class RepresentableTest < MiniTest::Spec
       assert_equal "name", PunkBand.representable_attrs.first.name
       assert_equal "street_cred", PunkBand.representable_attrs.last.name
     end
+    
+    it "creates accessors for the attribute" do
+      @band = PunkBand.new
+      assert @band.name = "Bad Religion"
+      assert_equal "Bad Religion", @band.name
+    end
+    
   end
   
   describe "#representation_name" do

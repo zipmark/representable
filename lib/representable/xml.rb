@@ -16,29 +16,8 @@ module Representable
     def self.included(base)
       base.class_eval do
         include Representable
-        include XML::InstanceMethods
-        extend XML::Declarations
-        extend XML::ClassMethods
-      end
-    end
-    
-    
-    module Declarations
-      # Sets the name of the XML element that represents this class. Use this
-      # to override the default lowercase class name.
-      #
-      # Example:
-      #  class BookWithPublisher
-      #   xml_name :book
-      #  end
-      #
-      # Without the xml_name annotation, the XML mapped tag would have been "bookwithpublisher".
-      def xml_name(name)
-        self.explicit_representation_name = name
-      end
-      
-      def xml_accessor(*args) # TODO: remove me, just for back-compat.
-        representable_accessor(*args)
+        include InstanceMethods
+        extend ClassMethods
       end
     end
     

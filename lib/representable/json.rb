@@ -15,14 +15,7 @@ module Representable
         include Representable
         include InstanceMethods
       end
-      base.extend Declarations  # DISCUSS: do that dynamically?
       base.extend ClassMethods  # DISCUSS: do that dynamically?
-    end
-    
-    module Declarations
-      def json_accessor(*args) # TODO: remove me, just for back-compat.
-        representable_accessor(*args)
-      end
     end
     
     module ClassMethods

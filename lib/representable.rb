@@ -1,6 +1,5 @@
 require 'active_support'
 require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/array/extract_options'
 require 'active_support/core_ext/string/inflections.rb'
 require 'active_support/core_ext/hash/reverse_merge.rb'
 
@@ -190,39 +189,25 @@ module Representable
       # [:cdata] true for values which should be input from or output as cdata elements
       # [:to_xml] this proc is applied to the attributes value outputting the instance via #to_xml
       #
-      def representable_attr(*syms, &block)
-        opts = syms.extract_options!
-        syms.map do |sym|
-          definition_class.new(sym, opts, &block).tap do |attr|
-            representable_attrs << attr
-          end
+      def representable_property(*args) # TODO: make it accept 1-n props.
+        attr = representable_attr(*args)
+        add_reader(attr)
+        attr_writer(attr.accessor)
+      end
+      
+    private
+      def representable_attr(name, options={})
+        definition_class.new(name, options).tap do |attr|
+          representable_attrs << attr
         end
       end
-
-      # Declares a read-only xml reference. See xml_attr for details.
-      #
-      # Note that while xml_reader does not create a setter for this attribute,
-      # its value can be modified indirectly via methods.  For more complete
-      # protection, consider the :frozen option.
+      
       def representable_reader(*syms, &block)
         representable_attr(*syms, &block).each do |attr|
           add_reader(attr)
         end
       end
-
-      # Declares a writable xml reference. See xml_attr for details.
-      #
-      # Note that while xml_accessor does create a setter for this attribute,
-      # you can use the :frozen option to prevent its value from being
-      # modified indirectly via methods.
-      def representable_accessor(*syms, &block)
-        representable_attr(*syms, &block).each do |attr|
-          add_reader(attr)
-          attr_writer(attr.accessor)
-        end
-      end
-
-    private
+      
       def add_reader(attr)
         define_method(attr.accessor) do
           instance_variable_get(attr.instance_variable_name)
