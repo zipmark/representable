@@ -125,8 +125,20 @@ class CollectionTest < MiniTest::Spec
   describe ":as => [Band], :tag => :band" do
     class Compilation
       include Representable::XML
-      representable_property :bands, :as => [Band], :tag => :band
+      representable_collection :bands, :as => Band, :tag => :band
     end
+    
+    describe "#representable_collection" do
+      it "declares a collection" do
+        assert Compilation.representable_attrs.first.array?
+      end
+      
+      it "accepts :tag" do
+        assert_equal "band", Compilation.representable_attrs.first.name
+      end
+      
+    end
+    
     
     describe "#from_xml" do
       it "pushes collection items to array" do
@@ -163,7 +175,7 @@ class CollectionTest < MiniTest::Spec
   describe ":as => []" do
     class Album
       include Representable::XML
-      representable_property :songs, :as => [], :tag => :song
+      representable_collection :songs, :tag => :song
     end
 
     it "collects untyped items" do

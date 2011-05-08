@@ -195,6 +195,11 @@ module Representable
         attr_writer(attr.accessor)
       end
       
+      def representable_collection(name, options={})
+        options[:as] = [options[:as]].compact
+        representable_property(name, options)
+      end
+      
     private
       def representable_attr(name, options={})
         definition_class.new(name, options).tap do |attr|

@@ -1,16 +1,17 @@
 require 'test_helper'
 
 class RepresentableTest < MiniTest::Spec
+  class Band
+    include Representable
+    representable_property :name
+  end
+  
+  class PunkBand < Band
+    representable_property :street_cred
+  end
+  
+  
   describe "#representable_attrs" do
-    class Band
-      include Representable
-      representable_property :name
-    end
-    
-    class PunkBand < Band
-      representable_property :street_cred
-    end
-    
     it "responds to #representable_attrs" do
       assert_equal 1, Band.representable_attrs.size
       assert_equal "name", Band.representable_attrs.first.name
@@ -21,14 +22,27 @@ class RepresentableTest < MiniTest::Spec
       assert_equal "name", PunkBand.representable_attrs.first.name
       assert_equal "street_cred", PunkBand.representable_attrs.last.name
     end
-    
+  end
+  
+  describe "#representable_property" do
     it "creates accessors for the attribute" do
       @band = PunkBand.new
       assert @band.name = "Bad Religion"
       assert_equal "Bad Religion", @band.name
     end
-    
   end
+  
+  describe "#representable_collection" do
+    class RockBand < Band
+      representable_collection :albums
+    end
+    
+    it "creates correct Definition" do
+      assert_equal "albums", RockBand.representable_attrs.last.name
+      assert RockBand.representable_attrs.last.array?
+    end
+  end
+  
   
   describe "#representation_name" do
     class SoundSystem
