@@ -56,11 +56,8 @@ The cool thing with object-oriented representations is: you can treat them just 
     # ...
     
     def sort_items
-      items.sort! do |a,b|
-        a.name <=> b.name
-      end
+      items.sort! { |a, b| a.name <=> b.name }
     end
-  end
 
 
 == Generating Representations
