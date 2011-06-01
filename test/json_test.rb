@@ -30,6 +30,12 @@ module JsonTest
         band = Band.from_json({:band => {:name => "Bombshell Rocks"}}.to_json)
         assert_equal "Bombshell Rocks", band.name
       end
+      
+      it "#from_json accepts hash, too" do
+        band = Band.from_json({"band" => {"name" => "Bombshell Rocks"}})
+        assert_equal "Bombshell Rocks", band.name
+      end
+      
     
       it "#to_json serializes correctly" do
         band = Band.new

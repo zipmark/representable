@@ -28,7 +28,7 @@ module Representable
         data = ::JSON[data] if data.is_a?(String) # DISCUSS: #from_json sometimes receives a string (in nestings).
         data ||= {}
         
-        data = data[representation_name] unless options[:wrap] == false
+        data = data[representation_name.to_s] unless options[:wrap] == false
         
         create_from_json.tap do |inst|
           refs = representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
