@@ -35,7 +35,7 @@ module JsonTest
         band = Band.new
         band.name = "Cigar"
         
-        assert_equal "{\"band\"=>{\"name\"=>\"Cigar\"}}", band.to_json.to_s
+        assert_equal '{"band":{"name":"Cigar"}}', band.to_json
       end
     end
     
@@ -54,7 +54,7 @@ module JsonTest
         cd = CD.new
         cd.songs = ["Out in the cold", "Microphone"]
         
-        assert_equal "{\"cd\"=>{\"songs\"=>[\"Out in the cold\", \"Microphone\"]}}", cd.to_json.to_s
+        assert_equal '{"cd":{"songs":["Out in the cold","Microphone"]}}', cd.to_json
       end
     end
   end
@@ -81,7 +81,7 @@ module JsonTest
           label = Label.new; label.name = "Fat Wreck"
           album = Album.new; album.label = label
           
-          assert_equal "{\"album\"=>{\"label\"=>{\"name\"=>\"Fat Wreck\"}}}", album.to_json.to_s
+          assert_equal '{"album":{"label":{"name":"Fat Wreck"}}}', album.to_json
         end
       end
     end
@@ -122,9 +122,8 @@ module JsonTest
         cd = Compilation.new
         cd.bands = [Band.new("Diesel Boy"), Band.new("Bad Religion")]
         
-        assert_equal "{\"compilation\"=>{\"bands\"=>[{\"name\"=>\"Diesel Boy\"}, {\"name\"=>\"Bad Religion\"}]}}", cd.to_json.to_s
+        assert_equal '{"compilation":{"bands":[{"name":"Diesel Boy"},{"name":"Bad Religion"}]}}', cd.to_json
       end
     end
-      
   end
 end

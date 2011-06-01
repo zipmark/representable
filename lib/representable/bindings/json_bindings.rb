@@ -47,9 +47,9 @@ module Representable
       
       def update_json(hash, value)
         if array?
-          hash.merge! ({accessor => value.collect {|v| v.to_json(:wrap => false)}}) # hier name=> wech.
+          hash.merge! ({accessor => value.collect {|v| v.to_hash(:wrap => false)}}) # hier name=> wech.
         else
-          hash.merge! value.to_json
+          hash.merge! value.to_hash
         end
       end
 

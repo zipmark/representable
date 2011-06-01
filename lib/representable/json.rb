@@ -48,9 +48,8 @@ module Representable
     end
     
     module InstanceMethods # :nodoc:
-      # Returns a Nokogiri::XML object representing this object.
-      def to_json(options={})
-        attributes = {}.tap do |root|
+      def to_hash(options={})
+        hash = {}.tap do |root|
           refs = self.class.representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
           
           refs.each do |ref|
@@ -59,7 +58,13 @@ module Representable
           end
         end
         
-        options[:wrap] == false ? attributes : {self.class.representation_name => attributes}
+        # DISCUSS: where to wrap?
+        options[:wrap] == false ? hash : {self.class.representation_name => hash}
+      end
+      
+      # Returns a Nokogiri::XML object representing this object.
+      def to_json(options={})
+        to_hash(options).to_json
       end
     end
   end # Xml
