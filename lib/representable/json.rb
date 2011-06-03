@@ -49,12 +49,12 @@ module Representable
     
     module InstanceMethods # :nodoc:
       def to_hash(options={})
-        hash = {}.tap do |root|
+        hash = {}.tap do |attrs|
           refs = self.class.representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
           
           refs.each do |ref|
             value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
-            ref.update_json(root, value) if value
+            ref.update_json(attrs, value) if value
           end
         end
         
