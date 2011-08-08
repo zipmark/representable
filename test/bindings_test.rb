@@ -36,6 +36,26 @@ class DefinitionTest < MiniTest::Spec
       assert Representable::Definition.new(:songs, :as => Hash).typed?
       assert Representable::Definition.new(:songs, :as => [Hash]).typed?
     end
+    
+    it "responds to #accessor" do
+      assert_equal "songs", @def.accessor
+    end
+    
+    it "responds to #name" do
+      assert_equal "songs", @def.name 
+    end
+    
+    it "responds to #instance_variable_name" do
+      assert_equal :"@songs", @def.instance_variable_name
+    end
+    
+    it "responds to #setter" do
+      assert_equal :"songs=", @def.setter
+    end
+    
+    it "responds to #sought_type" do
+      assert_equal :text, @def.sought_type
+    end
   end
   
   
@@ -61,24 +81,8 @@ class DefinitionTest < MiniTest::Spec
       @def = Representable::Definition.new(:songs, :as => [], :tag => :song)
     end
     
-    it "responds to #accessor" do
-      assert_equal "songs", @def.accessor
-    end
-    
     it "responds to #array?" do
       assert @def.array?
-    end
-    
-    it "responds to #name" do
-      assert_equal "songs", @def.accessor 
-    end
-    
-    it "responds to #instance_variable_name" do
-      assert_equal :"@songs", @def.instance_variable_name
-    end
-    
-    it "responds to #setter" do
-      assert_equal :"songs=", @def.setter
     end
     
     it "responds to #sought_type" do
