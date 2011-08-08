@@ -17,10 +17,7 @@ module Representable
       end
 
       @sought_type = extract_type(opts[:as])
-      if @sought_type.respond_to?(:roxml_tag_name)
-        opts[:from] ||= @sought_type.roxml_tag_name
-      end
-
+      
       if opts[:from] == :content
         opts[:from] = '.'
       elsif opts[:from] == :name
