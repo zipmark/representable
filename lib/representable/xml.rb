@@ -6,7 +6,6 @@ module Representable
     BINDING_FOR_TYPE = {
       :attr     => AttributeBinding,
       :text     => TextBinding,
-      :namespace=> NamespaceBinding,
     }
     
     def self.binding_for_definition(definition)

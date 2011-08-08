@@ -87,21 +87,14 @@ module Representable
       end
 
       def add(dest, value)
-        if cdata?
+        if cdata? # FIXME: this is never true.
           dest.add_child(Nokogiri::XML::CDATA.new(dest.document, content))
         else
           dest.content = value.to_s
         end
       end
     end
-  
-
-    class NamespaceBinding < Binding
-    private
-      def value_from_node(xml)
-        xml.namespace.prefix
-      end
-    end
+    
 
     # Represents a tag with object binding.
     class ObjectBinding < Binding
