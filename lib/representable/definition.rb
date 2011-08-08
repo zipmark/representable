@@ -9,8 +9,6 @@ class Module
 end
 
 module Representable
-  class ContradictoryNamespaces < StandardError
-  end
   class Definition # :nodoc:
     attr_reader :name, :sought_type, :wrapper, :accessor, :namespace
     bool_attr_reader :name_explicit, :array, :cdata
@@ -47,10 +45,6 @@ module Representable
         @sought_type = :attr
         opts[:from].sub!('@', '')
       end
-
-      
-      #raise ContradictoryNamespaces if @name.include?(':') && (@namespace.present? || @namespace == false)
-
     end
 
     def instance_variable_name
