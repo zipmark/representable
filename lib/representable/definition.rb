@@ -1,17 +1,7 @@
-class Module
-  def bool_attr_reader(*attrs)
-    attrs.each do |attr|
-      define_method :"#{attr}?" do
-        instance_variable_get(:"@#{attr}") || false
-      end
-    end
-  end
-end
-
 module Representable
   class Definition # :nodoc:
     attr_reader :name, :sought_type, :wrapper, :accessor, :namespace
-    bool_attr_reader :name_explicit, :array, :cdata
+    
     
     def initialize(sym, opts={})
       @accessor   = sym.to_s
@@ -66,6 +56,15 @@ module Representable
     def content?
       @name == '.'
     end
+    
+    def array?
+      @array
+    end
+    
+    def cdata?  # FIXME: move to XML!
+      @cdata
+    end
+    
     
     # Applies the block to +value+ which might also be a collection.
     def apply(value)
