@@ -1,12 +1,10 @@
 module Representable
   class Definition # :nodoc:
-    attr_reader :name, :sought_type, :wrapper, :accessor, :namespace
+    attr_reader :name, :sought_type, :wrapper, :accessor
     
     
     def initialize(sym, opts={})
       @accessor   = sym.to_s
-      @namespace  = opts.delete(:namespace)
-      
       
       if opts[:as].is_a?(Array) # DISCUSS: move to ArrayDefinition.
         @array      = true
@@ -25,9 +23,6 @@ module Representable
       elsif opts[:from] == :attr
         @sought_type = :attr
         opts[:from] = nil
-      elsif opts[:from] == :namespace
-        opts[:from] = '*'
-        @sought_type = :namespace
       elsif opts[:from].to_s =~ /^@/  # FIXME: move me to xml.
         @sought_type = :attr
         opts[:from].sub!('@', '')
