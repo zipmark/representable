@@ -6,7 +6,7 @@ module JsonTest
     Json = Representable::JSON
     Def = Representable::Definition
     
-    describe "Xml module" do
+    describe "JSON module" do
       describe "#binding_for_definition" do
         it "returns ObjectBinding" do
           assert_kind_of Json::ObjectBinding, Json.binding_for_definition(Def.new(:band, :as => Hash))
@@ -16,6 +16,27 @@ module JsonTest
           assert_kind_of Json::TextBinding, Json.binding_for_definition(Def.new(:band))
         end
       end
+      
+      describe "#from_json" do
+        class Band
+          include Json
+        end
+        
+        it "raises error with emtpy string" do
+          assert_raises JSON::ParserError do
+            Band.from_json("")
+          end
+        end
+        
+        it "returns empty hash with inappropriate hash" do
+          assert Band.from_json({:song => "Message In A Bottle"}.to_json)
+        end
+        
+        it "generates warning with inappropriate hash in debugging mode" do
+          
+        end
+      end
+      
     end
   end
 

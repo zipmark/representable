@@ -26,9 +26,10 @@ module Representable
       def from_json(data, options={})
         # DISCUSS: extract #from_json call in Bindings to this place.
         data = ::JSON[data] if data.is_a?(String) # DISCUSS: #from_json sometimes receives a string (in nestings).
-        data ||= {}
-        
+        data ||= {} # DISCUSS: is this needed?
         data = data[representation_name.to_s] unless options[:wrap] == false
+        data ||= {} # FIXME: should we fail here? generate a warning?
+        
         
         create_from_json.tap do |inst|
           refs = representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
