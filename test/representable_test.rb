@@ -24,11 +24,26 @@ class RepresentableTest < MiniTest::Spec
     end
   end
   
+  
+  
   describe "#representable_property" do
     it "creates accessors for the attribute" do
       @band = PunkBand.new
       assert @band.name = "Bad Religion"
       assert_equal "Bad Religion", @band.name
+    end
+    
+    describe ":from" do
+      # TODO: do this with all options.
+      it "can be set explicitly" do
+        band = Class.new(Band) { representable_property :friends, :from => :friend }
+        assert_equal "friend", band.representable_attrs.last.from
+      end
+      
+      it "is infered from the name implicitly" do
+        band = Class.new(Band) { representable_property :friends }
+        assert_equal "friends", band.representable_attrs.last.from
+      end
     end
   end
   

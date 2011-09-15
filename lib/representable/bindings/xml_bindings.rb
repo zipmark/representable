@@ -2,7 +2,7 @@ module Representable
   module XML
     class Binding
       attr_reader :definition
-      delegate :required?, :array?, :accessor, :wrapper, :name, :to => :definition
+      delegate :array?, :accessor, :wrapper, :from, :to => :definition
 
       def initialize(definition)
         @definition = definition
@@ -20,7 +20,7 @@ module Representable
       end
       
       def xpath
-        name
+        from
       end
 
       def wrap(xml, opts = {:always_create => false})
@@ -46,13 +46,13 @@ module Representable
     class AttributeBinding < Binding
       def update_xml(xml, values)
         wrap(xml).tap do |xml|
-          xml[name] = values.to_s
+          xml[from] = values.to_s
         end
       end
 
     private
       def value_from_node(xml)
-        xml[name]
+        xml[from]
       end
     end
     
@@ -71,10 +71,10 @@ module Representable
             xml.name = value
           elsif array?
             value.each do |v|
-              add(xml.add_node(name), v)
+              add(xml.add_node(from), v)
             end
           else
-            add(xml.add_node(name), value)
+            add(xml.add_node(from), value)
           end
         end
       end
