@@ -2,7 +2,6 @@ module Representable
   module XML
     class Binding
       attr_reader :definition
-      delegate :array?, :accessor, :wrapper, :from, :to => :definition
 
       def initialize(definition)
         @definition = definition
@@ -20,11 +19,11 @@ module Representable
       end
       
       def xpath
-        from
+        definition.from
       end
 
       def wrap(xml, opts = {:always_create => false})
-        wrap_with = @auto_vals ? auto_wrapper : wrapper
+        wrap_with = @auto_vals ? auto_wrapper : definition.wrapper
 
         return xml if !wrap_with || xml.name == wrap_with
         if !opts[:always_create] && (child = xml.children.find {|c| c.name == wrap_with })
@@ -37,7 +36,7 @@ module Representable
         nodes = xml.search("./#{xpath}")
         vals  = nodes.collect { |node| yield node }
         
-        array? ? vals : vals.first
+        definition.array? ? vals : vals.first
       end
     end
     
@@ -46,35 +45,33 @@ module Representable
     class AttributeBinding < Binding
       def update_xml(xml, values)
         wrap(xml).tap do |xml|
-          xml[from] = values.to_s
+          xml[definition.from] = values.to_s
         end
       end
 
     private
       def value_from_node(xml)
-        xml[from]
+        xml[definition.from]
       end
     end
     
     
     # Represents text content in a tag. # FIXME: is this tested???
     class TextBinding < Binding
-      delegate :cdata?, :content?, :name?, :to => :definition
-
       # Updates the text in the given _xml_ block to
       # the _value_ provided.
       def update_xml(xml, value)
         wrap(xml).tap do |xml|
-          if content?
+          if definition.content?
             add(xml, value)
-          elsif name?
+          elsif definition.name?
             xml.name = value
-          elsif array?
+          elsif definition.array?
             value.each do |v|
-              add(xml.add_node(from), v)
+              add(xml.add_node(definition.from), v)
             end
           else
-            add(xml.add_node(from), value)
+            add(xml.add_node(definition.from), value)
           end
         end
       end
@@ -87,23 +84,17 @@ module Representable
       end
 
       def add(dest, value)
-        if cdata? # FIXME: this is never true.
-          dest.add_child(Nokogiri::XML::CDATA.new(dest.document, content))
-        else
-          dest.content = value.to_s
-        end
+        dest.content = value.to_s
       end
     end
     
 
     # Represents a tag with object binding.
     class ObjectBinding < Binding
-      delegate :sought_type, :to => :definition
-
       # Adds the ref's markup to +xml+. 
       def update_xml(xml, value)
         wrap(xml).tap do |xml|
-          if array?
+          if definition.array?
             update_xml_for_collection(xml, value)
           else
             update_xml_for_entity(xml, value)
@@ -127,7 +118,7 @@ module Representable
       # Deserializes the ref's element from +xml+.
       def value_from_node(xml)
         collect_for(xml) do |node|
-          deserialize(sought_type, node)
+          deserialize(definition.sought_type, node)
         end
       end
       

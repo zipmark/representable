@@ -56,13 +56,13 @@ module Representable
     module InstanceMethods # :nodoc:
       # Returns a Nokogiri::XML object representing this object.
       def to_xml(params={})
-        params.reverse_merge!(:name => self.class.representation_name)
+        params[:name] ||= self.class.representation_name
         
         Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
           refs = self.class.representable_attrs.map {|attr| XML.binding_for_definition(attr) }
           
           refs.each do |ref|
-            value = public_send(ref.accessor) # DISCUSS: eventually move back to Ref.
+            value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
             ref.update_xml(root, value) if value
           end
         end

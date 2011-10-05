@@ -1,15 +1,8 @@
-require 'active_support'
-require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/string/inflections.rb'
-require 'active_support/core_ext/hash/reverse_merge.rb'
-
 require 'hooks/inheritable_attribute'
-
 
 require 'representable/definition'
 require 'representable/nokogiri_extensions'
 
-#require 'representable/xml' # TODO: do that dynamically.
 
 module Representable
   def self.included(base)
@@ -226,7 +219,10 @@ module Representable
       end
       
       def representation_name
-        explicit_representation_name or name.split('::').last.underscore
+        explicit_representation_name or name.split('::').last.
+         gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+         gsub(/([a-z\d])([A-Z])/,'\1_\2').
+         downcase
       end
     end
   end
