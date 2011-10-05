@@ -41,7 +41,7 @@ module JsonTest
   end
 
   class PropertyTest < MiniTest::Spec
-    describe "property :name" do
+    describe "representable_property :name" do
       class Band
         include Representable::JSON
         representable_property :name
@@ -57,7 +57,6 @@ module JsonTest
         assert_equal "Bombshell Rocks", band.name
       end
       
-    
       it "#to_json serializes correctly" do
         band = Band.new
         band.name = "Cigar"
@@ -66,27 +65,6 @@ module JsonTest
       end
     end
     
-    describe "property :name, :as => []" do
-      class CD
-        include Representable::JSON
-        representable_property :songs, :as => []
-      end
-      
-      it "#from_json creates correct accessors" do
-        cd = CD.from_json({:cd => {:songs => ["Out in the cold", "Microphone"]}}.to_json)
-        assert_equal ["Out in the cold", "Microphone"], cd.songs
-      end
-    
-      it "#to_json serializes correctly" do
-        cd = CD.new
-        cd.songs = ["Out in the cold", "Microphone"]
-        
-        assert_equal '{"cd":{"songs":["Out in the cold","Microphone"]}}', cd.to_json
-      end
-    end
-  end
-
-  class TypedPropertyTest < MiniTest::Spec
     describe ":as => Item" do
       class Label
         include Representable::JSON
@@ -103,20 +81,37 @@ module JsonTest
         assert_equal "Bad Religion", album.label.name
       end
       
-      describe "#to_json" do
-        it "serializes" do
-          label = Label.new; label.name = "Fat Wreck"
-          album = Album.new; album.label = label
-          
-          assert_equal '{"album":{"label":{"name":"Fat Wreck"}}}', album.to_json
-        end
+      it "#to_json serializes" do
+        label = Label.new; label.name = "Fat Wreck"
+        album = Album.new; album.label = label
+        
+        assert_equal '{"album":{"label":{"name":"Fat Wreck"}}}', album.to_json
       end
     end
   end
 
 
   class CollectionTest < MiniTest::Spec
-    describe ":as => [Band]" do
+    describe "representable_collection :name" do
+      class CD
+        include Representable::JSON
+        representable_collection :songs
+      end
+      
+      it "#from_json creates correct accessors" do
+        cd = CD.from_json({:cd => {:songs => ["Out in the cold", "Microphone"]}}.to_json)
+        assert_equal ["Out in the cold", "Microphone"], cd.songs
+      end
+    
+      it "#to_json serializes correctly" do
+        cd = CD.new
+        cd.songs = ["Out in the cold", "Microphone"]
+        
+        assert_equal '{"cd":{"songs":["Out in the cold","Microphone"]}}', cd.to_json
+      end
+    end
+    
+    describe "representable_collection :name, :as => Band" do
       class Band
         include Representable::JSON
         representable_property :name
@@ -128,7 +123,7 @@ module JsonTest
       
       class Compilation
         include Representable::JSON
-        representable_property :bands, :as => [Band]
+        representable_collection :bands, :as => Band
       end
       
       describe "#from_json" do
