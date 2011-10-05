@@ -88,6 +88,23 @@ module JsonTest
         assert_equal '{"album":{"label":{"name":"Fat Wreck"}}}', album.to_json
       end
     end
+    
+    describe ":from => :songName" do
+      class Song
+        include Representable::JSON
+        representable_property :name, :from => :songName
+      end
+      
+      it "respects :from in #from_json" do
+        song = Song.from_json({:song => {:songName => "Run To The Hills"}}.to_json)
+        assert_equal "Run To The Hills", song.name
+      end
+      
+      it "respects :from in #to_json" do
+        song = Song.new; song.name = "Run To The Hills"
+        assert_equal '{"song":{"songName":"Run To The Hills"}}', song.to_json
+      end
+    end
   end
 
 
@@ -145,6 +162,26 @@ module JsonTest
         cd.bands = [Band.new("Diesel Boy"), Band.new("Bad Religion")]
         
         assert_equal '{"compilation":{"bands":[{"name":"Diesel Boy"},{"name":"Bad Religion"}]}}', cd.to_json
+      end
+    end
+    
+    
+    describe ":from => :songList" do
+      class Songs
+        include Representable::JSON
+        representable_collection :tracks, :from => :songList
+      end
+      
+      it "respects :from in #from_json" do
+        songs = Songs.from_json({:songs => {:songList => ["Out in the cold", "Microphone"]}}.to_json)
+        assert_equal ["Out in the cold", "Microphone"], songs.tracks
+      end
+    
+      it "respects option in #to_json" do
+        songs = Songs.new
+        songs.tracks = ["Out in the cold", "Microphone"]
+        
+        assert_equal '{"songs":{"songList":["Out in the cold","Microphone"]}}', songs.to_json
       end
     end
   end

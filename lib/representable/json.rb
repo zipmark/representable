@@ -68,5 +68,5 @@ module Representable
         to_hash(options).to_json
       end
     end
-  end # Xml
+  end
 end

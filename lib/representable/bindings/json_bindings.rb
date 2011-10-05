@@ -2,7 +2,7 @@ module Representable
   module JSON
     class Binding
       attr_reader :definition
-      delegate :required?, :array?, :accessor, :wrapper, :name, :to => :definition
+      delegate :required?, :array?, :accessor, :from, :to => :definition
 
       def initialize(definition)
         @definition = definition
@@ -18,7 +18,7 @@ module Representable
       end
       
       def collect_for(hash)
-        nodes = hash[name.to_s] or return
+        nodes = hash[from] or return
         nodes = [nodes] unless nodes.is_a?(Array)
         
         vals  = nodes.collect { |node| yield node }
@@ -30,7 +30,7 @@ module Representable
     # Represents plain key-value.
     class TextBinding < Binding
       def update_json(hash, value)
-        hash[name] = value
+        hash[from] = value
       end
 
     private
