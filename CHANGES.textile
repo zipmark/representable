@@ -2,3 +2,4 @@ h2. 0.9.0
 
 h3. Changes
   * Removed the :tag option in favor of :from. The Definition#from method is now authorative for all name mappings. 
+  * Removed the active_support and i18n dependency.

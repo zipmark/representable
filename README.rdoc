@@ -29,7 +29,7 @@ Now, parsing manually starts simple but gets complex soon. In the end, you have 
     include Representable::XML
     
     representable_property :id
-    representable_collection :items, :tag => :item, :as => Item
+    representable_collection :items, :from => :item, :as => Item
   end
   
   class Item
@@ -72,6 +72,12 @@ You can also render a representation from a newly created object.
 
 
 Representable makes working with representations extremely easy and testable.
+
+
+== Serialization Backends
+
+This gem ships with JSON and XML support, meaning you can parse and render both media formats. 
+
 
 == More
 
