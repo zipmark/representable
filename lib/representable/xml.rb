@@ -15,20 +15,21 @@ module Representable
     def self.included(base)
       base.class_eval do
         include Representable
-        include InstanceMethods
         extend ClassMethods
       end
     end
+    
     
     class Definition < Representable::Definition
       # FIXME: extract xml-specific from Definition.
     end
     
-    module ClassMethods
-    def definition_class
-      Definition
-    end
     
+    module ClassMethods
+      def definition_class
+        Definition
+      end
+      
       # Creates a new Ruby object from XML using mapping information declared in the class.
       #
       # Example:
@@ -53,18 +54,16 @@ module Representable
       end
     end
     
-    module InstanceMethods # :nodoc:
-      # Returns a Nokogiri::XML object representing this object.
-      def to_xml(params={})
-        params[:name] ||= self.class.representation_name
+    # Returns a Nokogiri::XML object representing this object.
+    def to_xml(params={})
+      params[:name] ||= self.class.representation_name
+      
+      Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
+        refs = self.class.representable_attrs.map {|attr| XML.binding_for_definition(attr) }
         
-        Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-          refs = self.class.representable_attrs.map {|attr| XML.binding_for_definition(attr) }
-          
-          refs.each do |ref|
-            value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
-            ref.update_xml(root, value) if value
-          end
+        refs.each do |ref|
+          value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
+          ref.update_xml(root, value) if value
         end
       end
     end

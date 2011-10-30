@@ -6,6 +6,7 @@ module Representable
     BINDING_FOR_TYPE = {  # TODO: refactor #representable_accessor for better extendability.
       :text     => TextBinding,
     }
+    
     def self.binding_for_definition(definition)
       (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
@@ -13,10 +14,10 @@ module Representable
     def self.included(base)
       base.class_eval do
         include Representable
-        include InstanceMethods
+        extend ClassMethods
       end
-      base.extend ClassMethods  # DISCUSS: do that dynamically?
     end
+    
     
     module ClassMethods
       # Creates a new Ruby object from XML using mapping information declared in the class.
@@ -48,25 +49,23 @@ module Representable
       end
     end
     
-    module InstanceMethods # :nodoc:
-      def to_hash(options={})
-        hash = {}.tap do |attrs|
-          refs = self.class.representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
-          
-          refs.each do |ref|
-            value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
-            ref.update_json(attrs, value) if value
-          end
-        end
+    def to_hash(options={})
+      hash = {}.tap do |attrs|
+        refs = self.class.representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
         
-        # DISCUSS: where to wrap?
-        options[:wrap] == false ? hash : {self.class.representation_name => hash}
+        refs.each do |ref|
+          value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
+          ref.update_json(attrs, value) if value
+        end
       end
       
-      # Returns a Nokogiri::XML object representing this object.
-      def to_json(options={})
-        to_hash(options).to_json
-      end
+      # DISCUSS: where to wrap?
+      options[:wrap] == false ? hash : {self.class.representation_name => hash}
+    end
+    
+    # Returns a Nokogiri::XML object representing this object.
+    def to_json(options={})
+      to_hash(options).to_json
     end
   end
 end
