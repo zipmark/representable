@@ -8,10 +8,6 @@ module Representable
       :text     => TextBinding,
     }
     
-    def self.binding_for_definition(definition)
-      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
-    end
-    
     def self.included(base)
       base.class_eval do
         include Representable
@@ -30,6 +26,10 @@ module Representable
         Definition
       end
       
+      def binding_for_definition(definition)
+        (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
+      end
+      
       # Creates a new Ruby object from XML using mapping information declared in the class.
       #
       # Example:
@@ -38,7 +38,7 @@ module Representable
         xml = Nokogiri::XML::Node.from(data)
 
         create_from_xml(*args).tap do |inst|
-          refs = representable_attrs.map {|attr| XML.binding_for_definition(attr) }
+          refs = representable_attrs.map {|attr| binding_for_definition(attr) }
           
           refs.each do |ref|
             value = ref.value_in(xml)
@@ -59,7 +59,7 @@ module Representable
       params[:name] ||= self.class.representation_name
       
       Nokogiri::XML::Node.new(params[:name].to_s, Nokogiri::XML::Document.new).tap do |root|
-        refs = self.class.representable_attrs.map {|attr| XML.binding_for_definition(attr) }
+        refs = self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }
         
         refs.each do |ref|
           value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
@@ -67,5 +67,5 @@ module Representable
         end
       end
     end
-  end # Xml
+  end
 end

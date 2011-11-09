@@ -7,10 +7,6 @@ module Representable
       :text     => TextBinding,
     }
     
-    def self.binding_for_definition(definition)
-      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
-    end
-    
     def self.included(base)
       base.class_eval do
         include Representable
@@ -20,6 +16,10 @@ module Representable
     
     
     module ClassMethods
+      def binding_for_definition(definition)
+        (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
+      end
+    
       # Creates a new Ruby object from XML using mapping information declared in the class.
       #
       # Example:
@@ -33,7 +33,7 @@ module Representable
         
         
         create_from_json.tap do |inst|
-          refs = representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
+          refs = representable_attrs.map {|attr| binding_for_definition(attr) }
           
           refs.each do |ref|
             value = ref.value_in(data)
@@ -51,7 +51,7 @@ module Representable
     
     def to_hash(options={})
       hash = {}.tap do |attrs|
-        refs = self.class.representable_attrs.map {|attr| JSON.binding_for_definition(attr) }
+        refs = self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }
         
         refs.each do |ref|
           value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
