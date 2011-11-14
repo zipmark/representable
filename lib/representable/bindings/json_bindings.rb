@@ -29,7 +29,7 @@ module Representable
     
     # Represents plain key-value.
     class TextBinding < Binding
-      def update_json(hash, value)
+      def write(hash, value)
         hash[definition.from] = value
       end
 
@@ -43,9 +43,7 @@ module Representable
   
     # Represents a tag with object binding.
     class ObjectBinding < Binding
-      #delegate :sought_type, :to => :definition
-      
-      def update_json(hash, value)
+      def write(hash, value)
         if definition.array?
           hash.merge! ({definition.from => value.collect {|v| v.to_hash(:wrap => false)}}) # hier name=> wech.
         else

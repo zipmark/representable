@@ -17,6 +17,19 @@ module Representable
     end
   end
   
+private
+  # Compiles the document going through all properties.
+  def create_representation_with(doc)
+    self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }.
+    each do |ref|
+      value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
+      ref.write(doc, value) if value
+    end
+    
+    doc
+  end
+  
+  
   module ClassMethods # :nodoc:
     module Declarations
       def definition_class

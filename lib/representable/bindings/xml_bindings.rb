@@ -43,7 +43,7 @@ module Representable
     
     # Represents a tag attribute.
     class AttributeBinding < Binding
-      def update_xml(xml, values)
+      def write(xml, values)
         wrap(xml).tap do |xml|
           xml[definition.from] = values.to_s
         end
@@ -60,7 +60,7 @@ module Representable
     class TextBinding < Binding
       # Updates the text in the given _xml_ block to
       # the _value_ provided.
-      def update_xml(xml, value)
+      def write(xml, value)
         wrap(xml).tap do |xml|
           if definition.content?
             add(xml, value)
@@ -92,12 +92,12 @@ module Representable
     # Represents a tag with object binding.
     class ObjectBinding < Binding
       # Adds the ref's markup to +xml+. 
-      def update_xml(xml, value)
+      def write(xml, value)
         wrap(xml).tap do |xml|
           if definition.array?
-            update_xml_for_collection(xml, value)
+            write_collection(xml, value)
           else
-            update_xml_for_entity(xml, value)
+            write_entity(xml, value)
           end
         end
       end
@@ -122,13 +122,13 @@ module Representable
         end
       end
       
-      def update_xml_for_collection(xml, collection)
+      def write_collection(xml, collection)
         collection.each do |item|
-          update_xml_for_entity(xml, item)
+          write_entity(xml, item)
         end
       end
       
-      def update_xml_for_entity(xml, entity)
+      def write_entity(xml, entity)
         xml.add_child(serialize(entity))
       end
     end

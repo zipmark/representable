@@ -50,14 +50,7 @@ module Representable
     end
     
     def to_hash(options={})
-      hash = {}.tap do |attrs|
-        refs = self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }
-        
-        refs.each do |ref|
-          value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
-          ref.update_json(attrs, value) if value
-        end
-      end
+      hash = create_representation_with({})
       
       # DISCUSS: where to wrap?
       options[:wrap] == false ? hash : {self.class.representation_name => hash}
