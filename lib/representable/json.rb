@@ -36,7 +36,7 @@ module Representable
           refs = representable_attrs.map {|attr| binding_for_definition(attr) }
           
           refs.each do |ref|
-            value = ref.value_in(data)
+            value = ref.read(data)
             
             inst.send(ref.definition.setter, value)
           end

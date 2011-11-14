@@ -8,7 +8,7 @@ module Representable
         @definition = definition
       end
       
-      def value_in(hash)
+      def read(hash)
         value_from_hash(hash) or default
       end
       

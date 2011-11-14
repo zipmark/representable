@@ -12,7 +12,7 @@ class BindingsTest < MiniTest::Spec
   end
   
   
-  describe "TextRef#value_in" do
+  describe "TextRef#read" do
     def parse_xml(xml); Nokogiri::XML::Node.from(xml); end
     
     before do
@@ -20,7 +20,7 @@ class BindingsTest < MiniTest::Spec
     end
     
     it "returns found value" do
-      assert_equal "Unkoil", @ref.value_in(parse_xml("<a><song>Unkoil</song></a>"))
+      assert_equal "Unkoil", @ref.read(parse_xml("<a><song>Unkoil</song></a>"))
     end
   end
 end

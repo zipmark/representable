@@ -7,7 +7,7 @@ module Representable
         @definition = definition
       end
       
-      def value_in(xml)
+      def read(xml)
         xml = Nokogiri::XML::Node.from(xml) or return default
         
         value_from_node(xml) or default
