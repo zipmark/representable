@@ -17,6 +17,14 @@ module Representable
     end
   end
   
+  def update_properties_from(doc)
+    self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }.
+    each do |ref|
+      value = ref.read(doc)
+      send(ref.definition.setter, value)
+    end
+  end
+  
 private
   # Compiles the document going through all properties.
   def create_representation_with(doc)

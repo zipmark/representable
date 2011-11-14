@@ -37,14 +37,8 @@ module Representable
       def from_xml(data, *args)
         xml = Nokogiri::XML::Node.from(data)
 
-        create_from_xml(*args).tap do |inst|
-          refs = representable_attrs.map {|attr| binding_for_definition(attr) }
-          
-          refs.each do |ref|
-            value = ref.read(xml)
-            
-            inst.send(ref.definition.setter, value)
-          end
+        create_from_xml(*args).tap do |object|
+          object.update_properties_from(xml)
         end
       end
       

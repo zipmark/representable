@@ -31,15 +31,8 @@ module Representable
         data = data[representation_name.to_s] unless options[:wrap] == false
         data ||= {} # FIXME: should we fail here? generate a warning?
         
-        
-        create_from_json.tap do |inst|
-          refs = representable_attrs.map {|attr| binding_for_definition(attr) }
-          
-          refs.each do |ref|
-            value = ref.read(data)
-            
-            inst.send(ref.definition.setter, value)
-          end
+        create_from_json.tap do |object|
+          object.update_properties_from(data)
         end
       end
       
