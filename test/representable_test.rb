@@ -25,7 +25,6 @@ class RepresentableTest < MiniTest::Spec
   end
   
   
-  
   describe "#representable_property" do
     it "creates accessors for the attribute" do
       @band = PunkBand.new

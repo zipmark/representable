@@ -8,7 +8,8 @@ module JsonTest
     
     describe "JSON module" do
       class Band
-        include Json
+        include Representable::JSON
+        representable_property :name
       end
         
       describe "#binding_for_definition" do
@@ -21,9 +22,15 @@ module JsonTest
         end
       end
       
+      describe "#representable_bindings" do
+        it "returns bindings for each property" do
+          assert_equal 1, Band.representable_bindings.size
+          assert_equal "name", Band.representable_bindings.first.definition.name
+        end
+      end
+  
+  
       describe "#from_json" do
-        
-        
         it "raises error with emtpy string" do
           assert_raises JSON::ParserError do
             Band.from_json("")

@@ -2,7 +2,6 @@ module Representable
   module JSON
     class Binding
       attr_reader :definition
-      #delegate :required?, :array?, :accessor, :from, :to => :definition
 
       def initialize(definition)
         @definition = definition

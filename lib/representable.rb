@@ -17,9 +17,9 @@ module Representable
     end
   end
   
+  # Reads values from +doc+ and sets properties accordingly.
   def update_properties_from(doc)
-    self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }.
-    each do |ref|
+    self.class.representable_bindings.each do |ref|
       value = ref.read(doc)
       send(ref.definition.setter, value)
     end
@@ -28,12 +28,10 @@ module Representable
 private
   # Compiles the document going through all properties.
   def create_representation_with(doc)
-    self.class.representable_attrs.map {|attr| self.class.binding_for_definition(attr) }.
-    each do |ref|
+    self.class.representable_bindings.each do |ref|
       value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
       ref.write(doc, value) if value
     end
-    
     doc
   end
   
@@ -44,7 +42,11 @@ private
         Definition
       end
       
-
+      # Returns bindings for all properties.
+      def representable_bindings
+        representable_attrs.map {|attr| binding_for_definition(attr) }
+      end
+      
       # Declares a reference to a certain xml element, whether an attribute, a node,
       # or a typed collection of nodes.  This method does not add a corresponding accessor
       # to the object.  For that behavior see the similar methods: .xml_reader and .xml_accessor.
