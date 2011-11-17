@@ -216,15 +216,9 @@ private
       end
       
     private
-      def representable_attr(name, options={})
-        definition_class.new(name, options).tap do |attr|
+      def representable_attr(*args)
+        definition_class.new(*args).tap do |attr|
           representable_attrs << attr
-        end
-      end
-      
-      def representable_reader(*syms, &block)
-        representable_attr(*syms, &block).each do |attr|
-          add_reader(attr)
         end
       end
       
