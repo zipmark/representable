@@ -12,8 +12,8 @@ class DefinitionTest < MiniTest::Spec
       assert Representable::Definition.new(:songs, :as => [Hash]).typed?
     end
     
-    it "responds to #accessor and returns string" do
-      assert_equal "songs", @def.accessor
+    it "responds to #getter and returns string" do
+      assert_equal "songs", @def.getter
     end
     
     it "responds to #name" do

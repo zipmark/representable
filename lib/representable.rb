@@ -1,5 +1,4 @@
 require 'hooks/inheritable_attribute'
-
 require 'representable/definition'
 require 'representable/nokogiri_extensions'
 
@@ -29,7 +28,7 @@ private
   # Compiles the document going through all properties.
   def create_representation_with(doc)
     self.class.representable_bindings.each do |ref|
-      value = public_send(ref.definition.accessor) # DISCUSS: eventually move back to Ref.
+      value = public_send(ref.definition.getter) # DISCUSS: eventually move back to Ref.
       ref.write(doc, value) if value
     end
     doc
@@ -208,7 +207,7 @@ private
       def representable_property(*args) # TODO: make it accept 1-n props.
         attr = representable_attr(*args)
         add_reader(attr)
-        attr_writer(attr.accessor)
+        attr_writer(attr.getter)
       end
       
       def representable_collection(name, options={})
@@ -229,9 +228,9 @@ private
         end
       end
       
-      def add_reader(attr)
-        define_method(attr.accessor) do
-          instance_variable_get(attr.instance_variable_name)
+      def add_reader(definition)
+        define_method(definition.getter) do
+          instance_variable_get(definition.instance_variable_name)
         end
       end
     end

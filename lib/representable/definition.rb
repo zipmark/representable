@@ -1,10 +1,10 @@
 module Representable
   class Definition # :nodoc:
-    attr_reader :name, :sought_type, :wrapper, :accessor, :from
-    
+    attr_reader :name, :sought_type, :wrapper, :from
+    alias_method :getter, :name
     
     def initialize(sym, opts={})
-      @accessor = @name = sym.to_s
+      @name = sym.to_s
       
       @array        = true if opts[:as].is_a?(Array) # DISCUSS: move to ArrayDefinition.
       @from         = (opts[:from] || name).to_s
@@ -25,11 +25,11 @@ module Representable
     end
 
     def instance_variable_name
-      :"@#{accessor}"
+      :"@#{name}"
     end
 
     def setter
-      :"#{accessor}="
+      :"#{name}="
     end
     
     def typed?
