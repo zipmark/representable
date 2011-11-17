@@ -205,8 +205,8 @@ private
       # [:to_xml] this proc is applied to the attributes value outputting the instance via #to_xml
       #
       def representable_property(*args) # TODO: make it accept 1-n props.
-        attr = representable_attr(*args)
-        add_reader(attr)
+        attr = add_representable_property(*args)
+        attr_reader(attr.getter)
         attr_writer(attr.getter)
       end
       
@@ -216,15 +216,9 @@ private
       end
       
     private
-      def representable_attr(*args)
+      def add_representable_property(*args)
         definition_class.new(*args).tap do |attr|
           representable_attrs << attr
-        end
-      end
-      
-      def add_reader(definition)
-        define_method(definition.getter) do
-          instance_variable_get(definition.instance_variable_name)
         end
       end
     end
