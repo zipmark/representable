@@ -49,7 +49,7 @@ module Representable
       options[:wrap] == false ? hash : {self.class.representation_name => hash}
     end
     
-    # Returns a Nokogiri::XML object representing this object.
+    # Returns a JSON string representing this object.
     def to_json(options={})
       to_hash(options).to_json
     end

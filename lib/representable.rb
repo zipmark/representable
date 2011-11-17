@@ -19,6 +19,8 @@ module Representable
   # Reads values from +doc+ and sets properties accordingly.
   def update_properties_from(doc)
     self.class.representable_bindings.each do |ref|
+      next if block_given? and not yield ref # skip if block is false. # DISCUSS: will we keep that?
+      
       value = ref.read(doc)
       send(ref.definition.setter, value)
     end
@@ -28,6 +30,8 @@ private
   # Compiles the document going through all properties.
   def create_representation_with(doc)
     self.class.representable_bindings.each do |ref|
+      next if block_given? and not yield ref # skip if block is false. # DISCUSS: will we keep that?
+      
       value = public_send(ref.definition.getter) # DISCUSS: eventually move back to Ref.
       ref.write(doc, value) if value
     end

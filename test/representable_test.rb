@@ -86,6 +86,48 @@ class RepresentableTest < MiniTest::Spec
     it "returns Definition class" do
       assert_equal Representable::Definition, Band.definition_class
     end
-    
   end
+
+  
+  require 'representable/json'
+  class PopBand
+    include Representable::JSON
+    representable_property :name
+    representable_property :groupies
+  end
+
+  describe "#update_properties_from" do
+    it "copies values from document to object" do
+      band = PopBand.new
+      band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2})
+      assert_equal "No One's Choice", band.name
+      assert_equal 2, band.groupies
+    end
+    
+    it "skips elements when block returns false" do
+      band = PopBand.new
+      band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}) do |binding|
+        binding.definition.name == "name"
+      end
+      assert_equal "No One's Choice", band.name
+      assert_equal nil, band.groupies
+    end
+  end
+  
+  describe "#create_representation_with" do
+    before do
+      @band = PopBand.new
+      @band.name = "No One's Choice"
+      @band.groupies = 2
+    end
+    
+    it "compiles document from properties in object" do
+      assert_equal({"name"=>"No One's Choice", "groupies"=>2}, @band.send(:create_representation_with, {}))
+    end
+    
+    it "skips elements when block returns false" do
+      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}) do |binding| binding.definition.name == "name" end)
+    end
+  end
+  
 end
