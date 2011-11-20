@@ -86,8 +86,8 @@ module JsonTest
       end
       
       it "#from_json creates one Item instance" do
-        album = Album.from_json({:album => {:label => "Fat Wreck"}}.to_json)
-        assert_equal "Bad Religion", album.label.name
+        album = Album.from_json('{"album":{"label":{"name":"Fat Wreck"}}}')
+        assert_equal "Fat Wreck", album.label.name
       end
       
       it "#to_json serializes" do
