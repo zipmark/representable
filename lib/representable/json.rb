@@ -11,6 +11,7 @@ module Representable
       base.class_eval do
         include Representable
         extend ClassMethods
+        alias_method :from_json, :update_properties_from
       end
     end
     

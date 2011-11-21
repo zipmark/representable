@@ -45,6 +45,12 @@ class XmlTest < MiniTest::Spec
         assert_kind_of XML::TextBinding, Band.binding_for_definition(Def.new(:band, :from => :content))
       end
     end
+    
+    describe "#from_xml" do
+      it "is delegated to #update_properties_from" do
+        assert_respond_to Band.new, :from_xml  # DISCUSS: how to test that generically?
+      end
+    end
   end
 end
 

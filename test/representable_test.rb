@@ -89,7 +89,7 @@ class RepresentableTest < MiniTest::Spec
   end
 
   
-  require 'representable/json'
+  require 'representable/json'  # DISCUSS: i don't like the JSON requirement here, what about some generic test module?
   class PopBand
     include Representable::JSON
     representable_property :name
@@ -111,6 +111,11 @@ class RepresentableTest < MiniTest::Spec
       end
       assert_equal "No One's Choice", band.name
       assert_equal nil, band.groupies
+    end
+    
+    it "always returns self" do
+      band = PopBand.new
+      assert_equal band, band.update_properties_from({"name"=>"Nofx"})
     end
   end
   

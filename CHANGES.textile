@@ -1,6 +1,6 @@
 h2. 0.9.1
 
-* Extracted common serialization into @Representable#create_representation_with@.
+* Extracted common serialization into @Representable#create_representation_with@ and deserialization into @#update_properties_from@.
   
 h2. 0.9.0
 

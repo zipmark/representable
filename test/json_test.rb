@@ -28,9 +28,14 @@ module JsonTest
           assert_equal "name", Band.representable_bindings.first.definition.name
         end
       end
-  
-  
+      
       describe "#from_json" do
+        it "is delegated to #update_properties_from" do
+          assert_respond_to Band.new, :from_json  # DISCUSS: how to test that generically?
+        end
+      end
+  
+      describe ".from_json" do
         it "raises error with emtpy string" do
           assert_raises JSON::ParserError do
             Band.from_json("")

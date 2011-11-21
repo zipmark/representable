@@ -24,6 +24,7 @@ module Representable
       value = ref.read(doc)
       send(ref.definition.setter, value)
     end
+    self
   end
   
 private
