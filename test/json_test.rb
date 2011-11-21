@@ -33,8 +33,14 @@ module JsonTest
         it "is delegated to #update_properties_from" do
           assert_respond_to Band.new, :from_json  # DISCUSS: how to test that generically?
         end
+        
+        it "accepts wrapped properties" do
+          band = Band.new
+          band.from_json({:band => {:name => "This Is A Standoff"}}.to_json)
+          assert_equal "This Is A Standoff", band.name
+        end
       end
-  
+      
       describe ".from_json" do
         it "raises error with emtpy string" do
           assert_raises JSON::ParserError do
@@ -51,6 +57,12 @@ module JsonTest
         end
       end
       
+      describe ".from_hash" do
+        it "accepts unwrapped hash with string keys" do
+          band = Band.from_hash("name" => "Bombshell Rocks")
+          assert_equal "Bombshell Rocks", band.name
+        end
+      end
     end
   end
 
@@ -63,11 +75,6 @@ module JsonTest
       
       it "#from_json creates correct accessors" do
         band = Band.from_json({:band => {:name => "Bombshell Rocks"}}.to_json)
-        assert_equal "Bombshell Rocks", band.name
-      end
-      
-      it "#from_json accepts hash, too" do
-        band = Band.from_json({"band" => {"name" => "Bombshell Rocks"}})
         assert_equal "Bombshell Rocks", band.name
       end
       

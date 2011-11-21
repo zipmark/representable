@@ -55,9 +55,9 @@ module Representable
         []
       end
       
-      def value_from_hash(xml)
-        collect_for(xml) do |node|
-          definition.sought_type.from_json(node, :wrap => false) # hier name=> wech.
+      def value_from_hash(hash)
+        collect_for(hash) do |node|
+          definition.sought_type.from_hash(node)  # call #from_hash as it's already deserialized.
         end
       end
       

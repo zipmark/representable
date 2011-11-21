@@ -11,7 +11,6 @@ module Representable
       base.class_eval do
         include Representable
         extend ClassMethods
-        alias_method :from_json, :update_properties_from
       end
     end
     
@@ -25,13 +24,14 @@ module Representable
       #
       # Example:
       #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
+      # DISCUSS: assumes shitty wrapping like :article => {:name => ...}
       def from_json(data, options={})
-        # DISCUSS: extract #from_json call in Bindings to this place.
-        data = ::JSON[data] if data.is_a?(String) # DISCUSS: #from_json sometimes receives a string (in nestings).
-        data ||= {} # DISCUSS: is this needed?
-        data = data[representation_name.to_s] unless options[:wrap] == false
-        data ||= {} # FIXME: should we fail here? generate a warning?
-        
+        create_from_json.tap do |object|
+          object.from_json(data)
+        end
+      end
+      
+      def from_hash(data)
         create_from_json.tap do |object|
           object.update_properties_from(data)
         end
@@ -41,6 +41,14 @@ module Representable
       def create_from_json(*args)
         new(*args)
       end
+    end
+    
+    def from_json(data, options={})
+      data = ::JSON[data]
+      data = data[self.class.representation_name.to_s] unless options[:wrap] == false
+      data ||= {} # FIXME: should we fail here? generate a warning?
+      
+      update_properties_from(data)
     end
     
     def to_hash(options={})
