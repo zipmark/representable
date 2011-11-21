@@ -25,9 +25,9 @@ module Representable
       # Example:
       #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
       # DISCUSS: assumes shitty wrapping like :article => {:name => ...}
-      def from_json(data, options={})
+      def from_json(data, options={}, &block)
         create_from_json.tap do |object|
-          object.from_json(data)
+          object.from_json(data, &block)
         end
       end
       
@@ -43,12 +43,12 @@ module Representable
       end
     end
     
-    def from_json(data, options={})
+    def from_json(data, options={}, &block)
       data = ::JSON[data]
       data = data[self.class.representation_name.to_s] unless options[:wrap] == false
       data ||= {} # FIXME: should we fail here? generate a warning?
       
-      update_properties_from(data)
+      update_properties_from(data, &block)
     end
     
     def to_hash(options={})

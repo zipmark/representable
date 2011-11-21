@@ -7,6 +7,13 @@ module JsonTest
     Def = Representable::Definition
     
     describe "JSON module" do
+      before do
+        @Band = Class.new(Band) do
+          self.representation_name= :band
+          representable_property :label
+        end
+      end
+      
       class Band
         include Representable::JSON
         representable_property :name
@@ -30,8 +37,21 @@ module JsonTest
       end
       
       describe "#from_json" do
-        it "is delegated to #update_properties_from" do
-          assert_respond_to Band.new, :from_json  # DISCUSS: how to test that generically?
+        before do
+          @band = @Band.new
+        end
+        
+        it "accepts json string" do
+          @band.from_json({band: {name: "Nofx", label: "NOFX"}}.to_json)
+          assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+        end
+        
+        it "forwards block to #update_properties_from" do
+          @band.from_json({band: {name: "Nofx", label: "NOFX"}}.to_json) do |binding|
+            binding.definition.name == "name"
+          end
+          
+          assert_equal ["Nofx", nil], [@band.name, @band.label]
         end
         
         it "accepts wrapped properties" do
@@ -42,6 +62,11 @@ module JsonTest
       end
       
       describe ".from_json" do
+        it "delegates to #from_json after object conception" do
+          band = @Band.from_json({band: {name: "Nofx", label: "NOFX"}}.to_json) do |binding| binding.definition.name == "name" end
+          assert_equal ["Nofx", nil], [band.name, band.label]
+        end
+        
         it "raises error with emtpy string" do
           assert_raises JSON::ParserError do
             Band.from_json("")
