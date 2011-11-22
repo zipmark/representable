@@ -1,6 +1,7 @@
 h2. 0.9.1
 
 * Extracted common serialization into @Representable#create_representation_with@ and deserialization into @#update_properties_from@.
+* Both serialization and deserialization now accept a block to make them skip elements while iterating the property definitions.
   
 h2. 0.9.0
 
