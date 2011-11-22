@@ -22,6 +22,15 @@ class XmlTest < MiniTest::Spec
   Def = Representable::Definition
   
   describe "Xml module" do
+    before do
+      @Band = Class.new do
+        include Representable::XML
+        self.representation_name= :band
+        representable_property :name
+        representable_property :label
+      end
+    end
+      
     class Band
       include Representable::XML
       representable_property :href,   :from => "@href"
@@ -47,8 +56,21 @@ class XmlTest < MiniTest::Spec
     end
     
     describe "#from_xml" do
-      it "is delegated to #update_properties_from" do
-        assert_respond_to Band.new, :from_xml  # DISCUSS: how to test that generically?
+      before do
+        @band = @Band.new
+      end
+      
+      it "accepts xml string" do
+        @band.from_xml(%{<band><name>Nofx</name><label>NOFX</label></band>})
+        assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
+      end
+      
+      it "forwards block to #update_properties_from" do
+        @band.from_xml(%{<band><name>Nofx</name><label>NOFX</label></band>}) do |binding|
+          binding.definition.name == "name"
+        end
+        
+        assert_equal ["Nofx", nil], [@band.name, @band.label]
       end
     end
   end

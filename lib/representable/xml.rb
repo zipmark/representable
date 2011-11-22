@@ -33,8 +33,11 @@ module Representable
       
       # Creates a new Ruby object from XML using mapping information declared in the class.
       #
+      # Accepts a block yielding the currently iterated Definition. If the block returns false 
+      # the property is skipped.
+      #
       # Example:
-      #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
+      #   band.from_xml("<band><name>Nofx</name></band>")
       def from_xml(data, *args)
         xml = Nokogiri::XML::Node.from(data)
 

@@ -59,7 +59,14 @@ module JsonTest
           band.from_json({:band => {:name => "This Is A Standoff"}}.to_json)
           assert_equal "This Is A Standoff", band.name
         end
+        
+        it "accepts unwrapped properties using the :wrap option" do # DISCUSS: should be default.
+          band = Band.new
+          band.from_json({name: "This Is A Standoff"}.to_json, :wrap => false)
+          assert_equal "This Is A Standoff", band.name
+        end
       end
+      
       
       describe ".from_json" do
         it "delegates to #from_json after object conception" do
@@ -67,6 +74,7 @@ module JsonTest
           assert_equal ["Nofx", nil], [band.name, band.label]
         end
         
+        # TODO: move following tests to #from_json test.
         it "raises error with emtpy string" do
           assert_raises JSON::ParserError do
             Band.from_json("")
@@ -78,7 +86,6 @@ module JsonTest
         end
         
         it "generates warning with inappropriate hash in debugging mode" do
-          
         end
       end
       
