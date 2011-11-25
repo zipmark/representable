@@ -1,3 +1,7 @@
+h2. 0.9.2
+
+* Arguments and block now successfully forwarded in @#from_*@.
+
 h2. 0.9.1
 
 * Extracted common serialization into @Representable#create_representation_with@ and deserialization into @#update_properties_from@.
