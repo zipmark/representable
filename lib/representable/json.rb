@@ -25,9 +25,9 @@ module Representable
       # Example:
       #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
       # DISCUSS: assumes shitty wrapping like :article => {:name => ...}
-      def from_json(data, options={}, &block)
+      def from_json(data, *args, &block)
         create_from_json.tap do |object|
-          object.from_json(data, &block)
+          object.from_json(data, *args, &block)
         end
       end
       

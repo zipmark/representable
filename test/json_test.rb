@@ -74,6 +74,12 @@ module JsonTest
           assert_equal ["Nofx", nil], [band.name, band.label]
         end
         
+        it "passes all args to #from_json" do
+          block = lambda {|a,b|}
+          @Band.any_instance.expects(:from_json).with("{}", "yo") # FIXME: how to expect block?
+          @Band.from_json("{}", "yo", &block)
+        end
+        
         # TODO: move following tests to #from_json test.
         it "raises error with emtpy string" do
           assert_raises JSON::ParserError do
