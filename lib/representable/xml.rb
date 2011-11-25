@@ -12,7 +12,6 @@ module Representable
       base.class_eval do
         include Representable
         extend ClassMethods
-        alias_method :from_xml, :update_properties_from
       end
     end
     
@@ -38,11 +37,9 @@ module Representable
       #
       # Example:
       #   band.from_xml("<band><name>Nofx</name></band>")
-      def from_xml(data, *args)
-        xml = Nokogiri::XML::Node.from(data)
-
+      def from_xml(doc, *args, &block)
         create_from_xml(*args).tap do |object|
-          object.update_properties_from(xml)
+          object.from_xml(doc, *args, &block)
         end
       end
       
@@ -51,6 +48,12 @@ module Representable
         new(*args)
       end
     end
+    
+    def from_xml(doc, *args, &block)
+      xml = Nokogiri::XML::Node.from(doc)
+      update_properties_from(xml, &block)
+    end
+    
     
     # Returns a Nokogiri::XML object representing this object.
     def to_xml(params={})
