@@ -44,7 +44,7 @@ module Representable
     class ObjectBinding < Binding
       def write(hash, value)
         if definition.array?
-          hash.merge! ({definition.from => value.collect {|v| v.to_hash(:wrap => false)}}) # hier name=> wech.
+          hash.merge!({definition.from => value.collect {|v| v.to_hash(:wrap => false)}})
         else
           hash.merge! value.to_hash
         end

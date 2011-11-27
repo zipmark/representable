@@ -2,6 +2,10 @@ require 'json'
 require 'representable/bindings/json_bindings'
 
 module Representable
+  # Brings #to_xml, #to_hash, #from_xml and #from_hash to your object.
+  #
+  # Note: The authorative methods are #to_hash and #from_hash, if you override #to_json instead,
+  # things might work as expected.
   module JSON
     BINDING_FOR_TYPE = {  # TODO: refactor #representable_accessor for better extendability.
       :text     => TextBinding,
