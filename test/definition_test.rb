@@ -9,7 +9,6 @@ class DefinitionTest < MiniTest::Spec
     it "responds to #typed?" do
       assert ! @def.typed?
       assert Representable::Definition.new(:songs, :as => Hash).typed?
-      assert Representable::Definition.new(:songs, :as => [Hash]).typed?
     end
     
     it "responds to #getter and returns string" do
@@ -41,19 +40,19 @@ class DefinitionTest < MiniTest::Spec
     end
     
     it "works with collection" do
-      @d = Representable::Definition.new(:song, :as => [])
+      @d = Representable::Definition.new(:song, :collection => true)
       assert_equal [2,3,4], @d.apply([1,2,3]) { |v| v+1 }
     end
     
     it "skips with collection and nil" do
-      @d = Representable::Definition.new(:song, :as => [])
+      @d = Representable::Definition.new(:song, :collection => true)
       assert_equal nil, @d.apply(nil) { |v| v+1 }
     end
   end
     
-  describe ":as => []" do
+  describe ":collection => true" do
     before do
-      @def = Representable::Definition.new(:songs, :as => [], :tag => :song)
+      @def = Representable::Definition.new(:songs, :collection => true, :tag => :song)
     end
     
     it "responds to #array?" do
@@ -64,18 +63,6 @@ class DefinitionTest < MiniTest::Spec
       assert_equal :text, @def.sought_type
     end
   end
-    
-    
-  describe ":as => [Item]" do
-    before do
-      @def = Representable::Definition.new(:songs, :as => [Hash])
-    end
-    
-    it "responds to #sought_type" do
-      assert_equal Hash, @def.sought_type
-    end
-  end
-  
   
   describe ":as => Item" do
     before do

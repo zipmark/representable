@@ -72,7 +72,7 @@ private
       #   representable_collection :products, :from => :item
       #   representable_collection :products, :as => Product
       def representable_collection(name, options={})
-        options[:as] = [options[:as]].compact
+        options[:collection] = true
         representable_property(name, options)
       end
       
