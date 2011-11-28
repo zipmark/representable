@@ -49,7 +49,11 @@ module Representable
     
     def from_json(data, options={}, &block)
       data = ::JSON[data]
-      data = data[self.class.representation_name.to_s] unless options[:wrap] == false
+      
+      if wrap = options[:wrap] || self.class.representation_wrap
+        data = data[wrap.to_s]
+      end
+      
       data ||= {} # FIXME: should we fail here? generate a warning?
       
       update_properties_from(data, &block)
@@ -58,8 +62,9 @@ module Representable
     def to_hash(options={})
       hash = create_representation_with({})
       
-      # DISCUSS: where to wrap?
-      options[:wrap] == false ? hash : {self.class.representation_name => hash}
+      return hash unless wrap = options[:wrap] || self.class.representation_wrap
+      
+      {wrap => hash}
     end
     
     # Returns a JSON string representing this object.
