@@ -54,16 +54,18 @@ module JsonTest
           assert_equal ["Nofx", nil], [@band.name, @band.label]
         end
         
-        it "accepts wrapped properties" do
-          band = Band.new
-          band.from_json({:band => {:name => "This Is A Standoff"}}.to_json)
-          assert_equal "This Is A Standoff", band.name
-        end
-        
-        it "accepts unwrapped properties using the :wrap option" do # DISCUSS: should be default.
-          band = Band.new
-          band.from_json({name: "This Is A Standoff"}.to_json, :wrap => false)
-          assert_equal "This Is A Standoff", band.name
+        describe ":wrap option" do
+          it "accepts wrapped properties" do
+            band = Band.new
+            band.from_json({:band => {:name => "This Is A Standoff"}}.to_json)
+            assert_equal "This Is A Standoff", band.name
+          end
+          
+          it "accepts unwrapped properties" do # DISCUSS: should be default.
+            band = Band.new
+            band.from_json({name: "This Is A Standoff"}.to_json, :wrap => false)
+            assert_equal "This Is A Standoff", band.name
+          end
         end
       end
       
@@ -95,10 +97,21 @@ module JsonTest
         end
       end
       
+      
       describe ".from_hash" do
         it "accepts unwrapped hash with string keys" do
           band = Band.from_hash("name" => "Bombshell Rocks")
           assert_equal "Bombshell Rocks", band.name
+        end
+      end
+    
+    
+      describe "#to_json" do
+        it "respects :wrap" do
+          band = @Band.new
+          band.label = "Fat"
+          
+          assert_equal "{\"label\":\"Fat\"}", band.to_json(:wrap => false)
         end
       end
     end

@@ -46,7 +46,7 @@ module Representable
         if definition.array?
           hash.merge!({definition.from => value.collect {|v| v.to_hash(:wrap => false)}})
         else
-          hash.merge! value.to_hash
+          hash.merge!(value.to_hash)
         end
       end
 
