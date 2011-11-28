@@ -159,6 +159,22 @@ module JsonTest
         
         assert_equal '{"album":{"label":{"name":"Fat Wreck"}}}', album.to_json
       end
+      
+      describe ":different_name, :as => Label" do
+        before do
+          @Album = Class.new do
+            include Representable::JSON
+            representable_property :seller, :as => Label
+          end
+        end
+        
+        it "#to_xml respects the different name" do
+          label = Label.new; label.name = "Fat Wreck"
+          album = @Album.new; album.seller = label
+          
+          assert_equal "{\"seller\":{\"name\":\"Fat Wreck\"}}", album.to_json(:wrap => false)
+        end
+      end
     end
     
     describe ":from => :songName" do
