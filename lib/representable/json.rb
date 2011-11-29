@@ -24,21 +24,13 @@ module Representable
         (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
       end
     
-      # Creates a new Ruby object from XML using mapping information declared in the class.
-      #
-      # Example:
-      #  book = Book.from_xml("<book><name>Beyond Java</name></book>")
-      # DISCUSS: assumes shitty wrapping like :article => {:name => ...}
-      def from_json(data, *args, &block)
-        create_from_json.tap do |object|
-          object.from_json(data, *args, &block)
-        end
+      # Creates a new object from the passed JSON document.
+      def from_json(*args, &block)
+        create_from_json.from_json(*args, &block)
       end
       
-      def from_hash(data)
-        create_from_json.tap do |object|
-          object.update_properties_from(data)
-        end
+      def from_hash(*args, &block)
+        create_from_json.from_hash(*args, &block)
       end
       
     private
@@ -47,15 +39,16 @@ module Representable
       end
     end
     
-    def from_json(data, options={}, &block)
+    # Parses the body as JSON and delegates to #from_hash.
+    def from_json(data, *args, &block)
       data = ::JSON[data]
-      
-      # DISCUSS: move wrapping to #from_hash for consistency.
+      from_hash(data, *args, &block)
+    end
+    
+    def from_hash(data, options={}, &block)
       if wrap = options[:wrap] || self.class.representation_wrap
         data = data[wrap.to_s]
       end
-      
-      data ||= {} # FIXME: should we fail here? generate a warning?
       
       update_properties_from(data, &block)
     end
