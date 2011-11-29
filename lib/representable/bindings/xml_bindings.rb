@@ -8,8 +8,6 @@ module Representable
       end
       
       def read(xml)
-        xml = Nokogiri::XML::Node.from(xml) or return default
-        
         value_from_node(xml) or default
       end
       
@@ -85,18 +83,10 @@ module Representable
         []
       end
       
-      def serialize(object)
-        object.to_xml
-      end
-      
-      def deserialize(node_class, xml)
-        node_class.from_xml(xml)
-      end
-      
       # Deserializes the ref's element from +xml+.
       def value_from_node(xml)
         collect_for(xml) do |node|
-          deserialize(definition.sought_type, node)
+          definition.sought_type.from_node(node)
         end
       end
       
@@ -107,7 +97,7 @@ module Representable
       end
       
       def write_entity(xml, entity)
-        xml.add_child(serialize(entity))
+        xml.add_child(entity.to_node)
       end
     end
   end

@@ -11,7 +11,7 @@ class Band
 end
 
 class Label
-  def to_xml
+  def to_node
     "<label>Fat Wreck</label>"
   end
 end
@@ -55,7 +55,7 @@ class XmlTest < MiniTest::Spec
     
     describe "#to_xml" do
       it "wraps with infered class name per default" do
-        assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml.to_s
+        assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml
       end
       
       it "respects #representation_wrap=" do
