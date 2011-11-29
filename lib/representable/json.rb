@@ -50,6 +50,7 @@ module Representable
     def from_json(data, options={}, &block)
       data = ::JSON[data]
       
+      # DISCUSS: move wrapping to #from_hash for consistency.
       if wrap = options[:wrap] || self.class.representation_wrap
         data = data[wrap.to_s]
       end

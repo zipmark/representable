@@ -25,7 +25,7 @@ class XmlTest < MiniTest::Spec
     before do
       @Band = Class.new do
         include Representable::XML
-        self.representation_name= :band
+        self.representation_wrap = :band
         representable_property :name
         representable_property :label
       end

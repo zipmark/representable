@@ -13,6 +13,7 @@ module Representable
       base.class_eval do
         include Representable
         extend ClassMethods
+        self.representation_wrap = true # let representable compute it.
       end
     end
     
@@ -57,8 +58,8 @@ module Representable
     
     
     # Returns a Nokogiri::XML object representing this object.
-    def to_xml(params={})
-      root_tag = params[:name] || self.class.representation_name
+    def to_xml(options={})
+      root_tag = options[:wrap] || self.class.representation_wrap
       
       create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new))
     end
