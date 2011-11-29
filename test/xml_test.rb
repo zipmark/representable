@@ -18,12 +18,6 @@ class Album
     band and self.band = band
   end
 end
-
-class Label
-  def to_node
-    "<label>Fat Wreck</label>"
-  end
-end
   
   
 class XmlTest < MiniTest::Spec
