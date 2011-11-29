@@ -26,16 +26,11 @@ module Representable
     
       # Creates a new object from the passed JSON document.
       def from_json(*args, &block)
-        create_from_json.from_json(*args, &block)
+        new.from_json(*args, &block)
       end
       
       def from_hash(*args, &block)
-        create_from_json.from_hash(*args, &block)
-      end
-      
-    private
-      def create_from_json(*args)
-        new(*args)
+        new.from_hash(*args, &block)
       end
     end
     
