@@ -61,7 +61,7 @@ class XmlTest < MiniTest::Spec
       it "respects #representation_wrap=" do
         klass = Class.new(Band)
         klass.representation_wrap = :group
-        assert_xml_equal "<group><name>Rise Against</name></group>", klass.new("Rise Against").to_xml.to_s
+        assert_xml_equal "<group><name>Rise Against</name></group>", klass.new("Rise Against").to_xml
       end
     end
     
@@ -116,7 +116,7 @@ class AttributesTest < MiniTest::Spec
       link = Link.new
       link.href = "http://apotomo.de/"
       
-      assert_xml_equal %{<link href="http://apotomo.de/">}, link.to_xml.to_s
+      assert_xml_equal %{<link href="http://apotomo.de/">}, link.to_xml
     end
   end
 end
@@ -149,7 +149,7 @@ class TypedPropertyTest < MiniTest::Spec
          <band>
            <name>Bad Religion</name>
          </band>
-       </album>}, album.to_xml.to_s
+       </album>}, album.to_xml
       end
       
       it "doesn't escape and wrap string from Label#to_xml" do
@@ -158,7 +158,7 @@ class TypedPropertyTest < MiniTest::Spec
         
         assert_xml_equal %{<album>
           <label>Fat Wreck</label>
-        </album>}, album.to_xml.to_s
+        </album>}, album.to_xml
       end
     end
   end

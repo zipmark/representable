@@ -30,19 +30,15 @@ module Representable
       #
       # Example:
       #   band.from_xml("<band><name>Nofx</name></band>")
-      def from_xml(doc, *args, &block)
-        create_from_xml.from_xml(doc, *args, &block)
+      def from_xml(*args, &block)
+        new.from_xml(*args, &block)
       end
       
-      def from_node(node, *args, &block)
-        create_from_xml.from_node(node, *args, &block)
-      end
-      
-    private
-      def create_from_xml(*args)
-        new(*args)
+      def from_node(*args, &block)
+        new.from_node(*args, &block)
       end
     end
+    
     
     def from_xml(doc, *args, &block)
       node = Nokogiri::XML(doc).root
@@ -52,7 +48,6 @@ module Representable
     def from_node(node, options={}, &block)
       update_properties_from(node, &block)
     end
-    
     
     # Returns a Nokogiri::XML object representing this object.
     def to_node(options={})
