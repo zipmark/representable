@@ -1,5 +1,6 @@
-require 'json'
+require 'representable'
 require 'representable/bindings/json_bindings'
+require 'json'
 
 module Representable
   # Brings #to_xml, #to_hash, #from_xml and #from_hash to your object.
