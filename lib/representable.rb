@@ -1,7 +1,5 @@
 require 'hooks/inheritable_attribute'
 require 'representable/definition'
-require 'representable/nokogiri_extensions'
-
 
 module Representable
   def self.included(base)
