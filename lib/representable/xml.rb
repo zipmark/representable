@@ -18,16 +18,7 @@ module Representable
     end
     
     
-    class Definition < Representable::Definition
-      # FIXME: extract xml-specific from Definition.
-    end
-    
-    
     module ClassMethods
-      def definition_class
-        Definition
-      end
-      
       def binding_for_definition(definition)
         (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
       end

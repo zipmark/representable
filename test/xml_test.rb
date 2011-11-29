@@ -29,31 +29,42 @@ class XmlTest < MiniTest::Spec
         representable_property :name
         representable_property :label
       end
-    end
       
-    class Band
-      include Representable::XML
-      representable_property :href,   :from => "@href"
-      representable_property :title,  :from => "@title"
+      @Link = Class.new do
+        include Representable::XML
+        representable_property :href,   :from => "@href"
+        representable_property :title,  :from => "@title"
+      end
     end
     
-    it "#definition_class returns Definition class" do
-      assert_equal XML::Definition, Band.definition_class
-    end
-  
+    
     describe "#binding_for_definition" do
       it "returns AttributeBinding" do
-        assert_kind_of XML::AttributeBinding, Band.binding_for_definition(Def.new(:band, :from => "@band"))
+        assert_kind_of XML::AttributeBinding, @Link.binding_for_definition(Def.new(:band, :from => "@band"))
       end
       
       it "returns ObjectBinding" do
-        assert_kind_of XML::ObjectBinding, Band.binding_for_definition(Def.new(:band, :as => Hash))
+        assert_kind_of XML::ObjectBinding, @Link.binding_for_definition(Def.new(:band, :as => Hash))
       end
       
       it "returns TextBinding" do
-        assert_kind_of XML::TextBinding, Band.binding_for_definition(Def.new(:band, :from => :content))
+        assert_kind_of XML::TextBinding, @Link.binding_for_definition(Def.new(:band, :from => :content))
       end
     end
+    
+    
+    describe "#to_xml" do
+      it "wraps with infered class name per default" do
+        assert_xml_equal "<band><name>Rise Against</name></band>", Band.new("Rise Against").to_xml.to_s
+      end
+      
+      it "respects #representation_wrap=" do
+        klass = Class.new(Band)
+        klass.representation_wrap = :group
+        assert_xml_equal "<group><name>Rise Against</name></group>", klass.new("Rise Against").to_xml.to_s
+      end
+    end
+    
     
     describe "#from_xml" do
       before do
