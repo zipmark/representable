@@ -49,14 +49,14 @@ module Representable
     end
     
     # Returns a Nokogiri::XML object representing this object.
-    def to_node(options={})
+    def to_node(options={}, &block)
       root_tag = options[:wrap] || self.class.representation_wrap
       
-      create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new))
+      create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new), &block)
     end
     
-    def to_xml(*args)
-      to_node(*args).to_s
+    def to_xml(*args, &block)
+      to_node(*args, &block).to_s
     end
   end
 end
