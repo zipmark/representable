@@ -22,16 +22,6 @@ module Representable
         definition.from
       end
 
-      def wrap(xml, opts = {:always_create => false})
-        wrap_with = @auto_vals ? auto_wrapper : definition.wrapper
-
-        return xml if !wrap_with || xml.name == wrap_with
-        if !opts[:always_create] && (child = xml.children.find {|c| c.name == wrap_with })
-         return child
-        end
-        xml.add_node(wrap_with.to_s)
-      end
-
       def collect_for(xml)
         nodes = xml.search("./#{xpath}")
         vals  = nodes.collect { |node| yield node }
@@ -44,9 +34,7 @@ module Representable
     # Represents a tag attribute.
     class AttributeBinding < Binding
       def write(xml, values)
-        wrap(xml).tap do |xml|
-          xml[definition.from] = values.to_s
-        end
+        xml[definition.from] = values.to_s
       end
 
     private
@@ -61,18 +49,16 @@ module Representable
       # Updates the text in the given _xml_ block to
       # the _value_ provided.
       def write(xml, value)
-        wrap(xml).tap do |xml|
-          if definition.content?
-            add(xml, value)
-          elsif definition.name?
-            xml.name = value
-          elsif definition.array?
-            value.each do |v|
-              add(xml.add_node(definition.from), v)
-            end
-          else
-            add(xml.add_node(definition.from), value)
+        if definition.content?
+          add(xml, value)
+        elsif definition.name?
+          xml.name = value
+        elsif definition.array?
+          value.each do |v|
+            add(xml.add_node(definition.from), v)
           end
+        else
+          add(xml.add_node(definition.from), value)
         end
       end
 
@@ -93,12 +79,10 @@ module Representable
     class ObjectBinding < Binding
       # Adds the ref's markup to +xml+. 
       def write(xml, value)
-        wrap(xml).tap do |xml|
-          if definition.array?
-            write_collection(xml, value)
-          else
-            write_entity(xml, value)
-          end
+        if definition.array?
+          write_collection(xml, value)
+        else
+          write_entity(xml, value)
         end
       end
 
