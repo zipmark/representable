@@ -46,14 +46,8 @@ module Representable
     
     # Represents text content in a tag. # FIXME: is this tested???
     class TextBinding < Binding
-      # Updates the text in the given _xml_ block to
-      # the _value_ provided.
       def write(xml, value)
-        if definition.content?
-          add(xml, value)
-        elsif definition.name?
-          xml.name = value
-        elsif definition.array?
+        if definition.array?
           value.each do |v|
             add(xml.add_node(definition.from), v)
           end
