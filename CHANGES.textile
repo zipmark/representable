@@ -1,6 +1,7 @@
 h2. 0.10.1
 
-* the block in @to_*@ and @from_*@ now yields the symbolized property name. If you need the binding/definition you gotta get it yourself.
+* The block in @to_*@ and @from_*@ now yields the symbolized property name. If you need the binding/definition you gotta get it yourself.
+* Runs with Ruby 1.8 and 1.9.
 
 h2. 0.10.0
 
