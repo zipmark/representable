@@ -1,3 +1,7 @@
+h2. 0.10.1
+
+* the block in @to_*@ and @from_*@ now yields the symbolized property name. If you need the binding/definition you gotta get it yourself.
+
 h2. 0.10.0
 
 * Wrapping can now be set through @Representable.representation_wrap=@. Possible values are:
