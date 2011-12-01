@@ -65,8 +65,8 @@ class XmlTest < MiniTest::Spec
       end
       
       it "forwards block to #from_node" do
-        @band.from_xml(@xml) do |binding|
-          binding.definition.name == "name"
+        @band.from_xml(@xml) do |name|
+          name == :name
         end
         
         assert_equal ["Nofx", nil], [@band.name, @band.label]
@@ -86,8 +86,8 @@ class XmlTest < MiniTest::Spec
       end
       
       it "forwards block to #update_properties_from" do
-        @band.from_node(@xml) do |binding|
-          binding.definition.name == "name"
+        @band.from_node(@xml) do |name|
+          name == :name
         end
         
         assert_equal ["Nofx", nil], [@band.name, @band.label]
@@ -104,8 +104,8 @@ class XmlTest < MiniTest::Spec
         band = @Band.new
         band.name  = "The Guinea Pigs"
         band.label = "n/a"
-        xml = band.to_xml do |binding|
-          binding.definition.name == "name"
+        xml = band.to_xml do |name|
+          name == :name
         end
         
         assert_xml_equal "<band><name>The Guinea Pigs</name></band>", xml

@@ -16,26 +16,33 @@ module Representable
   end
   
   # Reads values from +doc+ and sets properties accordingly.
-  def update_properties_from(doc)
-    self.class.representable_bindings.each do |ref|
-      next if block_given? and not yield ref # skip if block is false. # DISCUSS: will we keep that?
+  def update_properties_from(doc, &block)
+    self.class.representable_bindings.each do |bin|
+      next if eval_property_block(bin, &block)  # skip if block is false.
       
-      value = ref.read(doc)
-      send(ref.definition.setter, value)
+      value = bin.read(doc)
+      send(bin.definition.setter, value)
     end
     self
   end
   
 private
   # Compiles the document going through all properties.
-  def create_representation_with(doc)
-    self.class.representable_bindings.each do |ref|
-      next if block_given? and not yield ref # skip if block is false. # DISCUSS: will we keep that?
+  def create_representation_with(doc, &block)
+    self.class.representable_bindings.each do |bin|
+      next if eval_property_block(bin, &block)  # skip if block is false.
       
-      value = public_send(ref.definition.getter) # DISCUSS: eventually move back to Ref.
-      ref.write(doc, value) if value
+      value = public_send(bin.definition.getter) # DISCUSS: eventually move back to Ref.
+      bin.write(doc, value) if value
     end
     doc
+  end
+  
+  # Returns true unless a eventually given block returns false. Yields the symbolized
+  # property name.
+  def eval_property_block(binding)
+    # TODO: no magic symbol conversion!
+    block_given? and not yield binding.definition.name.to_sym
   end
   
   

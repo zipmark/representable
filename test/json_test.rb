@@ -50,8 +50,8 @@ module JsonTest
         end
         
         it "forwards block to #from_hash" do
-          @band.from_json(@json) do |binding|
-            binding.definition.name == "name"
+          @band.from_json(@json) do |name|
+            name == :name
           end
           
           assert_equal ["Nofx", nil], [@band.name, @band.label]
@@ -71,8 +71,8 @@ module JsonTest
         end
         
         it "forwards block to #update_properties_from" do
-          @band.from_hash(@hash) do |binding|
-            binding.definition.name == "name"
+          @band.from_hash(@hash) do |name|
+            name == :name
           end
           
           assert_equal ["Nofx", nil], [@band.name, @band.label]
@@ -102,8 +102,8 @@ module JsonTest
           band = @Band.new
           band.name  = "The Guinea Pigs"
           band.label = "n/a"
-          json = band.to_json do |binding|
-            binding.definition.name == "name"
+          json = band.to_json do |name|
+            name == :name
           end
           
           assert_equal "{\"name\":\"The Guinea Pigs\"}", json
