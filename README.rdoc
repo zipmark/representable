@@ -24,7 +24,7 @@ Since you keep forgetting the heroes of your childhood you decide to implement a
   gem 'representable'
 
 
-=== Defining Representations
+== Defining Representations
 
   require 'representable/json'
 
@@ -37,7 +37,7 @@ Since you keep forgetting the heroes of your childhood you decide to implement a
 
 This declares two simple properties. Representable will automatically add accessors to the class.
 
-=== Rendering
+== Rendering
 
 Now let's create and render our first hero.
 
@@ -50,7 +50,7 @@ Now let's create and render our first hero.
 
 Those two properties are considered when rendering in #to_json.
 
-=== Parsing
+== Parsing
 
 The cool thing about Representable is: it works bidirectional. By declaring properties you can not only render but also parse!
 
@@ -59,7 +59,7 @@ The cool thing about Representable is: it works bidirectional. By declaring prop
   
 See how easy this is? You can use an object-oriented method to read from the document. 
 
-=== Nesting
+== Nesting
 
 You need a second domain object. Every hero has a place he comes from.
 
@@ -84,10 +84,10 @@ Using the +:as+ option allows you to include other representable objects.
 
   peter.origin = neverland
   peter.to_json
-  #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Wonderland"}}
+  #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"}}
 
 
-=== Parsing Nested Documents
+== Parsing Nested Documents
 
 Don't forget how easy it is to parse nested representations.
 
@@ -97,9 +97,9 @@ Don't forget how easy it is to parse nested representations.
 
 Representable just creates objects from the parsed document - nothing more and nothing less.
 
-=== Simple Collections
+== Simple Collections
 
-Heroes have features, special abilities that make them a superhero.
+Heroes have features, special abilities that make 'em a superhero.
 
   class Hero
     representable_collection :features
@@ -107,14 +107,14 @@ Heroes have features, special abilities that make them a superhero.
 
 The second API method is +representable_collection+ and, well, declares a collection.
 
-peter.features = ["stays young", "can fly"]
-peter.to_json
+  peter.features = ["stays young", "can fly"]
+  peter.to_json
 #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"]}
 
 
-=== Typed Collections
+== Typed Collections
 
-Ok, things start working out. Your hero has a name, an origin and a list of features so far. Why not allows adding friends to Peter - nobody wanna be alone!
+Ok, things start working out. Your hero has a name, an origin and a list of features so far. Why not allows adding friends to Peter - nobody wants to be alone!
 
   class Hero
     representable_collection :friends, :as => Hero
@@ -136,9 +136,9 @@ I always wanted to be Peter's bro... in this example it is possible!
   #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"],"friends":[{"name":"Nick"},{"name":"El"}]}
 
 
-=== Customizing
+== Customizing
 
-==== Wrapping
+=== Wrapping
 
 Representable is designed to be very simple. However, a few tweaks are available. What if you want to wrap your document?
 
@@ -157,7 +157,7 @@ You can also provide a custom wrapper.
   peter.to_json #=> {"boy":{"name":"Peter","surename":"Pan"}}
 
 
-==== Mapping
+=== Mapping
 
 If your accessor name doesn't match the attribute name in the document, use the +:from+ matcher.
 
@@ -168,7 +168,7 @@ If your accessor name doesn't match the attribute name in the document, use the 
   peter.to_json #=> {"name":"Peter","surename":"Pan"}
 
 
-==== Filtering
+=== Filtering
 
 Representable allows you to skip properties when rendering or parsing.
 
@@ -216,5 +216,5 @@ Representable was written with REST representations in mind. However, it is a ge
 
 Representable is a heavily simplified fork of the ROXML gem. Big thanks to Ben Woosley for his work.
 
-Copyright (c) 2011 Nick Sutterer <apotonick@gmail.com>
-Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.
+* Copyright (c) 2011 Nick Sutterer <apotonick@gmail.com>
+* Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.
