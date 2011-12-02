@@ -44,6 +44,15 @@ class RepresentableTest < MiniTest::Spec
         assert_equal "friends", band.representable_attrs.last.from
       end
     end
+    
+    describe ":accessor" do
+      it "doesn't add methods when false" do
+        klass = Class.new(Band) { representable_property :friends, :accessors => false }
+        band = klass.new
+        assert ! band.respond_to?(:friends)
+        assert ! band.respond_to?("friends=")
+      end
+    end
   end
   
   describe "#representable_collection" do

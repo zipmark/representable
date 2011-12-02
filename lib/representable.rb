@@ -64,10 +64,12 @@ private
       #   representable_property :name
       #   representable_property :name, :from => :title
       #   representable_property :name, :as => Name
-      def representable_property(*args)
-        attr = add_representable_property(*args)
-        attr_reader(attr.getter)
-        attr_writer(attr.getter)
+      #   representable_property :name, :accessors => false
+      def representable_property(name, options={})
+        attr = add_representable_property(name, options)
+        
+        attr_reader(attr.getter) unless options[:accessors] == false
+        attr_writer(attr.getter) unless options[:accessors] == false
       end
       
       # Declares a represented document node collection.
