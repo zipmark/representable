@@ -64,6 +64,18 @@ class RepresentableTest < MiniTest::Spec
         assert_equal "{\"name\":\"Vention Dention\",\"street_cred\":1}", vd.to_json
       end
       
+      #it "allows including the concrete representer module only" do
+      #  require 'representable/json'
+      #  module RockBandRepresentation
+      #    include Representable::JSON
+      #    representable_property :name
+      #  end
+      #  vd = class VH
+      #    include RockBandRepresentation
+      #  end.new
+      #  vd.name        = "Van Halen"
+      #  assert_equal "{\"name\":\"Van Halen\"}", vd.to_json
+      #end
     end
   end
   
