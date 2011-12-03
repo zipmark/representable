@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Nick Sutterer"]
   s.email       = ["apotonick@gmail.com"]
   s.homepage    = "http://representable.apotomo.de"
-  s.summary     = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties and compositions.}
-  s.description = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties and compositions.}
+  s.summary     = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties, collections and compositions.}
+  s.description = %q{Maps representation documents from and to Ruby objects. Includes XML and JSON support, plain properties, collections and compositions.}
   
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

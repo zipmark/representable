@@ -37,6 +37,22 @@ Since you keep forgetting the heroes of your childhood you decide to implement a
 
 This declares two simple properties. Representable will automatically add accessors to the class.
 
+If you don't want declarations in your models, use a module.
+
+  module HeroRepresentation
+    include Representable
+    
+    representable_property :forename
+    representable_property :surename
+  end
+
+This module needs a host class to be used with.
+
+  class Hero
+    include Representable::JSON
+    include HeroRepresentation
+  end
+
 == Rendering
 
 Now let's create and render our first hero.

@@ -1,6 +1,8 @@
 h2. 0.10.2
 
 * Added `representable_property :accessors => false` option to suppress adding accessors.
+* @Representable.representation_wrap@ is no longer inherited.
+* Representers can now be defined in modules. They inherit to including modules.
 
 h2. 0.10.1
 
