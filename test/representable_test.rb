@@ -10,6 +10,19 @@ class RepresentableTest < MiniTest::Spec
     representable_property :street_cred
   end
   
+  module BandRepresentation
+    include Representable
+    
+    representable_property :name
+  end
+  
+  module PunkBandRepresentation
+    include Representable
+    include BandRepresentation
+    
+    representable_property :street_cred
+  end
+  
   
   describe "#representable_attrs" do
     it "responds to #representable_attrs" do
@@ -17,10 +30,40 @@ class RepresentableTest < MiniTest::Spec
       assert_equal "name", Band.representable_attrs.first.name
     end
     
-    it "inherits correctly" do
-      assert_equal 2, PunkBand.representable_attrs.size
-      assert_equal "name", PunkBand.representable_attrs.first.name
-      assert_equal "street_cred", PunkBand.representable_attrs.last.name
+    describe "in module" do
+      it "returns definitions" do
+        assert_equal 1, BandRepresentation.representable_attrs.size
+        assert_equal "name", BandRepresentation.representable_attrs.first.name
+      end
+      
+      it "inherits to including modules" do
+        assert_equal 2,  PunkBandRepresentation.representable_attrs.size
+        assert_equal "name", PunkBandRepresentation.representable_attrs.first.name
+        assert_equal "street_cred", PunkBandRepresentation.representable_attrs.last.name
+      end
+      
+      it "inherits to including class" do
+        band = Class.new do
+          include Representable
+          include PunkBandRepresentation
+        end
+        
+        assert_equal 2,  band.representable_attrs.size
+        assert_equal "name", band.representable_attrs.first.name
+        assert_equal "street_cred", band.representable_attrs.last.name
+      end
+      
+      it "allows including the concrete representer module later" do
+        require 'representable/json'
+        vd = class VD
+          include Representable::JSON
+          include PunkBandRepresentation
+        end.new
+        vd.name        = "Vention Dention"
+        vd.street_cred = 1
+        assert_equal "{\"name\":\"Vention Dention\",\"street_cred\":1}", vd.to_json
+      end
+      
     end
   end
   
@@ -83,7 +126,6 @@ class RepresentableTest < MiniTest::Spec
       assert_equal nil, SoundSystem.representation_wrap
     end
     
-    
     it "infers a printable class name if set to true" do
       HardcoreBand.representation_wrap = true
       assert_equal "hardcore_band", HardcoreBand.send(:representation_wrap)
@@ -94,9 +136,9 @@ class RepresentableTest < MiniTest::Spec
       assert_equal "breach", HardcoreBand.representation_wrap
     end
     
-    it "inherits correctly" do
+    it "doesn't inherit correctly" do
       HardcoreBand.representation_wrap = "breach"
-      assert_equal "breach", SoftcoreBand.representation_wrap
+      assert_equal nil, SoftcoreBand.representation_wrap
     end
   end
   

@@ -1,4 +1,3 @@
-require 'hooks/inheritable_attribute'
 require 'representable/definition'
 
 module Representable
@@ -7,11 +6,9 @@ module Representable
       extend ClassMethods::Declarations
       extend ClassMethods::Accessors
       
-      extend Hooks::InheritableAttribute
-      inheritable_attr :representable_attrs
-      self.representable_attrs = []
-      
-      inheritable_attr :representable_wrap
+      def self.included(base)
+        base.representable_attrs.push(*representable_attrs) # "inherit".
+      end
     end
   end
   
@@ -93,6 +90,18 @@ private
     end
 
     module Accessors
+      def representable_attrs
+        @representable_attrs ||= []
+      end
+      
+      def representable_wrap
+        @representable_wrap ||= false
+      end
+      
+      def representable_wrap=(name)
+        @representable_wrap = name
+      end
+      
       def representation_wrap=(name)
         self.representable_wrap = name
       end

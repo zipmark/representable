@@ -125,7 +125,11 @@ class XmlTest < MiniTest::Spec
       end
       
       it "respects #representation_wrap=" do
-        klass = Class.new(Band)
+        klass = Class.new(Band) do
+          include Representable
+          representable_property :name
+        end
+        
         klass.representation_wrap = :group
         assert_xml_equal "<group><name>Rise Against</name></group>", klass.new("Rise Against").to_node.to_s
       end
