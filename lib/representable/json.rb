@@ -14,7 +14,7 @@ module Representable
     
     def self.included(base)
       base.class_eval do
-        include Representable
+        include Representable # either in Hero or HeroRepresentation.
         extend ClassMethods
       end
     end
