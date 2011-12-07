@@ -14,7 +14,7 @@ module Representable
   
   # Reads values from +doc+ and sets properties accordingly.
   def update_properties_from(doc, &block)
-    self.class.representable_bindings.each do |bin|
+    representable_bindings.each do |bin|
       next if eval_property_block(bin, &block)  # skip if block is false.
       
       value = bin.read(doc) || bin.definition.default
@@ -26,7 +26,7 @@ module Representable
 private
   # Compiles the document going through all properties.
   def create_representation_with(doc, &block)
-    self.class.representable_bindings.each do |bin|
+    representable_bindings.each do |bin|
       next if eval_property_block(bin, &block)  # skip if block is false.
       
       value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
@@ -40,6 +40,14 @@ private
   def eval_property_block(binding)
     # TODO: no magic symbol conversion!
     block_given? and not yield binding.definition.name.to_sym
+  end
+  
+  def representable_attrs
+    @representable_attrs ||= self.class.representable_attrs # DISCUSS: copy, or better not?
+  end
+  
+  def representable_bindings
+    representable_attrs.map {|attr| binding_for_definition(attr) }
   end
   
   

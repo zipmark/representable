@@ -17,6 +17,8 @@ module JsonTest
             self.name = name if name
           end
         end
+        
+        @band = @Band.new
       end
     
     
@@ -136,18 +138,18 @@ module JsonTest
         
       describe "#binding_for_definition" do
         it "returns ObjectBinding" do
-          assert_kind_of Json::ObjectBinding, @Band.binding_for_definition(Def.new(:band, :as => Hash))
+          assert_kind_of Json::ObjectBinding, @band.binding_for_definition(Def.new(:band, :as => Hash))
         end
         
         it "returns TextBinding" do
-          assert_kind_of Json::TextBinding, @Band.binding_for_definition(Def.new(:band))
+          assert_kind_of Json::TextBinding, @band.binding_for_definition(Def.new(:band))
         end
       end
       
       describe "#representable_bindings" do
         it "returns bindings for each property" do
-          assert_equal 2, @Band.representable_bindings.size
-          assert_equal "name", @Band.representable_bindings.first.definition.name
+          assert_equal 2, @band.send(:representable_bindings).size
+          assert_equal "name", @band.send(:representable_bindings).first.definition.name
         end
       end
     end

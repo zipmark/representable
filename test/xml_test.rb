@@ -32,6 +32,8 @@ class XmlTest < MiniTest::Spec
         representable_property :name
         representable_property :label
       end
+      
+      @band = @Band.new
     end
     
     
@@ -138,15 +140,15 @@ class XmlTest < MiniTest::Spec
     
     describe "#binding_for_definition" do
       it "returns AttributeBinding" do
-        assert_kind_of XML::AttributeBinding, @Band.binding_for_definition(Def.new(:band, :from => "@band"))
+        assert_kind_of XML::AttributeBinding, @band.binding_for_definition(Def.new(:band, :from => "@band"))
       end
       
       it "returns ObjectBinding" do
-        assert_kind_of XML::ObjectBinding, @Band.binding_for_definition(Def.new(:band, :as => Hash))
+        assert_kind_of XML::ObjectBinding, @band.binding_for_definition(Def.new(:band, :as => Hash))
       end
       
       it "returns TextBinding" do
-        assert_kind_of XML::TextBinding, @Band.binding_for_definition(Def.new(:band, :from => :content))
+        assert_kind_of XML::TextBinding, @band.binding_for_definition(Def.new(:band, :from => :content))
       end
     end
   end

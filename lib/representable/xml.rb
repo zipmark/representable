@@ -19,10 +19,6 @@ module Representable
     
     
     module ClassMethods
-      def binding_for_definition(definition)
-        (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
-      end
-      
       # Creates a new Ruby object from XML using mapping information declared in the class.
       #
       # Accepts a block yielding the currently iterated Definition. If the block returns false 
@@ -58,6 +54,10 @@ module Representable
     
     def to_xml(*args, &block)
       to_node(*args, &block).to_s
+    end
+    
+    def binding_for_definition(definition)
+      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
   end
 end

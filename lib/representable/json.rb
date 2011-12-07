@@ -21,10 +21,6 @@ module Representable
     
     
     module ClassMethods
-      def binding_for_definition(definition)
-        (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
-      end
-    
       # Creates a new object from the passed JSON document.
       def from_json(*args, &block)
         new.from_json(*args, &block)
@@ -60,6 +56,10 @@ module Representable
     # Returns a JSON string representing this object.
     def to_json(*args, &block)
       to_hash(*args, &block).to_json
+    end
+    
+    def binding_for_definition(definition)
+      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
   end
 end
