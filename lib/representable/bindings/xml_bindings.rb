@@ -8,14 +8,10 @@ module Representable
       end
       
       def read(xml)
-        value_from_node(xml) or default
+        value_from_node(xml)
       end
       
     private
-      def default
-        ""
-      end
-      
       def xpath
         definition.from
       end
@@ -80,10 +76,6 @@ module Representable
       end
 
     private
-      def default
-        []
-      end
-      
       # Deserializes the ref's element from +xml+.
       def value_from_node(xml)
         collect_for(xml) do |node|

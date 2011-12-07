@@ -8,14 +8,10 @@ module Representable
       end
       
       def read(hash)
-        value_from_hash(hash) or default
+        value_from_hash(hash)
       end
       
     private
-      def default
-        ""
-      end
-      
       def collect_for(hash)
         nodes = hash[definition.from] or return
         nodes = [nodes] unless nodes.is_a?(Array)
@@ -51,16 +47,11 @@ module Representable
       end
 
     private
-      def default
-        []
-      end
-      
       def value_from_hash(hash)
         collect_for(hash) do |node|
           definition.sought_type.from_hash(node)  # call #from_hash as it's already deserialized.
         end
       end
-      
     end
   end
 end
