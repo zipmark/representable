@@ -229,7 +229,51 @@ module JsonTest
         assert_equal '{"songName":"Run To The Hills"}', song.to_json
       end
     end
+    
+    describe ":default => :value" do
+      before do
+        @Album = Class.new do
+        include Representable::JSON
+        representable_property :name, :default => "30 Years Live"
+      end
+    end
+      
+    describe "#from_json" do
+      it "uses default when property nil in doc" do
+        album = @Album.from_json({}.to_json)
+        assert_equal "30 Years Live", album.name
+      end
+      
+      it "uses value from doc when present" do
+        album = @Album.from_json({:name => "Live At The Wireless"}.to_json)
+        assert_equal "Live At The Wireless", album.name
+      end
+      
+      it "uses value from doc when empty string" do
+        album = @Album.from_json({:name => ""}.to_json)
+        assert_equal "", album.name
+      end
+    end
+    
+    describe "#to_json" do
+      it "uses default when not available in object" do
+        assert_equal "{\"name\":\"30 Years Live\"}", @Album.new.to_json
+      end
+      
+      it "uses value from represented object when present" do
+        album = @Album.new
+        album.name = "Live At The Wireless"
+        assert_equal "{\"name\":\"Live At The Wireless\"}", album.to_json
+      end
+      
+      it "uses value from represented object when emtpy string" do
+        album = @Album.new
+        album.name = ""
+        assert_equal "{\"name\":\"\"}", album.to_json
+      end
+    end
   end
+end
 
 
   class CollectionTest < MiniTest::Spec
@@ -275,7 +319,7 @@ module JsonTest
           assert_equal ["Cobra Skulls", "Diesel Boy"], cd.bands.map(&:name).sort
         end
         
-        it "collections can be empty" do
+        it "creates emtpy array per default" do
           cd = Compilation.from_json({:compilation => {}}.to_json)
           assert_equal [], cd.bands
         end

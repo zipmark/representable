@@ -1,7 +1,7 @@
 module Representable
   # Created at class compile time. Keeps configuration options for one property.
   class Definition
-    attr_reader :name, :sought_type, :from
+    attr_reader :name, :sought_type, :from, :default
     alias_method :getter, :name
     
     def initialize(sym, options={})
@@ -9,6 +9,8 @@ module Representable
       @array        = options[:collection]
       @from         = (options[:from] || name).to_s
       @sought_type  = options[:as] || :text
+      @default      = options[:default]
+      @default      ||= [] if array?
       
       # FIXME: move me to xml.
       if options[:from].to_s =~ /^@/

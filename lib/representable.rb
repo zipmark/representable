@@ -17,7 +17,7 @@ module Representable
     self.class.representable_bindings.each do |bin|
       next if eval_property_block(bin, &block)  # skip if block is false.
       
-      value = bin.read(doc)
+      value = bin.read(doc) || bin.definition.default
       send(bin.definition.setter, value)
     end
     self
@@ -29,7 +29,7 @@ private
     self.class.representable_bindings.each do |bin|
       next if eval_property_block(bin, &block)  # skip if block is false.
       
-      value = send(bin.definition.getter) # DISCUSS: eventually move back to Ref.
+      value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
       bin.write(doc, value) if value
     end
     doc
@@ -62,6 +62,7 @@ private
       #   representable_property :name, :from => :title
       #   representable_property :name, :as => Name
       #   representable_property :name, :accessors => false
+      #   representable_property :name, :default => "Mike"
       def representable_property(name, options={})
         attr = add_representable_property(name, options)
         

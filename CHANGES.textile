@@ -1,6 +1,10 @@
+h2. 0.10.3
+
+* Added @representable_property :default => ...@ option which is considered for both serialization and deserialization. The default is applied when the value is @nil@. Note that an empty string ain't @nil@.
+
 h2. 0.10.2
 
-* Added `representable_property :accessors => false` option to suppress adding accessors.
+* Added @representable_property :accessors => false@ option to suppress adding accessors.
 * @Representable.representation_wrap@ is no longer inherited.
 * Representers can now be defined in modules. They inherit to including modules.
 

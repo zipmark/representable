@@ -62,6 +62,10 @@ class DefinitionTest < MiniTest::Spec
     it "responds to #sought_type" do
       assert_equal :text, @def.sought_type
     end
+    
+    it "responds to #default" do
+      assert_equal [], @def.default
+    end
   end
   
   describe ":as => Item" do
@@ -71,6 +75,18 @@ class DefinitionTest < MiniTest::Spec
     
     it "responds to #sought_type" do
       assert_equal Hash, @def.sought_type
+    end
+  end
+  
+  describe ":default => value" do
+    it "responds to #default" do
+      @def = Representable::Definition.new(:song)
+      assert_equal nil, @def.default
+    end
+    
+    it "accepts a default value" do
+      @def = Representable::Definition.new(:song, :default => "Atheist Peace")
+      assert_equal "Atheist Peace", @def.default
     end
   end
 end
