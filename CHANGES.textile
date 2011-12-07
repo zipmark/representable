@@ -1,6 +1,7 @@
 h2. 0.10.3
 
 * Added @representable_property :default => ...@ option which is considered for both serialization and deserialization. The default is applied when the value is @nil@. Note that an empty string ain't @nil@.
+* @representable_attrs@ are now pushed to instance level as soon as possible.
 
 h2. 0.10.2
 
