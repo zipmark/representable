@@ -104,28 +104,34 @@ private
       end
       
       def representation_wrap=(name)
-        @representable_wrap = name
+        representable_attrs.wrap = name
       end
       
       # Returns the wrapper for the representation. Mostly used in XML.
       def representation_wrap
-        return unless @representable_wrap
-        return infer_representation_name if @representable_wrap === true
-        @representable_wrap
+        representable_attrs.wrap_for(name)
       end
       
-    private
-      def infer_representation_name
-        name.split('::').last.
-         gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-         gsub(/([a-z\d])([A-Z])/,'\1_\2').
-         downcase
-      end
     end
   end
   
   class Config < Array
+    attr_accessor :wrap
     
+    # Computes the wrap string or returns false.
+    def wrap_for(name)
+      return unless wrap
+      return infer_name_for(name) if wrap === true
+      wrap
+    end
+    
+  private
+    def infer_name_for(name)
+      name.to_s.split('::').last.
+       gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+       gsub(/([a-z\d])([A-Z])/,'\1_\2').
+       downcase
+    end
   end
   
 end

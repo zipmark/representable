@@ -77,6 +77,34 @@ class RepresentableTest < MiniTest::Spec
       #  assert_equal "{\"name\":\"Van Halen\"}", vd.to_json
       #end
     end
+    
+    it "allows adding the representer by using #extend" do
+      module BandRepresenter
+        include Representable::JSON
+        representable_property :name
+      end
+      
+      civ = Object.new
+      civ.instance_eval do
+        def name; "CIV"; end
+      end
+      
+      BandRepresenter.module_eval do
+        def self.extended(object)
+          attrs = representable_attrs
+          puts "extended in #{self}: #{representable_attrs}"
+          object.instance_eval do
+          
+            @representable_attrs = attrs
+          end
+        end
+      end
+      
+      
+      civ.extend(BandRepresenter)
+      assert_equal "expected", civ.to_json
+    end
+    
   end
   
   
@@ -205,6 +233,29 @@ class RepresentableTest < MiniTest::Spec
     
     it "skips elements when block returns false" do
       assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}) do |name| name == :name end)
+    end
+  end
+  
+  describe "Config" do
+    before do
+      @config = Representable::Config.new
+      PunkRock = Class.new
+    end
+    
+    describe "wrapping" do
+      it "returns false per default" do
+        assert_equal nil, @config.wrap_for("Punk")
+      end
+      
+      it "infers a printable class name if set to true" do
+        @config.wrap = true
+        assert_equal "punk_rock", @config.wrap_for(PunkRock)
+      end
+      
+      it "can be set explicitely" do
+        @config.wrap = "Descendents"
+        assert_equal "Descendents", @config.wrap_for(PunkRock)
+      end
     end
   end
   
