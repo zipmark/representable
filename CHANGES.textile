@@ -1,3 +1,7 @@
+h2. 0.11.0
+
+* Representer modules can now be injected into objects using @#extend@.
+
 h2. 0.10.3
 
 * Added @representable_property :default => ...@ option which is considered for both serialization and deserialization. The default is applied when the value is @nil@. Note that an empty string ain't @nil@.
