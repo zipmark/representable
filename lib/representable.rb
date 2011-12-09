@@ -107,12 +107,8 @@ private
         @representable_wrap ||= false
       end
       
-      def representable_wrap=(name)
-        @representable_wrap = name
-      end
-      
       def representation_wrap=(name)
-        self.representable_wrap = name
+        @representable_wrap = name
       end
       
       # Returns the wrapper for the representation. Mostly used in XML.
