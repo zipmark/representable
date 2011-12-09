@@ -100,11 +100,7 @@ private
 
     module Accessors
       def representable_attrs
-        @representable_attrs ||= []
-      end
-      
-      def representable_wrap
-        @representable_wrap ||= false
+        @representable_attrs ||= Config.new
       end
       
       def representation_wrap=(name)
@@ -113,9 +109,9 @@ private
       
       # Returns the wrapper for the representation. Mostly used in XML.
       def representation_wrap
-        return unless representable_wrap
-        return infer_representation_name if representable_wrap === true
-        representable_wrap
+        return unless @representable_wrap
+        return infer_representation_name if @representable_wrap === true
+        @representable_wrap
       end
       
     private
@@ -127,4 +123,9 @@ private
       end
     end
   end
+  
+  class Config < Array
+    
+  end
+  
 end
