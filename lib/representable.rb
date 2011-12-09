@@ -9,6 +9,14 @@ module Representable
       def self.included(base)
         base.representable_attrs.push(*representable_attrs) # "inherit".
       end
+      
+      # Copies the representable_attrs to the extended object.
+      def self.extended(object)
+        attrs = representable_attrs
+        object.instance_eval do
+          @representable_attrs = attrs
+        end
+      end
     end
   end
   
@@ -48,6 +56,11 @@ private
   
   def representable_bindings
     representable_attrs.map {|attr| binding_for_definition(attr) }
+  end
+  
+  # Returns the wrapper for the representation. Mostly used in XML.
+  def representation_wrap
+    representable_attrs.wrap_for(self.class.name)
   end
   
   
@@ -106,12 +119,6 @@ private
       def representation_wrap=(name)
         representable_attrs.wrap = name
       end
-      
-      # Returns the wrapper for the representation. Mostly used in XML.
-      def representation_wrap
-        representable_attrs.wrap_for(name)
-      end
-      
     end
   end
   

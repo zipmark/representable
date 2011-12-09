@@ -89,22 +89,9 @@ class RepresentableTest < MiniTest::Spec
         def name; "CIV"; end
       end
       
-      BandRepresenter.module_eval do
-        def self.extended(object)
-          attrs = representable_attrs
-          puts "extended in #{self}: #{representable_attrs}"
-          object.instance_eval do
-          
-            @representable_attrs = attrs
-          end
-        end
-      end
-      
-      
       civ.extend(BandRepresenter)
-      assert_equal "expected", civ.to_json
+      assert_equal "{\"name\":\"CIV\"}", civ.to_json
     end
-    
   end
   
   
@@ -151,10 +138,6 @@ class RepresentableTest < MiniTest::Spec
   
   
   describe "#representation_wrap" do
-    class SoundSystem
-      include Representable
-    end
-    
     class HardcoreBand
       include Representable
     end
@@ -162,23 +145,23 @@ class RepresentableTest < MiniTest::Spec
     class SoftcoreBand < HardcoreBand
     end
     
+    before do
+      @band = HardcoreBand.new
+    end
+    
+    
     it "returns false per default" do
-      assert_equal nil, SoundSystem.representation_wrap
+      assert_equal nil, SoftcoreBand.new.send(:representation_wrap)
     end
     
     it "infers a printable class name if set to true" do
       HardcoreBand.representation_wrap = true
-      assert_equal "hardcore_band", HardcoreBand.send(:representation_wrap)
+      assert_equal "hardcore_band", @band.send(:representation_wrap)
     end
     
     it "can be set explicitely" do
       HardcoreBand.representation_wrap = "breach"
-      assert_equal "breach", HardcoreBand.representation_wrap
-    end
-    
-    it "doesn't inherit correctly" do
-      HardcoreBand.representation_wrap = "breach"
-      assert_equal nil, SoftcoreBand.representation_wrap
+      assert_equal "breach", @band.send(:representation_wrap)
     end
   end
   

@@ -38,7 +38,7 @@ module Representable
     end
     
     def from_hash(data, options={}, &block)
-      if wrap = options[:wrap] || self.class.representation_wrap
+      if wrap = options[:wrap] || representation_wrap
         data = data[wrap.to_s]
       end
       
@@ -48,7 +48,7 @@ module Representable
     def to_hash(options={}, &block)
       hash = create_representation_with({}, &block)
       
-      return hash unless wrap = options[:wrap] || self.class.representation_wrap
+      return hash unless wrap = options[:wrap] || representation_wrap
       
       {wrap => hash}
     end
