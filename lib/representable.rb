@@ -70,11 +70,6 @@ private
         Definition
       end
       
-      # Returns bindings for all properties.
-      def representable_bindings
-        representable_attrs.map {|attr| binding_for_definition(attr) }
-      end
-      
       # Declares a represented document node, which is usually a XML tag or a JSON key.
       #
       # Examples:
