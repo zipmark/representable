@@ -136,4 +136,14 @@ private
     end
   end
   
+  # Allows mapping formats to representer classes. 
+  module Represents
+    def represents(format, options)
+      representer[format] = options[:with]
+    end
+    
+    def representer
+      @represents_map ||= {}
+    end
+  end
 end

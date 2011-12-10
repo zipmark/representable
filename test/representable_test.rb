@@ -92,6 +92,8 @@ class RepresentableTest < MiniTest::Spec
       civ.extend(BandRepresenter)
       assert_equal "{\"name\":\"CIV\"}", civ.to_json
     end
+    
+    # TODO: add test for nested setup.
   end
   
   
@@ -242,4 +244,18 @@ class RepresentableTest < MiniTest::Spec
     end
   end
   
+  describe "Represents" do
+    before do
+      @class = Class.new do
+        extend Representable::Represents
+        represents :json, :with => :whatever
+        represents "application/order-json", :with => :special
+      end
+    end
+    
+    it "allows mapping formats to representers" do
+      assert_equal :whatever, @class.representer[:json]
+      assert_equal :special, @class.representer["application/order-json"]
+    end
+  end
 end
