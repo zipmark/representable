@@ -183,25 +183,30 @@ class RepresentableTest < MiniTest::Spec
   end
 
   describe "#update_properties_from" do
-    it "copies values from document to object" do
-      band = PopBand.new
-      band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2})
-      assert_equal "No One's Choice", band.name
-      assert_equal 2, band.groupies
+    before do
+      @band = PopBand.new
     end
     
-    it "skips elements when block returns false" do
-      band = PopBand.new
-      band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}) do |name|
-        name == :name
-      end
-      assert_equal "No One's Choice", band.name
-      assert_equal nil, band.groupies
+    it "copies values from document to object" do
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {})
+      assert_equal "No One's Choice", @band.name
+      assert_equal 2, @band.groupies
+    end
+    
+    it "accepts :except option" do
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, :except => [:groupies])
+      assert_equal "No One's Choice", @band.name
+      assert_equal nil, @band.groupies
+    end
+    
+    it "accepts :include option" do
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, :include => [:groupies])
+      assert_equal 2, @band.groupies
+      assert_equal nil, @band.name
     end
     
     it "always returns self" do
-      band = PopBand.new
-      assert_equal band, band.update_properties_from({"name"=>"Nofx"})
+      assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {})
     end
   end
   
@@ -213,13 +218,20 @@ class RepresentableTest < MiniTest::Spec
     end
     
     it "compiles document from properties in object" do
-      assert_equal({"name"=>"No One's Choice", "groupies"=>2}, @band.send(:create_representation_with, {}))
+      assert_equal({"name"=>"No One's Choice", "groupies"=>2}, @band.send(:create_representation_with, {}, {}))
     end
     
-    it "skips elements when block returns false" do
-      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}) do |name| name == :name end)
+    it "accepts :except option" do
+      hash = @band.send(:create_representation_with, {}, :except => [:groupies])
+      assert_equal({"name"=>"No One's Choice"}, hash)
+    end
+    
+    it "accepts :include option" do
+      hash = @band.send(:create_representation_with, {}, :include => [:groupies])
+      assert_equal({"groupies"=>2}, hash)
     end
   end
+  
   
   describe "Config" do
     before do

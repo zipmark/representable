@@ -50,14 +50,6 @@ module JsonTest
           @band.from_json(@json)
           assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
         end
-        
-        it "forwards block to #from_hash" do
-          @band.from_json(@json) do |name|
-            name == :name
-          end
-          
-          assert_equal ["Nofx", nil], [@band.name, @band.label]
-        end
       end
       
       
@@ -70,14 +62,6 @@ module JsonTest
         it "receives hash and assigns properties" do
           @band.from_hash(@hash)
           assert_equal ["Nofx", "NOFX"], [@band.name, @band.label]
-        end
-        
-        it "forwards block to #update_properties_from" do
-          @band.from_hash(@hash) do |name|
-            name == :name
-          end
-          
-          assert_equal ["Nofx", nil], [@band.name, @band.label]
         end
         
         it "respects :wrap option" do
@@ -98,17 +82,6 @@ module JsonTest
       describe "#to_json" do
         it "delegates to #to_hash and returns string" do
           assert_equal "{\"name\":\"Rise Against\"}", @Band.new("Rise Against").to_json
-        end
-        
-        it "forwards block to #to_hash" do
-          band = @Band.new
-          band.name  = "The Guinea Pigs"
-          band.label = "n/a"
-          json = band.to_json do |name|
-            name == :name
-          end
-          
-          assert_equal "{\"name\":\"The Guinea Pigs\"}", json
         end
       end
       

@@ -42,11 +42,11 @@ module Representable
         data = data[wrap.to_s]
       end
       
-      update_properties_from(data, &block)
+      update_properties_from(data, options, &block)
     end
     
     def to_hash(options={}, &block)
-      hash = create_representation_with({}, &block)
+      hash = create_representation_with({}, options, &block)
       
       return hash unless wrap = options[:wrap] || representation_wrap
       

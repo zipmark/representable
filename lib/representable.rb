@@ -21,9 +21,9 @@ module Representable
   end
   
   # Reads values from +doc+ and sets properties accordingly.
-  def update_properties_from(doc, &block)
+  def update_properties_from(doc, options, &block)
     representable_bindings.each do |bin|
-      next if eval_property_block(bin, &block)  # skip if block is false.
+      next if skip_property?(bin, options)
       
       value = bin.read(doc) || bin.definition.default
       send(bin.definition.setter, value)
@@ -33,9 +33,9 @@ module Representable
   
 private
   # Compiles the document going through all properties.
-  def create_representation_with(doc, &block)
+  def create_representation_with(doc, options, &block)
     representable_bindings.each do |bin|
-      next if eval_property_block(bin, &block)  # skip if block is false.
+      next if skip_property?(bin, options)
       
       value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
       bin.write(doc, value) if value
@@ -43,11 +43,11 @@ private
     doc
   end
   
-  # Returns true unless a eventually given block returns false. Yields the symbolized
-  # property name.
-  def eval_property_block(binding)
-    # TODO: no magic symbol conversion!
-    block_given? and not yield binding.definition.name.to_sym
+  # Checks and returns if the property should be included.
+  def skip_property?(binding, options)
+    return unless props = options[:except] || options[:include]
+    res = props.include?(binding.definition.name.to_sym)
+    options[:include] ? !res : res
   end
   
   def representable_attrs
