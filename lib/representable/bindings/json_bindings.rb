@@ -7,10 +7,6 @@ module Representable
         @definition = definition
       end
       
-      def read(hash)
-        value_from_hash(hash)
-      end
-      
     private
       def collect_for(hash)
         nodes = hash[definition.from] or return
@@ -27,9 +23,8 @@ module Representable
       def write(hash, value)
         hash[definition.from] = value
       end
-
-    private
-      def value_from_hash(hash)
+      
+      def read(hash)
         collect_for(hash) do |value|
           value
         end
@@ -45,9 +40,8 @@ module Representable
           hash[definition.from] = value.to_hash(:wrap => false)
         end
       end
-
-    private
-      def value_from_hash(hash)
+      
+      def read(hash)
         collect_for(hash) do |node|
           definition.sought_type.from_hash(node)  # call #from_hash as it's already deserialized.
         end
