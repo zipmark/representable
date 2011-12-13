@@ -6,6 +6,13 @@ class DefinitionTest < MiniTest::Spec
       @def = Representable::Definition.new(:songs)
     end
     
+    describe "DCI" do
+      it "responds to #representer_module" do
+        assert_equal nil, Representable::Definition.new(:song).representer_module
+        assert_equal Hash, Representable::Definition.new(:song, :extend => Hash).representer_module
+      end
+    end
+    
     it "responds to #typed?" do
       assert ! @def.typed?
       assert Representable::Definition.new(:songs, :as => Hash).typed?
