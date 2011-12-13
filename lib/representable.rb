@@ -3,6 +3,7 @@ require 'representable/definition'
 module Representable
   def self.included(base)
     base.class_eval do
+      extend ClassMethods
       extend ClassMethods::Declarations
       extend ClassMethods::Accessors
       
@@ -65,6 +66,13 @@ private
   
   
   module ClassMethods # :nodoc:
+    # Create and yield object and options. Called in .from_json and friends. 
+    def create_represented(document, *args)
+      new.tap do |represented|
+        yield represented, *args if block_given?
+      end
+    end
+    
     module Declarations
       def definition_class
         Definition
@@ -105,7 +113,8 @@ private
         end
       end
     end
-
+    
+    
     module Accessors
       def representable_attrs
         @representable_attrs ||= Config.new
@@ -116,6 +125,7 @@ private
       end
     end
   end
+  
   
   class Config < Array
     attr_accessor :wrap
@@ -135,6 +145,7 @@ private
        downcase
     end
   end
+  
   
   # Allows mapping formats to representer classes. 
   module Represents

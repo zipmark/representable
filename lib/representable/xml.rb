@@ -27,33 +27,33 @@ module Representable
       # Example:
       #   band.from_xml("<band><name>Nofx</name></band>")
       def from_xml(*args, &block)
-        new.from_xml(*args, &block)
+        create_represented(*args, &block).from_xml(*args)
       end
       
       def from_node(*args, &block)
-        new.from_node(*args, &block)
+        create_represented(*args, &block).from_node(*args)
       end
     end
     
     
-    def from_xml(doc, *args, &block)
+    def from_xml(doc, *args)
       node = Nokogiri::XML(doc).root
-      from_node(node, *args, &block)
+      from_node(node, *args)
     end
     
-    def from_node(node, options={}, &block)
-      update_properties_from(node, options, &block)
+    def from_node(node, options={})
+      update_properties_from(node, options)
     end
     
     # Returns a Nokogiri::XML object representing this object.
-    def to_node(options={}, &block)
+    def to_node(options={})
       root_tag = options[:wrap] || representation_wrap
       
-      create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new), options, &block)
+      create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new), options)
     end
     
-    def to_xml(*args, &block)
-      to_node(*args, &block).to_s
+    def to_xml(*args)
+      to_node(*args).to_s
     end
     
     def binding_for_definition(definition)

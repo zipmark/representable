@@ -23,30 +23,31 @@ module Representable
     module ClassMethods
       # Creates a new object from the passed JSON document.
       def from_json(*args, &block)
-        new.from_json(*args, &block)
+        create_represented(*args, &block).from_json(*args)
       end
       
       def from_hash(*args, &block)
-        new.from_hash(*args, &block)
+        create_represented(*args, &block).from_hash(*args)
       end
     end
     
+    
     # Parses the body as JSON and delegates to #from_hash.
-    def from_json(data, *args, &block)
+    def from_json(data, *args)
       data = ::JSON[data]
-      from_hash(data, *args, &block)
+      from_hash(data, *args)
     end
     
-    def from_hash(data, options={}, &block)
+    def from_hash(data, options={})
       if wrap = options[:wrap] || representation_wrap
         data = data[wrap.to_s]
       end
       
-      update_properties_from(data, options, &block)
+      update_properties_from(data, options)
     end
     
-    def to_hash(options={}, &block)
-      hash = create_representation_with({}, options, &block)
+    def to_hash(options={})
+      hash = create_representation_with({}, options)
       
       return hash unless wrap = options[:wrap] || representation_wrap
       
@@ -54,8 +55,8 @@ module Representable
     end
     
     # Returns a JSON string representing this object.
-    def to_json(*args, &block)
-      to_hash(*args, &block).to_json
+    def to_json(*args)
+      to_hash(*args).to_json
     end
     
     def binding_for_definition(definition)

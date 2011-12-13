@@ -24,18 +24,35 @@ module JsonTest
     
       describe ".from_json" do
         it "is delegated to #from_json" do
-          block = lambda {|bind|}
-          @Band.any_instance.expects(:from_json).with("{}", "yo") # FIXME: how to expect block?
-          @Band.from_json("{}", "yo", &block)
+          block = lambda {|*args|}
+          @Band.any_instance.expects(:from_json).with("{document}", "options") # FIXME: how to NOT expect block?
+          @Band.from_json("{document}", "options", &block)
+        end
+        
+        it "yields new object and options to block" do
+          @Band.class_eval { attr_accessor :new_name }
+          @band = @Band.from_json({}, :new_name => "Diesel Boy") do |band, options|
+            band.new_name= options[:new_name]
+          end
+          assert_equal "Diesel Boy", @band.new_name
         end
       end
       
       
       describe ".from_hash" do
-        it "is delegated to #from_hash" do
-          block = lambda {|bind|}
-          @Band.any_instance.expects(:from_hash).with("{}", "yo") # FIXME: how to expect block?
-          @Band.from_hash("{}", "yo", &block)
+        it "is delegated to #from_hash not passing the block" do
+          block = lambda {|*args|}
+          @Band.any_instance.expects(:from_hash).with("{document}", "options") # FIXME: how to NOT expect block?
+          @Band.from_hash("{document}", "options", &block)
+        end
+        
+        it "yields new object and options to block" do
+          @Band.class_eval { attr_accessor :new_name }
+          @band = @Band.from_hash({}, :new_name => "Diesel Boy") do |band, options|
+            band.new_name= options[:new_name]
+          end
+          
+          assert_equal "Diesel Boy", @band.new_name
         end
       end
       
