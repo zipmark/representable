@@ -1,12 +1,8 @@
+require 'representable/binding'
+
 module Representable
   module JSON
-    class Binding
-      attr_reader :definition
-
-      def initialize(definition)
-        @definition = definition
-      end
-      
+    class Binding < Representable::Binding
     private
       def collect_for(hash)
         nodes = hash[definition.from] or return
@@ -16,6 +12,10 @@ module Representable
         
         definition.array? ? vals : vals.first
       end
+      
+      # DISCUSS: include DCI per default?
+      include Representable::Binding::Hooks
+      include Representable::Binding::DCI
     end
     
     # Represents plain key-value.
@@ -35,16 +35,21 @@ module Representable
     class ObjectBinding < Binding
       def write(hash, value)
         if definition.array?
-          hash[definition.from] = value.collect {|v| v.to_hash(:wrap => false)}
+          hash[definition.from] = value.collect { |v| serialize(v) }
         else
-          hash[definition.from] = value.to_hash(:wrap => false)
+          hash[definition.from] = serialize(value)
         end
       end
       
       def read(hash)
         collect_for(hash) do |node|
-          definition.sought_type.from_hash(node)  # call #from_hash as it's already deserialized.
+          create_object.from_hash(node)
         end
+      end
+      
+    private
+      def serialize(object)
+        write_object(object).to_hash(:wrap => false)
       end
     end
   end
