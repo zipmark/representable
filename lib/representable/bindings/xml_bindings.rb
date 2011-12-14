@@ -1,12 +1,6 @@
 module Representable
   module XML
-    class Binding
-      attr_reader :definition
-
-      def initialize(definition)
-        @definition = definition
-      end
-      
+    class Binding < Representable::Binding
       def read(xml)
         value_from_node(xml)
       end
@@ -66,12 +60,17 @@ module Representable
 
     # Represents a tag with object binding.
     class ObjectBinding < Binding
+      include Representable::Binding::Hooks
+      include Representable::Binding::DCI
+      
       # Adds the ref's markup to +xml+. 
-      def write(xml, value)
+      def write(xml, object)
         if definition.array?
-          write_collection(xml, value)
+          object.each do |item|
+            write_entity(xml, item)
+          end
         else
-          write_entity(xml, value)
+          write_entity(xml, object)
         end
       end
 
@@ -79,18 +78,12 @@ module Representable
       # Deserializes the ref's element from +xml+.
       def value_from_node(xml)
         collect_for(xml) do |node|
-          definition.sought_type.from_node(node)
-        end
-      end
-      
-      def write_collection(xml, collection)
-        collection.each do |item|
-          write_entity(xml, item)
+          create_object.from_node(node)
         end
       end
       
       def write_entity(xml, entity)
-        xml.add_child(entity.to_node)
+        xml.add_child(write_object(entity).to_node)
       end
     end
   end

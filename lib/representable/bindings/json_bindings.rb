@@ -33,11 +33,11 @@ module Representable
   
     # Represents a tag with object binding.
     class ObjectBinding < Binding
-      def write(hash, value)
+      def write(hash, object)
         if definition.array?
-          hash[definition.from] = value.collect { |v| serialize(v) }
+          hash[definition.from] = object.collect { |obj| serialize(obj) }
         else
-          hash[definition.from] = serialize(value)
+          hash[definition.from] = serialize(object)
         end
       end
       

@@ -10,14 +10,7 @@ class Band
   end
 end
 
-class Album
-  include Representable::XML
-  representable_property :band, :as => Band
-  
-  def initialize(band=nil)
-    band and self.band = band
-  end
-end
+
   
   
 class XmlTest < MiniTest::Spec
@@ -140,6 +133,57 @@ class XmlTest < MiniTest::Spec
         assert_kind_of XML::TextBinding, @band.binding_for_definition(Def.new(:band, :from => :content))
       end
     end
+    
+    
+    describe "DCI" do
+      module SongRepresenter
+        include Representable::XML
+        representable_property :name
+        representation_wrap = :song
+      end
+      
+      module AlbumRepresenter
+        include Representable::XML
+        representable_property :best_song, :as => Song, :extend => SongRepresenter
+        representable_collection :songs, :as => Song, :from => :song, :extend => SongRepresenter
+        representation_wrap = :album
+      end
+      
+      
+      it "allows adding the representer by using #extend" do
+        module BandRepresenter
+          include Representable::XML
+          representable_property :name
+        end
+        
+        civ = Object.new
+        civ.instance_eval do
+          def name; "CIV"; end
+        end
+        
+        civ.extend(BandRepresenter)
+        assert_xml_equal "<object><name>CIV</name></object>", civ.to_xml
+      end
+      
+      it "extends contained models when serializing" do
+        @album = Album.new(Song.new("I Hate My Brain"), Song.new("Mr. Charisma"))
+        @album.extend(AlbumRepresenter)
+        
+        assert_xml_equal "<album>
+  <song><name>Mr. Charisma</name></song>
+  <song><name>I Hate My Brain</name></song>
+  <song><name>Mr. Charisma</name></song>
+</album>", @album.to_xml
+      end
+      
+      it "extends contained models when deserializing" do
+        @album = Album.new
+        @album.extend(AlbumRepresenter)
+        
+        @album.from_xml("<album><best_song><name>Mr. Charisma</name></best_song><song><name>I Hate My Brain</name></song><song><name>Mr. Charisma</name></song></album>")
+        assert_equal "Mr. Charisma", @album.best_song.name
+      end
+    end
   end
 end
 
@@ -170,6 +214,16 @@ class AttributesTest < MiniTest::Spec
 end
 
 class TypedPropertyTest < MiniTest::Spec
+  class Album
+    include Representable::XML
+    representable_property :band, :as => Band
+    
+    def initialize(band=nil)
+      band and self.band = band
+    end
+  end
+  
+  
   describe ":as => Item" do
     it "#from_xml creates one Item instance" do
       album = Album.from_xml(%{

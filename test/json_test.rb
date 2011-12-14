@@ -143,6 +143,52 @@ module JsonTest
         end
       end
     end
+    
+    
+    describe "DCI" do
+      module SongRepresenter
+        include Representable::JSON
+        representable_property :name
+      end
+      
+      module AlbumRepresenter
+        include Representable::JSON
+        representable_property :best_song, :as => Song, :extend => SongRepresenter
+        representable_collection :songs, :as => Song, :extend => SongRepresenter
+      end
+      
+      
+      it "allows adding the representer by using #extend" do
+        module BandRepresenter
+          include Representable::JSON
+          representable_property :name
+        end
+        
+        civ = Object.new
+        civ.instance_eval do
+          def name; "CIV"; end
+        end
+        
+        civ.extend(BandRepresenter)
+        assert_equal "{\"name\":\"CIV\"}", civ.to_json
+      end
+      
+      it "extends contained models when serializing" do
+        @album = Album.new(Song.new("I Hate My Brain"), Song.new("Mr. Charisma"))
+        @album.extend(AlbumRepresenter)
+        
+        assert_equal "{\"best_song\":{\"name\":\"Mr. Charisma\"},\"songs\":[{\"name\":\"I Hate My Brain\"},{\"name\":\"Mr. Charisma\"}]}", @album.to_json
+      end
+      
+      it "extends contained models when deserializing" do
+        #@album = Album.new(Song.new("I Hate My Brain"), Song.new("Mr. Charisma"))
+        @album = Album.new
+        @album.extend(AlbumRepresenter)
+        
+        @album.from_json("{\"best_song\":{\"name\":\"Mr. Charisma\"},\"songs\":[{\"name\":\"I Hate My Brain\"},{\"name\":\"Mr. Charisma\"}]}")
+        assert_equal "Mr. Charisma", @album.best_song.name
+      end
+    end
   end
 
   class PropertyTest < MiniTest::Spec

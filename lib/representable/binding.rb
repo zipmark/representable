@@ -10,6 +10,7 @@ module Representable
     # Usually called in concrete ObjectBinding in #write and #read. 
     module Hooks
     private
+      # Must be called in serialization of concrete ObjectBinding.
       def write_object(object)
         object
       end
@@ -36,6 +37,7 @@ module Representable
         if mod = definition.representer_module
           object.extend(mod)
         end
+        
         object
       end
     end
