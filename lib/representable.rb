@@ -82,13 +82,13 @@ private
       #
       # Examples:
       #
-      #   representable_property :name
-      #   representable_property :name, :from => :title
-      #   representable_property :name, :as => Name
-      #   representable_property :name, :accessors => false
-      #   representable_property :name, :default => "Mike"
-      def representable_property(name, options={})
-        attr = add_representable_property(name, options)
+      #   property :name
+      #   property :name, :from => :title
+      #   property :name, :as => Name
+      #   property :name, :accessors => false
+      #   property :name, :default => "Mike"
+      def property(name, options={})
+        attr = add_property(name, options)
         
         attr_reader(attr.getter) unless options[:accessors] == false
         attr_writer(attr.getter) unless options[:accessors] == false
@@ -98,16 +98,16 @@ private
       #
       # Examples:
       #
-      #   representable_collection :products
-      #   representable_collection :products, :from => :item
-      #   representable_collection :products, :as => Product
-      def representable_collection(name, options={})
+      #   collection :products
+      #   collection :products, :from => :item
+      #   collection :products, :as => Product
+      def collection(name, options={})
         options[:collection] = true
-        representable_property(name, options)
+        property(name, options)
       end
       
     private
-      def add_representable_property(*args)
+      def add_property(*args)
         definition_class.new(*args).tap do |attr|
           representable_attrs << attr
         end

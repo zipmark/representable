@@ -3,24 +3,24 @@ require 'test_helper'
 class RepresentableTest < MiniTest::Spec
   class Band
     include Representable
-    representable_property :name
+    property :name
   end
   
   class PunkBand < Band
-    representable_property :street_cred
+    property :street_cred
   end
   
   module BandRepresentation
     include Representable
     
-    representable_property :name
+    property :name
   end
   
   module PunkBandRepresentation
     include Representable
     include BandRepresentation
     
-    representable_property :street_cred
+    property :street_cred
   end
   
   
@@ -68,7 +68,7 @@ class RepresentableTest < MiniTest::Spec
       #  require 'representable/json'
       #  module RockBandRepresentation
       #    include Representable::JSON
-      #    representable_property :name
+      #    property :name
       #  end
       #  vd = class VH
       #    include RockBandRepresentation
@@ -80,7 +80,7 @@ class RepresentableTest < MiniTest::Spec
   end
   
   
-  describe "#representable_property" do
+  describe "#property" do
     it "creates accessors for the attribute" do
       @band = PunkBand.new
       assert @band.name = "Bad Religion"
@@ -90,19 +90,19 @@ class RepresentableTest < MiniTest::Spec
     describe ":from" do
       # TODO: do this with all options.
       it "can be set explicitly" do
-        band = Class.new(Band) { representable_property :friends, :from => :friend }
+        band = Class.new(Band) { property :friends, :from => :friend }
         assert_equal "friend", band.representable_attrs.last.from
       end
       
       it "is infered from the name implicitly" do
-        band = Class.new(Band) { representable_property :friends }
+        band = Class.new(Band) { property :friends }
         assert_equal "friends", band.representable_attrs.last.from
       end
     end
     
     describe ":accessor" do
       it "doesn't add methods when false" do
-        klass = Class.new(Band) { representable_property :friends, :accessors => false }
+        klass = Class.new(Band) { property :friends, :accessors => false }
         band = klass.new
         assert ! band.respond_to?(:friends)
         assert ! band.respond_to?("friends=")
@@ -110,9 +110,9 @@ class RepresentableTest < MiniTest::Spec
     end
   end
   
-  describe "#representable_collection" do
+  describe "#collection" do
     class RockBand < Band
-      representable_collection :albums
+      collection :albums
     end
     
     it "creates correct Definition" do
@@ -161,8 +161,8 @@ class RepresentableTest < MiniTest::Spec
   require 'representable/json'  # DISCUSS: i don't like the JSON requirement here, what about some generic test module?
   class PopBand
     include Representable::JSON
-    representable_property :name
-    representable_property :groupies
+    property :name
+    property :groupies
   end
 
   describe "#update_properties_from" do

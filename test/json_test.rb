@@ -10,8 +10,8 @@ module JsonTest
       before do
         @Band = Class.new do
           include Representable::JSON
-          representable_property :name
-          representable_property :label
+          property :name
+          property :label
           
           def initialize(name=nil)
             self.name = name if name
@@ -148,20 +148,20 @@ module JsonTest
     describe "DCI" do
       module SongRepresenter
         include Representable::JSON
-        representable_property :name
+        property :name
       end
       
       module AlbumRepresenter
         include Representable::JSON
-        representable_property :best_song, :as => Song, :extend => SongRepresenter
-        representable_collection :songs, :as => Song, :extend => SongRepresenter
+        property :best_song, :as => Song, :extend => SongRepresenter
+        collection :songs, :as => Song, :extend => SongRepresenter
       end
       
       
       it "allows adding the representer by using #extend" do
         module BandRepresenter
           include Representable::JSON
-          representable_property :name
+          property :name
         end
         
         civ = Object.new
@@ -192,10 +192,10 @@ module JsonTest
   end
 
   class PropertyTest < MiniTest::Spec
-    describe "representable_property :name" do
+    describe "property :name" do
       class Band
         include Representable::JSON
-        representable_property :name
+        property :name
       end
       
       it "#from_json creates correct accessors" do
@@ -214,12 +214,12 @@ module JsonTest
     describe ":as => Item" do
       class Label
         include Representable::JSON
-        representable_property :name
+        property :name
       end
       
       class Album
         include Representable::JSON
-        representable_property :label, :as => Label
+        property :label, :as => Label
       end
       
       it "#from_json creates one Item instance" do
@@ -238,7 +238,7 @@ module JsonTest
         before do
           @Album = Class.new do
             include Representable::JSON
-            representable_property :seller, :as => Label
+            property :seller, :as => Label
           end
         end
         
@@ -254,7 +254,7 @@ module JsonTest
     describe ":from => :songName" do
       class Song
         include Representable::JSON
-        representable_property :name, :from => :songName
+        property :name, :from => :songName
       end
       
       it "respects :from in #from_json" do
@@ -272,7 +272,7 @@ module JsonTest
       before do
         @Album = Class.new do
         include Representable::JSON
-        representable_property :name, :default => "30 Years Live"
+        property :name, :default => "30 Years Live"
       end
     end
       
@@ -315,10 +315,10 @@ end
 
 
   class CollectionTest < MiniTest::Spec
-    describe "representable_collection :name" do
+    describe "collection :name" do
       class CD
         include Representable::JSON
-        representable_collection :songs
+        collection :songs
       end
       
       it "#from_json creates correct accessors" do
@@ -334,10 +334,10 @@ end
       end
     end
     
-    describe "representable_collection :name, :as => Band" do
+    describe "collection :name, :as => Band" do
       class Band
         include Representable::JSON
-        representable_property :name
+        property :name
         
         def initialize(name="")
           self.name = name
@@ -346,7 +346,7 @@ end
       
       class Compilation
         include Representable::JSON
-        representable_collection :bands, :as => Band
+        collection :bands, :as => Band
       end
       
       describe "#from_json" do
@@ -375,7 +375,7 @@ end
     describe ":from => :songList" do
       class Songs
         include Representable::JSON
-        representable_collection :tracks, :from => :songList
+        collection :tracks, :from => :songList
       end
       
       it "respects :from in #from_json" do

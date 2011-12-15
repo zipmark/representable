@@ -3,7 +3,7 @@ require 'representable/xml'
 
 class Band
   include Representable::XML
-  representable_property :name
+  property :name
   
   def initialize(name=nil)
     name and self.name = name
@@ -22,8 +22,8 @@ class XmlTest < MiniTest::Spec
       @Band = Class.new do
         include Representable::XML
         self.representation_wrap = :band
-        representable_property :name
-        representable_property :label
+        property :name
+        property :label
       end
       
       @band = @Band.new
@@ -111,7 +111,7 @@ class XmlTest < MiniTest::Spec
       it "respects #representation_wrap=" do
         klass = Class.new(Band) do
           include Representable
-          representable_property :name
+          property :name
         end
         
         klass.representation_wrap = :group
@@ -138,14 +138,14 @@ class XmlTest < MiniTest::Spec
     describe "DCI" do
       module SongRepresenter
         include Representable::XML
-        representable_property :name
+        property :name
         representation_wrap = :song
       end
       
       module AlbumRepresenter
         include Representable::XML
-        representable_property :best_song, :as => Song, :extend => SongRepresenter
-        representable_collection :songs, :as => Song, :from => :song, :extend => SongRepresenter
+        property :best_song, :as => Song, :extend => SongRepresenter
+        collection :songs, :as => Song, :from => :song, :extend => SongRepresenter
         representation_wrap = :album
       end
       
@@ -153,7 +153,7 @@ class XmlTest < MiniTest::Spec
       it "allows adding the representer by using #extend" do
         module BandRepresenter
           include Representable::XML
-          representable_property :name
+          property :name
         end
         
         civ = Object.new
@@ -192,8 +192,8 @@ class AttributesTest < MiniTest::Spec
   describe ":from => @rel" do
     class Link
       include Representable::XML
-      representable_property :href,   :from => "@href"
-      representable_property :title,  :from => "@title"
+      property :href,   :from => "@href"
+      property :title,  :from => "@title"
     end
     
     it "#from_xml creates correct accessors" do
@@ -216,7 +216,7 @@ end
 class TypedPropertyTest < MiniTest::Spec
   module AlbumRepresenter
     include Representable::XML
-    representable_property :band, :as => Band
+    property :band, :as => Band
   end
   
   
@@ -271,7 +271,7 @@ class CollectionTest < MiniTest::Spec
   describe ":as => Band, :from => :band, :collection => true" do
     class Compilation
       include Representable::XML
-      representable_collection :bands, :as => Band, :from => :band
+      collection :bands, :as => Band, :from => :band
     end
     
     describe "#from_xml" do
@@ -309,7 +309,7 @@ class CollectionTest < MiniTest::Spec
   describe ":from" do
     class Album
       include Representable::XML
-      representable_collection :songs, :from => :song
+      collection :songs, :from => :song
     end
 
     it "collects untyped items" do
