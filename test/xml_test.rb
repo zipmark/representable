@@ -214,19 +214,25 @@ class AttributesTest < MiniTest::Spec
 end
 
 class TypedPropertyTest < MiniTest::Spec
-  class Album
+  module AlbumRepresenter
     include Representable::XML
     representable_property :band, :as => Band
-    
-    def initialize(band=nil)
-      band and self.band = band
-    end
   end
   
   
+  class Album
+    def initialize(band=nil)
+      @band = band
+    end
+  end
+  
+  # TODO: fix property 
+  # property :group, :as => Band
+  # :class
+  # where to mixin DCI?
   describe ":as => Item" do
     it "#from_xml creates one Item instance" do
-      album = Album.from_xml(%{
+      album = Album.new.extend(AlbumRepresenter).from_xml(%{
         <album>
           <band><name>Bad Religion</name></band>
         </album>
@@ -237,7 +243,7 @@ class TypedPropertyTest < MiniTest::Spec
     describe "#to_xml" do
       it "doesn't escape xml from Band#to_xml" do
         band = Band.new("Bad Religion")
-        album = Album.new(band)
+        album = Album.new(band).extend(AlbumRepresenter)
         
         assert_xml_equal %{<album>
          <band>
@@ -254,7 +260,7 @@ class TypedPropertyTest < MiniTest::Spec
           end
         end
         
-        assert_xml_equal %{<album><band>Baaaad Religion</band></album>}, Album.new(band).to_xml
+        assert_xml_equal %{<album><band>Baaaad Religion</band></album>}, Album.new(band).extend(AlbumRepresenter).to_xml
       end
     end
   end

@@ -1,6 +1,7 @@
 h2. 0.11.0
 
 * Representer modules can now be injected into objects using @#extend@.
+* The @:extend@ option allows setting a representer module for a typed property.
 
 h2. 0.10.3
 

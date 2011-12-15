@@ -147,7 +147,8 @@ private
   end
   
   
-  # Allows mapping formats to representer classes. 
+  # Allows mapping formats to representer classes.
+  # DISCUSS: this module might be removed soon.
   module Represents
     def represents(format, options)
       representer[format] = options[:with]
