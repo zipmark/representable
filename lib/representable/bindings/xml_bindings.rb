@@ -1,3 +1,5 @@
+require 'representable/binding'
+
 module Representable
   module XML
     class Binding < Representable::Binding
