@@ -14,7 +14,7 @@ This keeps your representation knowledge in one place when implementing REST ser
 
 * Bidirectional - rendering and parsing
 * OOP documents
-* Support for JSON and XML
+* Support for JSON, XML and MessagePack
 
 
 == Example
@@ -26,32 +26,39 @@ Since you keep forgetting the heroes of your childhood you decide to implement a
 
 == Defining Representations
 
+Representations are usually defined using a module. This makes them super flexibly, you'll see.
+
   require 'representable/json'
 
+  module HeroRepresenter
+    include Representable::JSON
+    
+    property :forename
+    property :surename
+  end
+
+By using #property we declare two simple attributes. Representable will automatically add accessors to the module.
+
+To use your representer include it in the matching class. Note that you could reuse a representer in multiple classes. 
+
+  class Hero
+  	include Representable
+    include HeroRepresenter
+  end
+
+Many people dislike including representers on class layer. You might also extend an object at runtime.
+
+  Hero.new.extend(HeroRepresenter)
+
+Alternatively, if you don't like modules (which you shouldn't),  declarations can be put into classes directly.
+
   class Hero
     include Representable::JSON
     
-    representable_property :forename
-    representable_property :surename
+    property :forename
+    property :surename
   end
 
-This declares two simple properties. Representable will automatically add accessors to the class.
-
-Alternatively, if you don't want declarations in your models, use a module.
-
-  module HeroRepresentation
-    include Representable
-    
-    representable_property :forename
-    representable_property :surename
-  end
-
-This module needs a host class to be used with.
-
-  class Hero
-    include Representable::JSON
-    include HeroRepresentation
-  end
 
 == Rendering
 
@@ -77,12 +84,12 @@ See how easy this is? You can use an object-oriented method to read from the doc
 
 == Nesting
 
-You need a second domain object. Every hero has a place he comes from.
+You need a second domain object. Every hero has a place it comes from.
 
   class Location
     include Representable::JSON
     
-    representable_property :title
+    property :title
   end
 
 Peter, where ya' from?
@@ -92,8 +99,8 @@ Peter, where ya' from?
 
 It makes sense to embed the location in the hero's document.
 
-  class Hero
-    representable_property :origin, :as => Location
+  module HeroRepresenter
+    property :origin, :as => Location
   end
 
 Using the +:as+ option allows you to include other representable objects.
@@ -117,23 +124,23 @@ Representable just creates objects from the parsed document - nothing more and n
 
 Heroes have features, special abilities that make 'em a superhero.
 
-  class Hero
-    representable_collection :features
+  module HeroRepresenter
+    collection :features
   end
 
-The second API method is +representable_collection+ and, well, declares a collection.
+The second representable API method is +collection+ and, well, declares a collection.
 
   peter.features = ["stays young", "can fly"]
   peter.to_json
-#=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"]}
+  #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"]}
 
 
 == Typed Collections
 
-Ok, things start working out. Your hero has a name, an origin and a list of features so far. Why not allows adding friends to Peter - nobody wants to be alone!
+Ok, things start working out. Your hero has a name, an origin and a list of features so far. Why not allow adding buddies to Peter - nobody wants to be alone!
 
-  class Hero
-    representable_collection :friends, :as => Hero
+  module HeroRepresenter
+    collection :friends, :as => Hero
   end
 
 Again, we type the collection by using the +:as+ option.
@@ -158,7 +165,7 @@ I always wanted to be Peter's bro... in this example it is possible!
 
 Representable is designed to be very simple. However, a few tweaks are available. What if you want to wrap your document?
 
-  class Hero
+  module HeroRepresenter
     self.representation_wrap = true
   end
 
@@ -166,7 +173,7 @@ Representable is designed to be very simple. However, a few tweaks are available
 
 You can also provide a custom wrapper.
 
-  class Hero
+  module HeroRepresenter
     self.representation_wrap = :boy
   end
 
@@ -177,23 +184,40 @@ You can also provide a custom wrapper.
 
 If your accessor name doesn't match the attribute name in the document, use the +:from+ matcher.
 
-  class Hero
-    representable_property :forename, :from => :name
+  module HeroRepresenter
+    property :forename, :from => :i_am_called
   end
   
-  peter.to_json #=> {"name":"Peter","surename":"Pan"}
+  peter.to_json #=> {"i_am_called":"Peter","surename":"Pan"}
 
 
 === Filtering
 
-Representable allows you to skip properties when rendering or parsing.
+Representable allows you to skip and include properties when rendering or parsing.
 
-  peter.to_json do |name|
-    name == :forename
-  end
-
+  peter.to_json(:include => :forename)
   #=> {"forename":"Peter"}
 
+It gives you convenient +:exclude+ and +:include+ options.
+
+
+== DCI
+
+Representers roughly follow the {DCI}[http://en.wikipedia.org/wiki/Data,_context_and_interaction] pattern when used on objects, only.
+
+  Hero.new.extend(HeroRepresenter)
+
+The only difference is that you have to define which representers to use for typed properties.
+
+	module HeroRepresenter
+	  property :forename
+	  property :surename
+	  collection :features
+	  property :origin, :as => Location
+	  collection :friends, :as => Hero, :extend => HeroRepresenter
+	end
+
+There's no need to specify a representer for the +origin+ property since the +Location+ class statically includes its representation. For +friends+, we can use +:extend+ to tell representable which module to mix in dynamically.
 
 == XML support
 

@@ -1,8 +1,8 @@
 h2. 0.11.0
 
 * Representer modules can now be injected into objects using @#extend@.
-* The @:extend@ option allows setting a representer module for a typed property.
-* Renamed @#representable_property@ and @#representable_collection@ to @#property@ and @#collection@ as we don't have to fear namespace-collisions in modules.
+* The @:extend@ option allows setting a representer module for a typed property. This will extend the contained object at runtime roughly following the DCI pattern.
+* Renamed @#representable_property@ and @#representable_collection@ to @#property@ and @#collection@ as we don't have to fear namespace collisions in modules.
 
 h2. 0.10.3
 
