@@ -60,8 +60,8 @@ module Representable
 
     # Represents a tag with object binding.
     class ObjectBinding < Binding
-      include Representable::Binding::Hooks
-      include Representable::Binding::DCI
+      include Representable::Binding::Hooks # includes #create_object and #write_object.
+      include Representable::Binding::Extend
       
       # Adds the ref's markup to +xml+. 
       def write(xml, object)

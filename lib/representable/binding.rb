@@ -22,7 +22,9 @@ module Representable
     end
     
     
-    module DCI
+    # Hooks into #write_object and #create_object to extend typed properties
+    # at runtime.
+    module Extend
     private
       # Extends the object with its representer before serialization.
       def write_object(object)

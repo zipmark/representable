@@ -12,10 +12,6 @@ module Representable
         
         definition.array? ? vals : vals.first
       end
-      
-      # DISCUSS: include DCI per default?
-      include Representable::Binding::Hooks
-      include Representable::Binding::DCI
     end
     
     # Represents plain key-value.
@@ -33,6 +29,9 @@ module Representable
   
     # Represents a tag with object binding.
     class ObjectBinding < Binding
+      include Representable::Binding::Hooks # includes #create_object and #write_object.
+      include Representable::Binding::Extend
+      
       def write(hash, object)
         if definition.array?
           hash[definition.from] = object.collect { |obj| serialize(obj) }

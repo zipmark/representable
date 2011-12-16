@@ -226,8 +226,7 @@ class TypedPropertyTest < MiniTest::Spec
     end
   end
   
-  # TODO: fix property 
-  # property :group, :as => Band
+  # TODO:property :group, :as => Band
   # :class
   # where to mixin DCI?
   describe ":as => Item" do
