@@ -1,3 +1,7 @@
+h2. 0.12.0
+
+* Maintenance release since I forgot to tag earlier versions.
+
 h2. 0.11.0
 
 * Representer modules can now be injected into objects using @#extend@.
