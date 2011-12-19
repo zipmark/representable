@@ -100,10 +100,10 @@ Peter, where ya' from?
 It makes sense to embed the location in the hero's document.
 
   module HeroRepresenter
-    property :origin, :as => Location
+    property :origin, :class => Location
   end
 
-Using the +:as+ option allows you to include other representable objects.
+Using the +:class+ option allows you to include other representable objects.
 
   peter.origin = neverland
   peter.to_json
@@ -140,10 +140,10 @@ The second representable API method is +collection+ and, well, declares a collec
 Ok, things start working out. Your hero has a name, an origin and a list of features so far. Why not allow adding buddies to Peter - nobody wants to be alone!
 
   module HeroRepresenter
-    collection :friends, :as => Hero
+    collection :friends, :class => Hero
   end
 
-Again, we type the collection by using the +:as+ option.
+Again, we type the collection by using the +:class+ option.
 
   nick = Hero.new
   nick.forename = "Nick"
@@ -213,8 +213,8 @@ The only difference is that you have to define which representers to use for typ
 	  property :forename
 	  property :surename
 	  collection :features
-	  property :origin, :as => Location
-	  collection :friends, :as => Hero, :extend => HeroRepresenter
+	  property :origin, :class => Location
+	  collection :friends, :class => Hero, :extend => HeroRepresenter
 	end
 
 There's no need to specify a representer for the +origin+ property since the +Location+ class statically includes its representation. For +friends+, we can use +:extend+ to tell representable which module to mix in dynamically.

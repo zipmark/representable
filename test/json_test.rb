@@ -128,7 +128,7 @@ module JsonTest
         
       describe "#binding_for_definition" do
         it "returns ObjectBinding" do
-          assert_kind_of Json::ObjectBinding, @band.binding_for_definition(Def.new(:band, :as => Hash))
+          assert_kind_of Json::ObjectBinding, @band.binding_for_definition(Def.new(:band, :class => Hash))
         end
         
         it "returns TextBinding" do
@@ -153,8 +153,8 @@ module JsonTest
       
       module AlbumRepresenter
         include Representable::JSON
-        property :best_song, :as => Song, :extend => SongRepresenter
-        collection :songs, :as => Song, :extend => SongRepresenter
+        property :best_song, :class => Song, :extend => SongRepresenter
+        collection :songs, :class => Song, :extend => SongRepresenter
       end
       
       
@@ -211,7 +211,7 @@ module JsonTest
       end
     end
     
-    describe ":as => Item" do
+    describe ":class => Item" do
       class Label
         include Representable::JSON
         property :name
@@ -219,7 +219,7 @@ module JsonTest
       
       class Album
         include Representable::JSON
-        property :label, :as => Label
+        property :label, :class => Label
       end
       
       it "#from_json creates one Item instance" do
@@ -234,11 +234,11 @@ module JsonTest
         assert_equal '{"label":{"name":"Fat Wreck"}}', album.to_json
       end
       
-      describe ":different_name, :as => Label" do
+      describe ":different_name, :class => Label" do
         before do
           @Album = Class.new do
             include Representable::JSON
-            property :seller, :as => Label
+            property :seller, :class => Label
           end
         end
         
@@ -334,7 +334,7 @@ end
       end
     end
     
-    describe "collection :name, :as => Band" do
+    describe "collection :name, :class => Band" do
       class Band
         include Representable::JSON
         property :name
@@ -346,7 +346,7 @@ end
       
       class Compilation
         include Representable::JSON
-        collection :bands, :as => Band
+        collection :bands, :class => Band
       end
       
       describe "#from_json" do

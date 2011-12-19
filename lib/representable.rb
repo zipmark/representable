@@ -84,7 +84,7 @@ private
       #
       #   property :name
       #   property :name, :from => :title
-      #   property :name, :as => Name
+      #   property :name, :class => Name
       #   property :name, :accessors => false
       #   property :name, :default => "Mike"
       def property(name, options={})
@@ -100,7 +100,7 @@ private
       #
       #   collection :products
       #   collection :products, :from => :item
-      #   collection :products, :as => Product
+      #   collection :products, :class => Product
       def collection(name, options={})
         options[:collection] = true
         property(name, options)

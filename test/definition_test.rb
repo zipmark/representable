@@ -15,7 +15,7 @@ class DefinitionTest < MiniTest::Spec
     
     it "responds to #typed?" do
       assert ! @def.typed?
-      assert Representable::Definition.new(:songs, :as => Hash).typed?
+      assert Representable::Definition.new(:songs, :class => Hash).typed?
     end
     
     it "responds to #getter and returns string" do
@@ -75,9 +75,9 @@ class DefinitionTest < MiniTest::Spec
     end
   end
   
-  describe ":as => Item" do
+  describe ":class => Item" do
     before do
-      @def = Representable::Definition.new(:songs, :as => Hash)
+      @def = Representable::Definition.new(:songs, :class => Hash)
     end
     
     it "responds to #sought_type" do

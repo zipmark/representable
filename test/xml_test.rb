@@ -126,7 +126,7 @@ class XmlTest < MiniTest::Spec
       end
       
       it "returns ObjectBinding" do
-        assert_kind_of XML::ObjectBinding, @band.binding_for_definition(Def.new(:band, :as => Hash))
+        assert_kind_of XML::ObjectBinding, @band.binding_for_definition(Def.new(:band, :class => Hash))
       end
       
       it "returns TextBinding" do
@@ -144,8 +144,8 @@ class XmlTest < MiniTest::Spec
       
       module AlbumRepresenter
         include Representable::XML
-        property :best_song, :as => Song, :extend => SongRepresenter
-        collection :songs, :as => Song, :from => :song, :extend => SongRepresenter
+        property :best_song, :class => Song, :extend => SongRepresenter
+        collection :songs, :class => Song, :from => :song, :extend => SongRepresenter
         representation_wrap = :album
       end
       
@@ -216,7 +216,7 @@ end
 class TypedPropertyTest < MiniTest::Spec
   module AlbumRepresenter
     include Representable::XML
-    property :band, :as => Band
+    property :band, :class => Band
   end
   
   
@@ -226,10 +226,10 @@ class TypedPropertyTest < MiniTest::Spec
     end
   end
   
-  # TODO:property :group, :as => Band
+  # TODO:property :group, :class => Band
   # :class
   # where to mixin DCI?
-  describe ":as => Item" do
+  describe ":class => Item" do
     it "#from_xml creates one Item instance" do
       album = Album.new.extend(AlbumRepresenter).from_xml(%{
         <album>
@@ -267,10 +267,10 @@ end
 
 
 class CollectionTest < MiniTest::Spec
-  describe ":as => Band, :from => :band, :collection => true" do
+  describe ":class => Band, :from => :band, :collection => true" do
     class Compilation
       include Representable::XML
-      collection :bands, :as => Band, :from => :band
+      collection :bands, :class => Band, :from => :band
     end
     
     describe "#from_xml" do
