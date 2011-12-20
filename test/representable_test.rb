@@ -80,6 +80,43 @@ class RepresentableTest < MiniTest::Spec
   end
   
   
+  describe "Representable" do
+    it "allows mixing in multiple representers" do
+      require 'representable/json'
+      class Bodyjar
+        include Representable::XML
+        include Representable::JSON
+        include PunkBandRepresentation
+        
+        self.representation_wrap = "band"
+      end
+      
+      vd = Bodyjar.new
+      vd.name        = "Bodyjar"
+      assert_equal "{\"band\":{\"name\":\"Bodyjar\"}}", vd.to_json
+      assert_equal "{\"name\":\"Bodyjar\"}", vd.to_xml
+    end
+    
+    it "allows extending with different representers" do
+      module SongXmlRepresenter
+        include Representable::XML
+        property :name, :from => "@name"
+      end
+      
+      module SongJsonRepresenter
+        include Representable::JSON
+        property :name
+      end
+      
+      @song = Song.new("Days Go By")
+      assert_xml_equal "<song name=\"Days Go By\"/>", @song.extend(SongXmlRepresenter).to_xml
+      assert_equal "{\"name\":\"Days Go By\"}", @song.extend(SongJsonRepresenter).to_json
+    end
+    
+  end
+  
+  
+  
   describe "#property" do
     it "creates accessors for the attribute" do
       @band = PunkBand.new
