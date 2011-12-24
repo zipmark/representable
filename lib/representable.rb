@@ -85,13 +85,9 @@ private
       #   property :name
       #   property :name, :from => :title
       #   property :name, :class => Name
-      #   property :name, :accessors => false
       #   property :name, :default => "Mike"
       def property(name, options={})
-        attr = add_property(name, options)
-        
-        attr_reader(attr.getter) unless options[:accessors] == false
-        attr_writer(attr.getter) unless options[:accessors] == false
+        representable_attrs << definition_class.new(name, options)
       end
       
       # Declares a represented document node collection.
@@ -104,13 +100,6 @@ private
       def collection(name, options={})
         options[:collection] = true
         property(name, options)
-      end
-      
-    private
-      def add_property(*args)
-        definition_class.new(*args).tap do |attr|
-          representable_attrs << attr
-        end
       end
     end
     

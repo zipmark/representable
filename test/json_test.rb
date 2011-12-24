@@ -12,6 +12,7 @@ module JsonTest
           include Representable::JSON
           property :name
           property :label
+          attr_accessor :name, :label
           
           def initialize(name=nil)
             self.name = name if name
@@ -167,6 +168,9 @@ module JsonTest
         civ = Object.new
         civ.instance_eval do
           def name; "CIV"; end
+          def name=(v)
+            @name = v
+          end
         end
         
         civ.extend(BandRepresenter)
@@ -196,6 +200,7 @@ module JsonTest
       class Band
         include Representable::JSON
         property :name
+        attr_accessor :name
       end
       
       it "#from_json creates correct accessors" do
@@ -215,11 +220,13 @@ module JsonTest
       class Label
         include Representable::JSON
         property :name
+        attr_accessor :name
       end
       
       class Album
         include Representable::JSON
         property :label, :class => Label
+        attr_accessor :label
       end
       
       it "#from_json creates one Item instance" do
@@ -239,6 +246,7 @@ module JsonTest
           @Album = Class.new do
             include Representable::JSON
             property :seller, :class => Label
+            attr_accessor :seller
           end
         end
         
@@ -255,6 +263,7 @@ module JsonTest
       class Song
         include Representable::JSON
         property :name, :from => :songName
+        attr_accessor :name
       end
       
       it "respects :from in #from_json" do
@@ -273,6 +282,7 @@ module JsonTest
         @Album = Class.new do
         include Representable::JSON
         property :name, :default => "30 Years Live"
+        attr_accessor :name
       end
     end
       
@@ -319,6 +329,7 @@ end
       class CD
         include Representable::JSON
         collection :songs
+        attr_accessor :songs
       end
       
       it "#from_json creates correct accessors" do
@@ -338,6 +349,7 @@ end
       class Band
         include Representable::JSON
         property :name
+        attr_accessor :name
         
         def initialize(name="")
           self.name = name
@@ -347,6 +359,7 @@ end
       class Compilation
         include Representable::JSON
         collection :bands, :class => Band
+        attr_accessor :bands
       end
       
       describe "#from_json" do
@@ -376,6 +389,7 @@ end
       class Songs
         include Representable::JSON
         collection :tracks, :from => :songList
+        attr_accessor :tracks
       end
       
       it "respects :from in #from_json" do

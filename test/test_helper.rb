@@ -10,6 +10,7 @@ require 'test_xml/mini_test'
 require 'mocha'
 
 class Album
+  attr_accessor :songs, :best_song
   def initialize(*songs)
     @songs      = songs
     @best_song  = songs.last
@@ -17,6 +18,7 @@ class Album
 end
 
 class Song
+  attr_accessor :name
   def initialize(name=nil)
     @name = name
   end

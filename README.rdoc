@@ -37,11 +37,13 @@ Representations are usually defined using a module. This makes them super flexib
     property :surename
   end
 
-By using #property we declare two simple attributes. Representable will automatically add accessors to the module.
+By using #property we declare two simple attributes that should be considered when representing.
 
-To use your representer include it in the matching class. Note that you could reuse a representer in multiple classes. 
+To use your representer include it in the matching class. Note that you could reuse a representer in multiple classes. The represented class must have getter and setter methods for each property.
 
   class Hero
+    attr_accessor :forename, :surename
+  	
   	include Representable
     include HeroRepresenter
   end
@@ -53,6 +55,8 @@ Many people dislike including representers on class layer. You might also extend
 Alternatively, if you don't like modules (which you shouldn't),  declarations can be put into classes directly.
 
   class Hero
+    attr_accessor :forename, :surename
+  	
     include Representable::JSON
     
     property :forename
@@ -87,6 +91,8 @@ See how easy this is? You can use an object-oriented method to read from the doc
 You need a second domain object. Every hero has a place it comes from.
 
   class Location
+    attr_accessor :title
+  	
     include Representable::JSON
     
     property :title
@@ -254,7 +260,7 @@ Representable was written with REST representations in mind. However, it is a ge
 
 == Copyright
 
-Representable is a heavily simplified fork of the ROXML gem. Big thanks to Ben Woosley for his work.
+Representable is a heavily simplified fork of the ROXML gem. Big thanks to Ben Woosley for his inspiring work.
 
 * Copyright (c) 2011 Nick Sutterer <apotonick@gmail.com>
-* Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.
+* ROXML is Copyright (c) 2004-2009 Ben Woosley, Zak Mandhro and Anders Engstrom.

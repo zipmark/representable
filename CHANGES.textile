@@ -1,7 +1,10 @@
+h2. 0.13.0
+
+* We no longer create accessors in @Representable.property@ - you have to do this yourself using @attr_accessors@.
+
 h2. 0.12.0
 
 * @:as@ is now @:class@.
-
 
 h2. 0.11.0
 

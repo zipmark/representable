@@ -4,6 +4,7 @@ require 'representable/xml'
 class Band
   include Representable::XML
   property :name
+  attr_accessor :name
   
   def initialize(name=nil)
     name and self.name = name
@@ -24,6 +25,7 @@ class XmlTest < MiniTest::Spec
         self.representation_wrap = :band
         property :name
         property :label
+        attr_accessor :name, :label
       end
       
       @band = @Band.new
@@ -159,6 +161,9 @@ class XmlTest < MiniTest::Spec
         civ = Object.new
         civ.instance_eval do
           def name; "CIV"; end
+          def name=(v)
+            @name = v
+          end
         end
         
         civ.extend(BandRepresenter)
@@ -194,6 +199,7 @@ class AttributesTest < MiniTest::Spec
       include Representable::XML
       property :href,   :from => "@href"
       property :title,  :from => "@title"
+      attr_accessor :href, :title
     end
     
     it "#from_xml creates correct accessors" do
@@ -221,6 +227,7 @@ class TypedPropertyTest < MiniTest::Spec
   
   
   class Album
+    attr_accessor :band
     def initialize(band=nil)
       @band = band
     end
@@ -271,6 +278,7 @@ class CollectionTest < MiniTest::Spec
     class Compilation
       include Representable::XML
       collection :bands, :class => Band, :from => :band
+      attr_accessor :bands
     end
     
     describe "#from_xml" do
@@ -309,6 +317,7 @@ class CollectionTest < MiniTest::Spec
     class Album
       include Representable::XML
       collection :songs, :from => :song
+      attr_accessor :songs
     end
 
     it "collects untyped items" do

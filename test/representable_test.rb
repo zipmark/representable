@@ -4,10 +4,12 @@ class RepresentableTest < MiniTest::Spec
   class Band
     include Representable
     property :name
+    attr_accessor :name
   end
   
   class PunkBand < Band
     property :street_cred
+    attr_accessor :street_cred
   end
   
   module BandRepresentation
@@ -56,6 +58,7 @@ class RepresentableTest < MiniTest::Spec
       it "allows including the concrete representer module later" do
         require 'representable/json'
         vd = class VD
+          attr_accessor :name, :street_cred
           include Representable::JSON
           include PunkBandRepresentation
         end.new
@@ -89,8 +92,8 @@ class RepresentableTest < MiniTest::Spec
         include Representable::JSON
         include PunkBandRepresentation
         
-        
         self.representation_wrap = "band"
+        attr_accessor :name, :street_cred
       end
       
       band = Bodyjar.new
@@ -202,6 +205,7 @@ class RepresentableTest < MiniTest::Spec
     include Representable::JSON
     property :name
     property :groupies
+    attr_accessor :name, :groupies
   end
 
   describe "#update_properties_from" do
