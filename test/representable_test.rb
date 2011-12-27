@@ -106,7 +106,7 @@ class RepresentableTest < MiniTest::Spec
     it "allows extending with different representers subsequentially" do
       module SongXmlRepresenter
         include Representable::XML
-        property :name, :from => "@name"
+        property :name, :from => "name", :attribute => true
       end
       
       module SongJsonRepresenter

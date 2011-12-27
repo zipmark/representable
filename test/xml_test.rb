@@ -124,7 +124,7 @@ class XmlTest < MiniTest::Spec
     
     describe "XML#binding_for_definition" do
       it "returns AttributeBinding" do
-        assert_kind_of XML::AttributeBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => "@band"))
+        assert_kind_of XML::AttributeBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => "band", :attribute => true))
       end
       
       it "returns ObjectBinding" do
@@ -194,11 +194,11 @@ end
 
 
 class AttributesTest < MiniTest::Spec
-  describe ":from => @rel" do
+  describe ":from => rel, :attribute => true" do
     class Link
       include Representable::XML
-      property :href,   :from => "@href"
-      property :title,  :from => "@title"
+      property :href,   :from => "href",  :attribute => true
+      property :title,  :from => "title", :attribute => true
       attr_accessor :href, :title
     end
     

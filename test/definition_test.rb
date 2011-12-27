@@ -35,7 +35,7 @@ class DefinitionTest < MiniTest::Spec
     end
     
     it "responds to #sought_type" do
-      assert_equal :text, @def.sought_type
+      assert_equal nil, @def.sought_type
     end
   end
   
@@ -67,7 +67,7 @@ class DefinitionTest < MiniTest::Spec
     end
     
     it "responds to #sought_type" do
-      assert_equal :text, @def.sought_type
+      assert_equal nil, @def.sought_type
     end
     
     it "responds to #default" do

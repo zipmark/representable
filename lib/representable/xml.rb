@@ -11,7 +11,8 @@ module Representable
     
     def self.binding_for_definition(definition)
       return ObjectBinding.new(definition) if definition.typed?
-      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
+      return AttributeBinding.new(definition) if definition.attribute
+      TextBinding.new(definition)
     end
     
     def self.included(base)
