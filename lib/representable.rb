@@ -1,5 +1,29 @@
 require 'representable/definition'
 
+# Representable can be used in two ways.
+#
+# == On class level
+#
+# To try out Representable you might include the format module into the represented class directly and then
+# define the properties.
+#
+#   class Hero < ActiveRecord::Base
+#     include Representable::JSON
+#     property :name
+#
+# This will give you to_/from_json for each instance. However, this approach limits your class to one representation.
+#
+# == On module level
+#
+# Modules give you much more flexibility since you can mix them into objects at runtime, roughly following the DCI
+# pattern.
+#
+#   module HeroRepresenter
+#     include Representable::JSON
+#     property :name
+#   end
+#
+#   hero.extend(HeroRepresenter).to_json
 module Representable
   def self.included(base)
     base.class_eval do

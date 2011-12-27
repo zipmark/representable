@@ -1,3 +1,7 @@
+h2. 1.0.0
+
+* 1.0.0 release! Party time!
+
 h2. 0.13.1
 
 * Removed property :@name from @XML@ in favor of @:attribute => true@.
