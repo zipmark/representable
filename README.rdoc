@@ -44,7 +44,7 @@ To use your representer include it in the matching class. Note that you could re
   class Hero
     attr_accessor :forename, :surename
   	
-  	include Representable
+    include Representable
     include HeroRepresenter
   end
 
@@ -215,13 +215,13 @@ Representers roughly follow the {DCI}[http://en.wikipedia.org/wiki/Data,_context
 
 The only difference is that you have to define which representers to use for typed properties.
 
-	module HeroRepresenter
-	  property :forename
-	  property :surename
-	  collection :features
-	  property :origin, :class => Location
-	  collection :friends, :class => Hero, :extend => HeroRepresenter
-	end
+  module HeroRepresenter
+    property :forename
+    property :surename
+    collection :features
+    property :origin, :class => Location
+    collection :friends, :class => Hero, :extend => HeroRepresenter
+  end
 
 There's no need to specify a representer for the +origin+ property since the +Location+ class statically includes its representation. For +friends+, we can use +:extend+ to tell representable which module to mix in dynamically.
 
@@ -249,6 +249,21 @@ Representable allows declaring a document's syntax and structure while having di
   </hero>
 
 The #to_xml method gives us an XML representation of Peter - great!
+
+=== Mapping tag attributes
+
+You can also map properties to tag attributes in representable.
+
+  class Hero
+  	attr_accessor :name
+    include Representable::XML
+    property :name, :attribute => true
+  end
+  
+  Hero.new(:name => "Peter Pan").to_xml
+  #=> <hero name="Peter Pan" />
+
+Naturally, this works for both ways.
 
 
 == More
