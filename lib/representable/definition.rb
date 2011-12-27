@@ -8,7 +8,7 @@ module Representable
       @name               = sym.to_s
       @array              = options[:collection]
       @from               = (options[:from] || name).to_s
-      @sought_type        = options[:class] || options[:as] || :text  # TODO: deprecate :as in 1.0.
+      @sought_type        = options[:class] || :text  # TODO: deprecate :as in 1.0.
       @default            = options[:default]
       @default            ||= [] if array?
       @representer_module = options[:extend]  # DISCUSS: move to Representable::DCI?
