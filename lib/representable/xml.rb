@@ -4,11 +4,6 @@ require 'nokogiri'
 
 module Representable
   module XML
-    BINDING_FOR_TYPE = {
-      :attr     => AttributeBinding,
-      :text     => TextBinding,
-    }
-    
     def self.binding_for_definition(definition)
       return ObjectBinding.new(definition) if definition.typed?
       return AttributeBinding.new(definition) if definition.attribute

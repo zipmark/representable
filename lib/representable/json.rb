@@ -8,10 +8,6 @@ module Representable
   # Note: The authorative methods are #to_hash and #from_hash, if you override #to_json instead,
   # things might work as expected.
   module JSON
-    BINDING_FOR_TYPE = {  # TODO: refactor #representable_accessor for better extendability.
-      :text     => TextBinding,
-    }
-    
     def self.binding_for_definition(definition)
       return ObjectBinding.new(definition) if definition.typed?
       TextBinding.new(definition)
