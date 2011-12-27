@@ -9,6 +9,11 @@ module Representable
       :text     => TextBinding,
     }
     
+    def self.binding_for_definition(definition)
+      return ObjectBinding.new(definition) if definition.typed?
+      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
+    end
+    
     def self.included(base)
       base.class_eval do
         include Representable
@@ -42,22 +47,18 @@ module Representable
     end
     
     def from_node(node, options={})
-      update_properties_from(node, options)
+      update_properties_from(node, options, XML)
     end
     
     # Returns a Nokogiri::XML object representing this object.
     def to_node(options={})
       root_tag = options[:wrap] || representation_wrap
       
-      create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new), options)
+      create_representation_with(Nokogiri::XML::Node.new(root_tag.to_s, Nokogiri::XML::Document.new), options, XML)
     end
     
     def to_xml(*args)
       to_node(*args).to_s
-    end
-    
-    def binding_for_definition(definition)
-      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
   end
 end

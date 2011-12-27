@@ -12,6 +12,11 @@ module Representable
       :text     => TextBinding,
     }
     
+    def self.binding_for_definition(definition)
+      return ObjectBinding.new(definition) if definition.typed?
+      TextBinding.new(definition)
+    end
+    
     def self.included(base)
       base.class_eval do
         include Representable # either in Hero or HeroRepresentation.
@@ -43,11 +48,11 @@ module Representable
         data = data[wrap.to_s]
       end
       
-      update_properties_from(data, options)
+      update_properties_from(data, options, JSON)
     end
     
     def to_hash(options={})
-      hash = create_representation_with({}, options)
+      hash = create_representation_with({}, options, JSON)
       
       return hash unless wrap = options[:wrap] || representation_wrap
       
@@ -57,10 +62,6 @@ module Representable
     # Returns a JSON string representing this object.
     def to_json(*args)
       to_hash(*args).to_json
-    end
-    
-    def binding_for_definition(definition)
-      (BINDING_FOR_TYPE[definition.sought_type] or ObjectBinding).new(definition)
     end
   end
 end

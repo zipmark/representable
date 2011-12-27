@@ -22,8 +22,8 @@ module Representable
   end
   
   # Reads values from +doc+ and sets properties accordingly.
-  def update_properties_from(doc, options, &block)
-    representable_bindings.each do |bin|
+  def update_properties_from(doc, options, format, &block)
+    representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       
       value = bin.read(doc) || bin.definition.default
@@ -34,8 +34,8 @@ module Representable
   
 private
   # Compiles the document going through all properties.
-  def create_representation_with(doc, options, &block)
-    representable_bindings.each do |bin|
+  def create_representation_with(doc, options, format, &block)
+    representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       
       value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
@@ -55,8 +55,8 @@ private
     @representable_attrs ||= self.class.representable_attrs # DISCUSS: copy, or better not?
   end
   
-  def representable_bindings
-    representable_attrs.map {|attr| binding_for_definition(attr) }
+  def representable_bindings_for(format)
+    representable_attrs.map {|attr| format.binding_for_definition(attr) }
   end
   
   # Returns the wrapper for the representation. Mostly used in XML.

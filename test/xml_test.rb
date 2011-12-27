@@ -122,17 +122,17 @@ class XmlTest < MiniTest::Spec
     end
     
     
-    describe "#binding_for_definition" do
+    describe "XML#binding_for_definition" do
       it "returns AttributeBinding" do
-        assert_kind_of XML::AttributeBinding, @band.binding_for_definition(Def.new(:band, :from => "@band"))
+        assert_kind_of XML::AttributeBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => "@band"))
       end
       
       it "returns ObjectBinding" do
-        assert_kind_of XML::ObjectBinding, @band.binding_for_definition(Def.new(:band, :class => Hash))
+        assert_kind_of XML::ObjectBinding, Representable::XML.binding_for_definition(Def.new(:band, :class => Hash))
       end
       
       it "returns TextBinding" do
-        assert_kind_of XML::TextBinding, @band.binding_for_definition(Def.new(:band, :from => :content))
+        assert_kind_of XML::TextBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => :content))
       end
     end
     

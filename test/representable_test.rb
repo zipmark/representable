@@ -214,25 +214,25 @@ class RepresentableTest < MiniTest::Spec
     end
     
     it "copies values from document to object" do
-      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {})
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {}, Representable::JSON)
       assert_equal "No One's Choice", @band.name
       assert_equal 2, @band.groupies
     end
     
     it "accepts :except option" do
-      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, :except => [:groupies])
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {:except => [:groupies]}, Representable::JSON)
       assert_equal "No One's Choice", @band.name
       assert_equal nil, @band.groupies
     end
     
     it "accepts :include option" do
-      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, :include => [:groupies])
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {:include => [:groupies]}, Representable::JSON)
       assert_equal 2, @band.groupies
       assert_equal nil, @band.name
     end
     
     it "always returns self" do
-      assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {})
+      assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {}, Representable::JSON)
     end
   end
   
@@ -244,16 +244,16 @@ class RepresentableTest < MiniTest::Spec
     end
     
     it "compiles document from properties in object" do
-      assert_equal({"name"=>"No One's Choice", "groupies"=>2}, @band.send(:create_representation_with, {}, {}))
+      assert_equal({"name"=>"No One's Choice", "groupies"=>2}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
     end
     
     it "accepts :except option" do
-      hash = @band.send(:create_representation_with, {}, :except => [:groupies])
+      hash = @band.send(:create_representation_with, {}, {:except => [:groupies]}, Representable::JSON)
       assert_equal({"name"=>"No One's Choice"}, hash)
     end
     
     it "accepts :include option" do
-      hash = @band.send(:create_representation_with, {}, :include => [:groupies])
+      hash = @band.send(:create_representation_with, {}, {:include => [:groupies]}, Representable::JSON)
       assert_equal({"groupies"=>2}, hash)
     end
   end
