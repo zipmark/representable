@@ -100,7 +100,7 @@ class RepresentableTest < MiniTest::Spec
       band.name = "Bodyjar"
       
       assert_equal "{\"band\":{\"name\":\"Bodyjar\"}}", band.to_json
-      #assert_equal "{\"name\":\"Bodyjar\"}", band.to_xml # FIXME: now, #binding_for_definition returns wrong binding.
+      assert_xml_equal "<band><name>Bodyjar</name></band>", band.to_xml
     end
     
     it "allows extending with different representers subsequentially" do
