@@ -37,7 +37,7 @@ module Representable
       
       def extend_for(object)  # TODO: test me.
         if mod = definition.representer_module
-          object.extend(mod)
+          object.extend(*mod)
         end
         
         object
