@@ -22,4 +22,8 @@ class Song
   def initialize(name=nil)
     @name = name
   end
+  
+  def ==(other)
+    name == other.name
+  end
 end
