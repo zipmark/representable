@@ -405,4 +405,48 @@ end
       end
     end
   end
+  
+  
+  require 'representable/json/collection'
+  class CollectionRepresenterTest < MiniTest::Spec
+    module SongRepresenter
+      include Representable::JSON
+      property :name
+    end
+    
+    describe "JSON::Collection" do
+      describe "with contained objects" do
+        before do
+          @songs_representer = Module.new do
+            include Representable::JSON::Collection
+            items :class => Song, :extend => SongRepresenter
+          end
+        end
+        
+        it "renders objects with #to_json" do
+          assert_equal "[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]", [Song.new("Days Go By"), Song.new("Can't Take Them All")].extend(@songs_representer).to_json
+        end
+        
+        it "returns objects array from #from_json" do
+          assert_equal [Song.new("Days Go By"), Song.new("Can't Take Them All")], [].extend(@songs_representer).from_json("[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]")
+        end
+      end
+      
+      describe "with contained text" do
+        before do
+          @songs_representer = Module.new do
+            include Representable::JSON::Collection
+          end
+        end
+        
+        it "renders contained items #to_json" do
+          assert_equal "[\"Days Go By\",\"Can't Take Them All\"]", ["Days Go By", "Can't Take Them All"].extend(@songs_representer).to_json
+        end
+        
+        it "returns objects array from #from_json" do
+          assert_equal ["Days Go By", "Can't Take Them All"], [].extend(@songs_representer).from_json("[\"Days Go By\",\"Can't Take Them All\"]")
+        end
+      end
+    end
+  end
 end
