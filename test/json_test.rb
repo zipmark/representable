@@ -135,6 +135,14 @@ module JsonTest
         it "returns TextBinding" do
           assert_kind_of Json::PropertyBinding, Json.binding_for_definition(Def.new(:band))
         end
+        
+        it "returns HashBinding" do
+          assert_kind_of Json::HashBinding, Json.binding_for_definition(Def.new(:band, :hash => true))
+        end
+        
+        it "returns CollectionBinding" do
+          assert_kind_of Json::CollectionBinding, Json.binding_for_definition(Def.new(:band, :collection => true))
+        end
       end
       
       describe "#representable_bindings" do

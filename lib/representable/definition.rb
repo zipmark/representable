@@ -21,6 +21,10 @@ module Representable
       options[:collection]
     end
     
+    def hash?
+      options[:hash]
+    end
+    
     def sought_type
       options[:class]
     end

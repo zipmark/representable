@@ -84,4 +84,15 @@ class DefinitionTest < MiniTest::Spec
       assert_equal "Atheist Peace", @def.default
     end
   end
+  
+  describe ":hash => true" do
+    before do
+      @def = Representable::Definition.new(:songs, :hash => true)
+    end
+    
+    it "responds to #hash?" do
+      assert @def.hash?
+      assert ! Representable::Definition.new(:songs).hash?
+    end
+  end
 end
