@@ -9,8 +9,9 @@ module Representable
   # things might work as expected.
   module JSON
     def self.binding_for_definition(definition)
-      return ObjectBinding.new(definition) if definition.typed?
-      TextBinding.new(definition)
+      return CollectionBinding.new(definition) if definition.array?
+      #return ObjectBinding.new(definition) if definition.typed?
+      PropertyBinding.new(definition)
     end
     
     def self.included(base)

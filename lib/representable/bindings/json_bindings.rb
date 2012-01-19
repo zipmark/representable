@@ -13,6 +13,7 @@ module Representable
       end
     end
     
+    
     # Hooks into #serialize and #deserialize to extend typed properties
     # at runtime.
     module Extend
@@ -35,7 +36,8 @@ module Representable
       end
     end
     
-    module ObjectBindiiing
+    
+    module ObjectBinding
       include Representable::JSON::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object)
@@ -51,74 +53,56 @@ module Representable
       end
     end
     
-    class PropertyBinding < Representable::Binding
+    
+    class JSONBinding < Representable::Binding
       include Representable::JSON::Hooks
       
       def initialize(definition)
         super
-        extend ObjectBindiiing if definition.typed? # FIXME.
-      end
-      
-      def write(hash, value)
-        hash[definition.from] = serialize(value)
+        extend ObjectBinding if definition.typed? # FIXME.
       end
       
       def read(hash)
         fragment = hash[definition.from]
+        deserialize_from(fragment)
+      end
+      
+      def write(hash, value)
+        hash[definition.from] = serialize_for(value)
+      end
+    end
+    
+    
+    class PropertyBinding < JSONBinding
+      def serialize_for(value)
+        serialize(value)
+      end
+      
+      def deserialize_from(fragment)
         deserialize(fragment)
       end
-      
-      include Hooks
     end
     
     
-    class Binding < Representable::Binding
-    private
-      def collect_for(hash)
-        nodes = hash[definition.from] or return
-        nodes = [nodes] unless nodes.is_a?(Array)
-        
-        vals  = nodes.collect { |node| yield node }
-        
-        definition.array? ? vals : vals.first
+    class CollectionBinding < JSONBinding
+      def serialize_for(value)
+        value.collect { |obj| serialize(obj) }
+      end
+      
+      def deserialize_from(fragment)
+        fragment ||= {}
+        fragment.collect { |item_fragment| deserialize(item_fragment) }
       end
     end
     
-    # Represents plain key-value.
-    class TextBinding < Binding
-      def write(hash, value)
-        hash[definition.from] = value
+    
+    class HashBinding < JSONBinding
+      def serialize_for(value)
+        value.each { |key, obj| value[key] = serialize(obj) }
       end
       
-      def read(hash)
-        collect_for(hash) do |value|
-          value
-        end
-      end
-    end
-  
-    # Represents a tag with object binding.
-    class ObjectBinding < Binding
-      include Representable::Binding::Hooks # includes #create_object and #write_object.
-      include Representable::Binding::Extend
-      
-      def write(hash, object)
-        if definition.array?
-          hash[definition.from] = object.collect { |obj| serialize(obj) }
-        else
-          hash[definition.from] = serialize(object)
-        end
-      end
-      
-      def read(hash)
-        collect_for(hash) do |node|
-          create_object.from_hash(node)
-        end
-      end
-      
-    private
-      def serialize(object)
-        write_object(object).to_hash(:wrap => false)
+      def deserialize_from(fragment)
+        fragment.each { |key, item_fragment| fragment[key] = deserialize(item_fragment) }
       end
     end
   end
