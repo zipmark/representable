@@ -194,6 +194,71 @@ module JsonTest
       end
     end
   end
+  
+  class PropertyBindingTest < MiniTest::Spec
+    module SongRepresenter
+      include Representable::JSON
+      property :name
+    end
+    
+    class SongWithRepresenter < ::Song
+      include Representable
+      include SongRepresenter
+    end
+    
+    #class Song < ::Song
+    #  
+    #end
+    
+    describe "with plain text" do
+      before do
+        @property = Representable::JSON::PropertyBinding.new(Representable::Definition.new(:song))
+      end
+      
+      it "extracts with #read" do
+        assert_equal "Thinning the Herd", @property.read("song" => "Thinning the Herd")
+      end
+      
+      it "inserts with #write" do
+        doc = {}
+        assert_equal("Thinning the Herd", @property.write(doc,"Thinning the Herd"))
+        assert_equal({"song"=>"Thinning the Herd"}, doc)
+      end
+    end
+    
+    describe "with an object" do
+      before do
+        @property = Representable::JSON::PropertyBinding.new(Representable::Definition.new(:song, :class => SongWithRepresenter))
+        @doc      = {}
+      end
+      
+      it "extracts with #read" do
+        assert_equal SongWithRepresenter.new("Thinning the Herd"), @property.read("song" => {"name" => "Thinning the Herd"})
+      end
+      
+      it "inserts with #write" do
+        assert_equal({"name"=>"Thinning the Herd"}, @property.write(@doc, SongWithRepresenter.new("Thinning the Herd")))
+        assert_equal({"song" => {"name"=>"Thinning the Herd"}}, @doc)
+      end
+    end
+    
+    describe "with an object and :extend" do
+      before do
+        @property = Representable::JSON::PropertyBinding.new(Representable::Definition.new(:song, :class => Song, :extend => SongRepresenter))
+        @doc      = {}
+      end
+      
+      it "extracts with #read" do
+        assert_equal Song.new("Thinning the Herd"), @property.read("song" => {"name" => "Thinning the Herd"})
+      end
+      
+      it "inserts with #write" do
+        assert_equal({"name"=>"Thinning the Herd"}, @property.write(@doc, Song.new("Thinning the Herd")))
+        assert_equal({"song" => {"name"=>"Thinning the Herd"}}, @doc)
+      end
+    end
+  end
+  
 
   class PropertyTest < MiniTest::Spec
     describe "property :name" do
