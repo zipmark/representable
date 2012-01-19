@@ -133,7 +133,7 @@ module JsonTest
         end
         
         it "returns TextBinding" do
-          assert_kind_of Json::TextBinding, Json.binding_for_definition(Def.new(:band))
+          assert_kind_of Json::PropertyBinding, Json.binding_for_definition(Def.new(:band))
         end
       end
       
