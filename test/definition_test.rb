@@ -13,9 +13,18 @@ class DefinitionTest < MiniTest::Spec
       end
     end
     
-    it "responds to #typed?" do
-      assert ! @def.typed?
-      assert Representable::Definition.new(:songs, :class => Hash).typed?
+    describe "#typed?" do
+      it "is false per default" do
+        assert ! @def.typed?
+      end
+      
+      it "is true when :class is present" do
+        assert Representable::Definition.new(:songs, :class => Hash).typed?
+      end
+      
+      it "is true when :extend is present, only" do
+        assert Representable::Definition.new(:songs, :extend => Hash).typed?
+      end
     end
     
     it "responds to #getter and returns string" do
