@@ -44,23 +44,6 @@ class DefinitionTest < MiniTest::Spec
     end
   end
   
-  
-  describe "#apply" do
-    it "works with a single item" do
-      @d = Representable::Definition.new(:song)
-      assert_equal 2, @d.apply(1) { |v| v+1 }
-    end
-    
-    it "works with collection" do
-      @d = Representable::Definition.new(:song, :collection => true)
-      assert_equal [2,3,4], @d.apply([1,2,3]) { |v| v+1 }
-    end
-    
-    it "skips with collection and nil" do
-      @d = Representable::Definition.new(:song, :collection => true)
-      assert_equal nil, @d.apply(nil) { |v| v+1 }
-    end
-  end
     
   describe ":collection => true" do
     before do
