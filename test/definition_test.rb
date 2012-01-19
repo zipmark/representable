@@ -35,10 +35,6 @@ class DefinitionTest < MiniTest::Spec
       assert_equal "songs", @def.name 
     end
     
-    it "responds to #instance_variable_name" do
-      assert_equal :"@songs", @def.instance_variable_name
-    end
-    
     it "responds to #setter" do
       assert_equal :"songs=", @def.setter
     end

@@ -15,10 +15,6 @@ module Representable
       @attribute          = options[:attribute] 
     end
 
-    def instance_variable_name
-      :"@#{name}"
-    end
-
     def setter
       :"#{name}="
     end
