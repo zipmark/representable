@@ -125,6 +125,11 @@ private
         options[:collection] = true
         property(name, options)
       end
+      
+      def hash(name, options={})
+        options[:hash] = true
+        property(name, options)
+      end
     end
     
     

@@ -415,6 +415,33 @@ end
     end
   end
   
+  class HashTest < MiniTest::Spec
+    describe "hash :songs" do
+      before do
+        representer = Module.new do
+          include Representable::JSON
+          hash :songs
+        end
+        
+        class SongList
+          attr_accessor :songs
+        end
+        
+        @list = SongList.new.extend(representer)
+      end
+      
+      it "renders with #to_json" do
+        @list.songs = {:one => "65", :two => "Emo Boy"}
+        assert_equal "{\"songs\":{\"one\":\"65\",\"two\":\"Emo Boy\"}}", @list.to_json
+      end
+      
+      it "parses with #from_json" do
+        assert_equal({"one" => "65", "two" => "Emo Boy"}, @list.from_json("{\"songs\":{\"one\":\"65\",\"two\":\"Emo Boy\"}}").songs)
+      end
+    end
+    
+  end
+  
   
   require 'representable/json/collection'
   class CollectionRepresenterTest < MiniTest::Spec
