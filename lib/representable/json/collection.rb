@@ -19,8 +19,7 @@ module Representable::JSON
     
     def create_representation_with(doc, options, format)
       bin   = representable_bindings_for(format).first
-      value = find_all { true }
-      bin.write(doc, value)
+      bin.write(doc, self)
     end
     
     def update_properties_from(doc, options, format)
