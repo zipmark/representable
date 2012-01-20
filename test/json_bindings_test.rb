@@ -101,5 +101,19 @@ class JSONBindingTest < MiniTest::Spec
         assert_equal({"songs"=>{"first" => "The Gargoyle", "second" => "Bronx"}}, doc)
       end
     end
+    
+    describe "with objects" do
+      before do
+        @property = Representable::JSON::HashBinding.new(Representable::Definition.new(:songs, :hash => true, :class => Song, :extend => SongRepresenter))
+      end
+      
+      it "doesn't change the represented hash in #write" do
+        song = Song.new("Better Than That")
+        hash = {"first" => song}
+        @property.write({}, hash)
+        assert_equal({"first" => song}, hash)
+      end
+    end
+    
   end
 end

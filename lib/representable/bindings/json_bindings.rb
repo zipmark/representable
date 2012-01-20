@@ -98,7 +98,9 @@ module Representable
     
     class HashBinding < JSONBinding
       def serialize_for(value)
-        value.each { |key, obj| value[key] = serialize(obj) }
+        {}.tap do |hash|
+          value.each { |key, obj| hash[key] = serialize(obj) }
+        end
       end
       
       def deserialize_from(fragment)

@@ -436,7 +436,7 @@ end
       end
       
       it "parses with #from_json" do
-        assert_equal({"one" => "65", "two" => "Emo Boy"}, @list.from_json("{\"songs\":{\"one\":\"65\",\"two\":\"Emo Boy\"}}").songs)
+        assert_equal({"one" => "65", "two" => ["Emo Boy"]}, @list.from_json("{\"songs\":{\"one\":\"65\",\"two\":[\"Emo Boy\"]}}").songs)
       end
     end
     
@@ -465,6 +465,50 @@ end
         
         it "returns objects array from #from_json" do
           assert_equal [Song.new("Days Go By"), Song.new("Can't Take Them All")], [].extend(@songs_representer).from_json("[{\"name\":\"Days Go By\"},{\"name\":\"Can't Take Them All\"}]")
+        end
+      end
+      
+      describe "with contained text" do
+        before do
+          @songs_representer = Module.new do
+            include Representable::JSON::Collection
+          end
+        end
+        
+        it "renders contained items #to_json" do
+          assert_equal "[\"Days Go By\",\"Can't Take Them All\"]", ["Days Go By", "Can't Take Them All"].extend(@songs_representer).to_json
+        end
+        
+        it "returns objects array from #from_json" do
+          assert_equal ["Days Go By", "Can't Take Them All"], [].extend(@songs_representer).from_json("[\"Days Go By\",\"Can't Take Them All\"]")
+        end
+      end
+    end
+  end
+  
+  
+  require 'representable/json/hash'
+  class HashRepresenterTest < MiniTest::Spec
+    module SongRepresenter
+      include Representable::JSON
+      property :name
+    end
+    
+    describe "JSON::Hash" do
+      describe "with contained objects" do
+        before do
+          @songs_representer = Module.new do
+            include Representable::JSON::Hash
+            values :class => Song, :extend => SongRepresenter
+          end
+        end
+        
+        it "renders objects with #to_json" do
+          assert_equal "{\"one\":{\"name\":\"Days Go By\"},\"two\":{\"name\":\"Can't Take Them All\"}}", {:one => Song.new("Days Go By"), :two => Song.new("Can't Take Them All")}.extend(@songs_representer).to_json
+        end
+        
+        it "returns objects array from #from_json" do
+          assert_equal({"one" => Song.new("Days Go By"), "two" => Song.new("Can't Take Them All")}, {}.extend(@songs_representer).from_json("{\"one\":{\"name\":\"Days Go By\"},\"two\":{\"name\":\"Can't Take Them All\"}}"))
         end
       end
       
