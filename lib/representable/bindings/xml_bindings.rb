@@ -2,10 +2,41 @@ require 'representable/binding'
 
 module Representable
   module XML
+    module ObjectBiiinding
+      include Representable::JSON::Extend  # provides #serialize/#deserialize with extend.
+      
+      def serialize(object)
+        super(object).to_node(:wrap => false)
+      end
+      
+      def deserialize(hash)
+        super(create_object).from_node(hash)
+      end
+      
+      def create_object
+        definition.sought_type.new
+      end
+      
+      def serialize_for(value, parent)
+        serialize(value)
+      end
+      
+      def deserialize_from(node)
+        nodes   = node.search("./#{xpath}")
+        node = nodes.first  # FIXME.
+        deserialize(node)
+      end
+    end
+    
     class Binding < Representable::Binding
       def read(xml)
         value_from_node(xml)
       end
+      
+      def write(doc, value)
+        
+      end
+      
       
     private
       def xpath
@@ -17,6 +48,76 @@ module Representable
         vals  = nodes.collect { |node| yield node }
         
         definition.array? ? vals : vals.first
+      end
+    end
+    
+    class PropertyBinding < Binding
+      include JSON::Hooks # FIXME: move to generic layer.
+      
+      def initialize(definition)
+        super
+        extend ObjectBiiinding if definition.typed? # FIXME.
+      end
+      
+      def write(parent, value)
+        parent << serialize_for(value, parent)
+        
+      end
+      def read(node)
+        deserialize_from(node)
+      end
+      
+      
+      def serialize_for(value, parent)
+        node =  Nokogiri::XML::Node.new(definition.from, parent.document)
+        node.content = serialize(value)
+        #parent.add_child(serialize_for(value, node))
+        node
+      end
+      
+      def deserialize_from(node)
+        nodes   = node.search("./#{xpath}")
+        content = nodes.first.content
+        deserialize(content)
+      end
+    end
+    
+    class CollectionBinding < PropertyBinding
+      def write(parent, value)
+        serialize_for(value, parent).each do |node|
+          parent << node
+        end
+      end
+      
+      def serialize_for(value, parent)
+        Nokogiri::XML::NodeSet.new(parent.document, value.collect { |obj| 
+          node=Nokogiri::XML::Node.new(definition.from, parent.document)
+          node.content = serialize(obj);node })
+      end
+      
+      def deserialize_from(fragment)
+        nodes = fragment.search("./#{xpath}")
+        nodes.collect { |node| deserialize(node.content) }
+      end
+    end
+    
+    class HashBinding < CollectionBinding
+      def serialize_for(value, parent)
+        document = parent.document
+        Nokogiri::XML::NodeSet.new(document, value.collect { |k, v|
+        
+          node = Nokogiri::XML::Node.new(k, document)
+        
+          node.content = serialize(v);
+          node })
+      end
+      
+      def deserialize_from(fragment)
+        {}.tap do |hash|
+          fragment.search("./#{xpath}").children.each do |node|
+            hash[node.name] = deserialize(node.content)
+          end
+        end
       end
     end
     

@@ -5,9 +5,9 @@ require 'nokogiri'
 module Representable
   module XML
     def self.binding_for_definition(definition)
-      return ObjectBinding.new(definition) if definition.typed?
-      return AttributeBinding.new(definition) if definition.attribute
-      TextBinding.new(definition)
+      #return CollectionBinding.new(definition)  if definition.array?
+      #return HashBinding.new(definition)        if definition.hash?
+      PropertyBinding.new(definition)
     end
     
     def self.included(base)
