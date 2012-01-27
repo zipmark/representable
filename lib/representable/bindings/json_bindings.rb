@@ -57,9 +57,9 @@ module Representable
     class JSONBinding < Representable::Binding
       include Representable::JSON::Hooks
       
-      def initialize(definition)
+      def initialize(definition) # FIXME. make generic.
         super
-        extend ObjectBinding if definition.typed? # FIXME.
+        extend ObjectBinding if definition.typed?
       end
       
       def read(hash)

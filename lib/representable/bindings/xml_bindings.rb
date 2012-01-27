@@ -122,15 +122,20 @@ module Representable
     end
     
     
-    # Represents a tag attribute.
-    class AttributeBinding < Binding
-      def write(xml, values)
-        xml[definition.from] = values.to_s
+    # Represents a tag attribute. Currently this only works on the top-level tag.
+    class AttributeBinding < PropertyBinding
+      def deserialize_from(fragment)
+        deserialize(fragment[definition.from])
       end
-
-    private
-      def value_from_node(xml)
-        xml[definition.from]
+      
+      def serialize_for(value, parent)
+        parent[definition.from] = serialize(value.to_s)
+      end
+      
+      def write(parent, value)
+        serialize_for(value, parent)
+        
+        
       end
     end
     

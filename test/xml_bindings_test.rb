@@ -113,4 +113,23 @@ class XMLBindingTest < MiniTest::Spec
       end
     end
   end
+  
+  
+  describe "AttributeBinding" do
+    describe "with plain text items" do
+      before do
+        @property = Representable::XML::AttributeBinding.new(Representable::Definition.new(:name, :attribute => true))
+      end
+      
+      it "extracts with #read" do
+        assert_equal "The Gargoyle", @property.read(Nokogiri::XML("<song name=\"The Gargoyle\" />").root)
+      end
+      
+      it "inserts with #write" do
+        parent = Nokogiri::XML::Node.new("song", @doc)
+        @property.write(parent, "The Gargoyle")
+        assert_xml_equal("<song name=\"The Gargoyle\" />", parent.to_s)
+      end
+    end
+  end
 end
