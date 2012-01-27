@@ -87,6 +87,24 @@ class XMLBindingTest < MiniTest::Spec
         assert_xml_equal("<songs><song>The Gargoyle</song><song>Bronx</song></songs>", parent.to_s)
       end
     end
+    
+    describe "with an object" do
+      before do
+        @property = Representable::XML::PropertyBinding.new(Representable::Definition.new(:song, :collection => true, :class => SongWithRepresenter))
+      end
+      
+      it "extracts with #read" do
+        assert_equal @song, @property.read(Nokogiri::XML("<song><name>Thinning the Herd</name></song>"))
+      end
+      
+      it "inserts with #write" do
+        @property.write(@doc, @song)
+        assert_xml_equal("<song><name>Thinning the Herd</name></song>", @doc.to_s)
+        assert_kind_of Nokogiri::XML::Node, @doc.children.first
+        assert_equal "song", @doc.children.first.name
+        assert_equal "name", @doc.children.first.children.first.name
+      end
+    end
   end
   
   

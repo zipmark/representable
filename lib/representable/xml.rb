@@ -5,8 +5,9 @@ require 'nokogiri'
 module Representable
   module XML
     def self.binding_for_definition(definition)
-      #return CollectionBinding.new(definition)  if definition.array?
-      #return HashBinding.new(definition)        if definition.hash?
+      return CollectionBinding.new(definition)  if definition.array?
+      return HashBinding.new(definition)        if definition.hash?
+      return AttributeBinding.new(definition)        if definition.attribute
       PropertyBinding.new(definition)
     end
     

@@ -1,12 +1,22 @@
 require 'representable/binding'
+require 'representable/bindings/json_bindings'  # FIXME.
 
 module Representable
   module XML
-    module ObjectBiiinding
+    module ObjectBinding
       include Representable::JSON::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object)
         super(object).to_node(:wrap => false)
+      end
+      
+      def deserialize_node(node)
+        deserialize(node)
+      end
+      def serialize_node(node, value)
+        obj=serialize(value)
+        puts "seraial #{obj.inspect}"
+        obj
       end
       
       def deserialize(hash)
@@ -16,38 +26,12 @@ module Representable
       def create_object
         definition.sought_type.new
       end
-      
-      def serialize_for(value, parent)
-        serialize(value)
-      end
-      
-      def deserialize_from(node)
-        nodes   = node.search("./#{xpath}")
-        node = nodes.first  # FIXME.
-        deserialize(node)
-      end
     end
     
     class Binding < Representable::Binding
-      def read(xml)
-        value_from_node(xml)
-      end
-      
-      def write(doc, value)
-        
-      end
-      
-      
     private
       def xpath
         definition.from
-      end
-
-      def collect_for(xml)
-        nodes = xml.search("./#{xpath}")
-        vals  = nodes.collect { |node| yield node }
-        
-        definition.array? ? vals : vals.first
       end
     end
     
@@ -56,7 +40,7 @@ module Representable
       
       def initialize(definition)
         super
-        extend ObjectBiiinding if definition.typed? # FIXME.
+        extend ObjectBinding if definition.typed? # FIXME.
       end
       
       def write(parent, value)
@@ -68,48 +52,63 @@ module Representable
       end
       
       
+      #def serialize_for(value, parent, tag_name=definition.from)
       def serialize_for(value, parent)
         node =  Nokogiri::XML::Node.new(definition.from, parent.document)
+        serialize_node(node, value)
+      end
+      
+      def serialize_node(node, value)
         node.content = serialize(value)
-        #parent.add_child(serialize_for(value, node))
         node
       end
       
+      
       def deserialize_from(node)
         nodes   = node.search("./#{xpath}")
-        content = nodes.first.content
-        deserialize(content)
+        return if nodes.size == 0 # TODO: write dedicated test!
+        
+        deserialize_node(nodes.first)
+      end
+      
+      def deserialize_node(node)
+        deserialize(node.content)
       end
     end
     
     class CollectionBinding < PropertyBinding
       def write(parent, value)
-        serialize_for(value, parent).each do |node|
+        serialize_list(value, parent).each do |node|
           parent << node
         end
       end
       
-      def serialize_for(value, parent)
+      def serialize_list(value, parent)
         Nokogiri::XML::NodeSet.new(parent.document, value.collect { |obj| 
-          node=Nokogiri::XML::Node.new(definition.from, parent.document)
-          node.content = serialize(obj);node })
+          serialize_for(obj, parent)
+          #node = Nokogiri::XML::Node.new(definition.from, parent.document)
+          #node.content = serialize_node(parent, obj);
+           })
       end
       
       def deserialize_from(fragment)
-        nodes = fragment.search("./#{xpath}")
-        nodes.collect { |node| deserialize(node.content) }
+        property_nodes = fragment.search("./#{xpath}")
+        
+        property_nodes.collect do |item|
+          deserialize_node(item)
+        end
       end
     end
     
     class HashBinding < CollectionBinding
-      def serialize_for(value, parent)
+      def serialize_list(value, parent)
         document = parent.document
         Nokogiri::XML::NodeSet.new(document, value.collect { |k, v|
         
           node = Nokogiri::XML::Node.new(k, document)
-        
-          node.content = serialize(v);
-          node })
+          serialize_node(node, v);
+          
+           })
       end
       
       def deserialize_from(fragment)
@@ -136,62 +135,6 @@ module Representable
         serialize_for(value, parent)
         
         
-      end
-    end
-    
-    
-    # Represents text content in a tag. # FIXME: is this tested???
-    class TextBinding < Binding
-      def write(xml, value)
-        if definition.array?
-          value.each do |v|
-            add(xml, definition.from, v)
-          end
-        else
-          add(xml, definition.from, value)
-        end
-      end
-
-    private
-      def value_from_node(xml)
-        collect_for(xml) do |node| 
-          node.content
-        end
-      end
-      
-      def add(xml, name, value)
-        child = xml.add_child Nokogiri::XML::Node.new(name, xml.document)
-        child.content = value
-      end
-    end
-    
-
-    # Represents a tag with object binding.
-    class ObjectBinding < Binding
-      include Representable::Binding::Hooks # includes #create_object and #write_object.
-      include Representable::Binding::Extend
-      
-      # Adds the ref's markup to +xml+. 
-      def write(xml, object)
-        if definition.array?
-          object.each do |item|
-            write_entity(xml, item)
-          end
-        else
-          write_entity(xml, object)
-        end
-      end
-
-    private
-      # Deserializes the ref's element from +xml+.
-      def value_from_node(xml)
-        collect_for(xml) do |node|
-          create_object.from_node(node)
-        end
-      end
-      
-      def write_entity(xml, entity)
-        xml.add_child(write_object(entity).to_node)
       end
     end
   end

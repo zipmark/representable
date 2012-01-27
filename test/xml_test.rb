@@ -127,12 +127,17 @@ class XmlTest < MiniTest::Spec
         assert_kind_of XML::AttributeBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => "band", :attribute => true))
       end
       
-      it "returns ObjectBinding" do
-        assert_kind_of XML::ObjectBinding, Representable::XML.binding_for_definition(Def.new(:band, :class => Hash))
+      it "returns PropertyBinding" do
+        assert_kind_of XML::PropertyBinding, Representable::XML.binding_for_definition(Def.new(:band, :class => Hash))
+        assert_kind_of XML::PropertyBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => :content))
       end
       
-      it "returns TextBinding" do
-        assert_kind_of XML::TextBinding, Representable::XML.binding_for_definition(Def.new(:band, :from => :content))
+      it "returns CollectionBinding" do
+        assert_kind_of XML::CollectionBinding, Representable::XML.binding_for_definition(Def.new(:band, :collection => :true))
+      end
+      
+      it "returns HashBinding" do
+        assert_kind_of XML::HashBinding, Representable::XML.binding_for_definition(Def.new(:band, :hash => :true))
       end
     end
     
@@ -261,7 +266,7 @@ class TypedPropertyTest < MiniTest::Spec
       it "doesn't escape and wrap string from Band#to_node" do
         band = Band.new("Bad Religion")
         band.instance_eval do
-          def to_node
+          def to_node(*)
             "<band>Baaaad Religion</band>"
           end
         end
