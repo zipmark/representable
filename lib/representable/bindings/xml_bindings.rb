@@ -36,15 +36,15 @@ module Representable
       
       def write(parent, value)
         parent << serialize_for(value, parent)
-        
       end
+      
       def read(node)
         deserialize_from(node)
       end
       
-      
-      #def serialize_for(value, parent, tag_name=definition.from)
+      # Creates wrapped node for the property.
       def serialize_for(value, parent)
+      #def serialize_for(value, parent, tag_name=definition.from)
         node =  Nokogiri::XML::Node.new(definition.from, parent.document)
         serialize_node(node, value)
       end
@@ -74,17 +74,15 @@ module Representable
     
     class CollectionBinding < PropertyBinding
       def write(parent, value)
-        serialize_list(value, parent).each do |node|
+        serialize_items(value, parent).each do |node|
           parent << node
         end
       end
       
-      def serialize_list(value, parent)
-        Nokogiri::XML::NodeSet.new(parent.document, value.collect { |obj| 
+      def serialize_items(value, parent)
+        value.collect do |obj|
           serialize_for(obj, parent)
-          #node = Nokogiri::XML::Node.new(definition.from, parent.document)
-          #node.content = serialize_node(parent, obj);
-           })
+        end
       end
       
       def deserialize_from(fragment)
@@ -96,15 +94,13 @@ module Representable
       end
     end
     
+    
     class HashBinding < CollectionBinding
-      def serialize_list(value, parent)
-        document = parent.document
-        Nokogiri::XML::NodeSet.new(document, value.collect { |k, v|
-        
-          node = Nokogiri::XML::Node.new(k, document)
+      def serialize_items(value, parent)
+        value.collect do |k, v|
+          node = Nokogiri::XML::Node.new(k, parent.document)
           serialize_node(node, v);
-          
-           })
+        end
       end
       
       def deserialize_from(fragment)
