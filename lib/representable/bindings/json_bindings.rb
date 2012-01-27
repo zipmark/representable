@@ -2,43 +2,8 @@ require 'representable/binding'
 
 module Representable
   module JSON
-    module Hooks
-    private
-      def serialize(value)
-        value
-      end
-      
-      def deserialize(fragment)
-        fragment
-      end
-    end
-    
-    
-    # Hooks into #serialize and #deserialize to extend typed properties
-    # at runtime.
-    module Extend
-    private
-      # Extends the object with its representer before serialization.
-      def serialize(object)
-        extend_for(super)
-      end
-      
-      def deserialize(*)
-        extend_for(super)
-      end
-      
-      def extend_for(object)
-        if mod = definition.representer_module
-          object.extend(*mod)
-        end
-        
-        object
-      end
-    end
-    
-    
     module ObjectBinding
-      include Representable::JSON::Extend  # provides #serialize/#deserialize with extend.
+      include Binding::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object)
         super(object).to_hash(:wrap => false)
@@ -55,7 +20,7 @@ module Representable
     
     
     class JSONBinding < Representable::Binding
-      include Representable::JSON::Hooks
+      include Binding::Hooks
       
       def initialize(definition) # FIXME. make generic.
         super

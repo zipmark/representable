@@ -6,32 +6,27 @@ module Representable
       @definition = definition
     end
     
-    
-    # Usually called in concrete ObjectBinding in #write and #read. 
+    # Main entry point for rendering/parsing a property object.
     module Hooks
-    private
-      # Must be called in serialization of concrete ObjectBinding.
-      def write_object(object)
-        object
+      def serialize(value)
+        value
       end
       
-      # Creates a typed property instance.
-      def create_object
-        definition.sought_type.new
+      def deserialize(fragment)
+        fragment
       end
     end
     
     
-    # Hooks into #write_object and #create_object to extend typed properties
+    # Hooks into #serialize and #deserialize to extend typed properties
     # at runtime.
     module Extend
-    private
       # Extends the object with its representer before serialization.
-      def write_object(object)
+      def serialize(object)
         extend_for(super)
       end
       
-      def create_object
+      def deserialize(*)
         extend_for(super)
       end
       

@@ -1,10 +1,9 @@
 require 'representable/binding'
-require 'representable/bindings/json_bindings'  # FIXME.
 
 module Representable
   module XML
     module ObjectBinding
-      include Representable::JSON::Extend  # provides #serialize/#deserialize with extend.
+      include Binding::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object)
         super(object).to_node(:wrap => false)
@@ -36,7 +35,7 @@ module Representable
     end
     
     class PropertyBinding < Binding
-      include JSON::Hooks # FIXME: move to generic layer.
+      include Binding::Hooks
       
       def initialize(definition)
         super

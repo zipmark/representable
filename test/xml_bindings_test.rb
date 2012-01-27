@@ -88,7 +88,7 @@ class XMLBindingTest < MiniTest::Spec
       end
     end
     
-    describe "with an object" do
+    describe "with objects" do
       before do
         @property = Representable::XML::PropertyBinding.new(Representable::Definition.new(:song, :collection => true, :class => SongWithRepresenter))
       end
