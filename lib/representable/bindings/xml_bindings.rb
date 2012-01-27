@@ -54,7 +54,6 @@ module Representable
         node
       end
       
-      
       def deserialize_from(node)
         nodes   = node.search("./#{xpath}")
         return if nodes.size == 0 # TODO: write dedicated test!
@@ -62,6 +61,7 @@ module Representable
         deserialize_node(nodes.first)
       end
       
+      # DISCUSS: rename to #read_from ?
       def deserialize_node(node)
         deserialize(node.content)
       end
@@ -99,14 +99,14 @@ module Representable
       def serialize_items(value, parent)
         value.collect do |k, v|
           node = Nokogiri::XML::Node.new(k, parent.document)
-          serialize_node(node, v);
+          serialize_node(node, v)
         end
       end
       
       def deserialize_from(fragment)
         {}.tap do |hash|
           fragment.search("./#{xpath}").children.each do |node|
-            hash[node.name] = deserialize(node.content)
+            hash[node.name] = deserialize_node(node)
           end
         end
       end
