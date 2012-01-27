@@ -27,16 +27,8 @@ module Representable
       end
     end
     
-    class Binding < Representable::Binding
-    private
-      def xpath
-        definition.from
-      end
-    end
     
     class PropertyBinding < Binding
-      
-      
       def initialize(definition)
         super
         extend ObjectBinding if definition.typed? # FIXME.
@@ -72,6 +64,11 @@ module Representable
       
       def deserialize_node(node)
         deserialize(node.content)
+      end
+      
+    private
+      def xpath
+        definition.from
       end
     end
     
