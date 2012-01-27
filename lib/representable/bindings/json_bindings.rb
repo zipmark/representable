@@ -3,6 +3,7 @@ require 'representable/binding'
 module Representable
   module JSON
     module ObjectBinding
+      # TODO: provide a base ObjectBinding for XML/JSON/MP.
       include Binding::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object)
@@ -20,8 +21,6 @@ module Representable
     
     
     class JSONBinding < Representable::Binding
-      include Binding::Hooks
-      
       def initialize(definition) # FIXME. make generic.
         super
         extend ObjectBinding if definition.typed?

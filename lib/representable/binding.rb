@@ -17,6 +17,8 @@ module Representable
       end
     end
     
+    include Hooks
+    
     
     # Hooks into #serialize and #deserialize to extend typed properties
     # at runtime.

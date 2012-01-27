@@ -3,23 +3,23 @@ require 'representable/binding'
 module Representable
   module XML
     module ObjectBinding
+      # TODO: provide a base ObjectBinding for XML/JSON/MP.
       include Binding::Extend  # provides #serialize/#deserialize with extend.
       
       def serialize(object)
         super(object).to_node(:wrap => false)
       end
       
+      def deserialize(hash)
+        super(create_object).from_node(hash)
+      end
+      
       def deserialize_node(node)
         deserialize(node)
       end
-      def serialize_node(node, value)
-        obj=serialize(value)
-        puts "seraial #{obj.inspect}"
-        obj
-      end
       
-      def deserialize(hash)
-        super(create_object).from_node(hash)
+      def serialize_node(node, value)
+        serialize(value)
       end
       
       def create_object
@@ -35,7 +35,7 @@ module Representable
     end
     
     class PropertyBinding < Binding
-      include Binding::Hooks
+      
       
       def initialize(definition)
         super
