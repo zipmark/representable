@@ -39,7 +39,10 @@ module Representable
       end
       
       def read(node)
-        deserialize_from(node)
+        nodes = node.search("./#{xpath}")
+        return if nodes.size == 0 # TODO: write dedicated test!
+        
+        deserialize_from(nodes)
       end
       
       # Creates wrapped node for the property.
@@ -54,10 +57,7 @@ module Representable
         node
       end
       
-      def deserialize_from(node)
-        nodes   = node.search("./#{xpath}")
-        return if nodes.size == 0 # TODO: write dedicated test!
-        
+      def deserialize_from(nodes)
         deserialize_node(nodes.first)
       end
       
@@ -85,10 +85,8 @@ module Representable
         end
       end
       
-      def deserialize_from(fragment)
-        property_nodes = fragment.search("./#{xpath}")
-        
-        property_nodes.collect do |item|
+      def deserialize_from(nodes)
+        nodes.collect do |item|
           deserialize_node(item)
         end
       end
@@ -103,9 +101,9 @@ module Representable
         end
       end
       
-      def deserialize_from(fragment)
+      def deserialize_from(nodes)
         {}.tap do |hash|
-          fragment.search("./#{xpath}").children.each do |node|
+          nodes.children.each do |node|
             hash[node.name] = deserialize_node(node)
           end
         end
@@ -115,8 +113,8 @@ module Representable
     
     # Represents a tag attribute. Currently this only works on the top-level tag.
     class AttributeBinding < PropertyBinding
-      def deserialize_from(fragment)
-        deserialize(fragment[definition.from])
+      def read(node)
+        deserialize(node[definition.from])
       end
       
       def serialize_for(value, parent)
@@ -125,8 +123,6 @@ module Representable
       
       def write(parent, value)
         serialize_for(value, parent)
-        
-        
       end
     end
   end
