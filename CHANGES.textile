@@ -1,6 +1,7 @@
 h2. 1.1.0
 
-* Added `JSON::Collection` to have plain list representations.
+* Added `JSON::Collection` to have plain list representations. And `JSON::Hash` for hashes.
+* Added the `hash` class method to XML and JSON to represent hashes.
 * Defining `:extend` only on a property now works for rendering. If you try parsing without a `:class` there'll be an exception, though.
 
 h2. 1.0.1
