@@ -165,6 +165,40 @@ I always wanted to be Peter's bro... in this example it is possible!
   #=> {"forename":"Peter","surename":"Pan","origin":{"title":"Neverland"},"features":["stays young","can fly"],"friends":[{"name":"Nick"},{"name":"El"}]}
 
 
+== Hashes
+
+Hashes can be represented the same way collections work. Here, use the #hash class method. 
+
+== Lonely Collections
+
+Need an array represented without any wrapping?
+
+  ["stays young", "can fly"].extend(Representable::JSON::Collection).to_json
+  #=> "[\"stays young\", \"can fly\"]"
+  
+You can use #items to configure the element representations contained in the array.
+
+  module FeaturesRepresenter
+    include Representable::JSON::Collection
+    
+    items :class => Hero, :extend => HeroRepresenter
+  end
+
+Collections and hashes can also be deserialized.
+
+== Lonely Hashes
+
+The same goes with hashes where #values lets you configure the hash's values.
+
+  module FriendsRepresenter
+    include Representable::JSON::Hash
+    
+    values :class => Hero, :extend => HeroRepresenter
+  end
+  
+  {:stu => Hero.new("Stu"), :clive => Hero.new("Cleavage")}.extend(FriendsRepresenter).to_json
+
+
 == Customizing
 
 === Wrapping
