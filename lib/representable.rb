@@ -25,6 +25,8 @@ require 'representable/definition'
 #
 #   hero.extend(HeroRepresenter).to_json
 module Representable
+  attr_writer :representable_attrs
+  
   def self.included(base)
     base.class_eval do
       extend ClassMethods
@@ -37,10 +39,7 @@ module Representable
       
       # Copies the representable_attrs to the extended object.
       def self.extended(object)
-        attrs = representable_attrs
-        object.instance_eval do
-          @representable_attrs = attrs
-        end
+        object.representable_attrs=(representable_attrs)
       end
     end
   end
