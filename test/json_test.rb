@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'representable/json'
 
 module JsonTest
   class APITest < MiniTest::Spec

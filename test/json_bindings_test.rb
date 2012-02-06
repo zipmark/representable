@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'representable/json'
 
 class JSONBindingTest < MiniTest::Spec
   module SongRepresenter

@@ -3,6 +3,7 @@ Bundler.setup
 
 gem 'minitest'
 require 'representable'
+require 'representable/json'
 require 'test/unit'
 require 'minitest/spec'
 require 'minitest/autorun'

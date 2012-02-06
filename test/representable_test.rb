@@ -56,7 +56,6 @@ class RepresentableTest < MiniTest::Spec
       end
       
       it "allows including the concrete representer module later" do
-        require 'representable/json'
         vd = class VD
           attr_accessor :name, :street_cred
           include Representable::JSON
@@ -199,7 +198,7 @@ class RepresentableTest < MiniTest::Spec
   end
 
   
-  require 'representable/json'  # DISCUSS: i don't like the JSON requirement here, what about some generic test module?
+  # DISCUSS: i don't like the JSON requirement here, what about some generic test module?
   class PopBand
     include Representable::JSON
     property :name
@@ -293,6 +292,6 @@ class RepresentableTest < MiniTest::Spec
     it "allows mapping formats to representers" do
       assert_equal :whatever, @class.representer[:json]
       assert_equal :special, @class.representer["application/order-json"]
-    end
+    end    
   end
 end
