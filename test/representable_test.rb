@@ -161,6 +161,12 @@ class RepresentableTest < MiniTest::Spec
     end
   end
   
+  describe "#hash" do
+    it "also responds to the original method" do
+      assert_kind_of Integer, BandRepresentation.hash
+    end
+  end
+  
   
   describe "#representation_wrap" do
     class HardcoreBand

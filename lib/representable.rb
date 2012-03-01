@@ -125,7 +125,9 @@ private
         property(name, options)
       end
       
-      def hash(name, options={})
+      def hash(name=nil, options={})
+        return super() unless name  # allow Object.hash.
+        
         options[:hash] = true
         property(name, options)
       end
