@@ -1,3 +1,7 @@
+h2. 1.1.2
+
+* Allow `Module.hash` to be called without arguments as this seems to be required in Padrino.
+
 h2. 1.1.1
 
 * When a representer module is extended we no longer set the <code>@representable_attrs</code> ivar directly but use a setter. This makes it work with mongoid and fixes https://github.com/apotonick/roar/issues/10.
