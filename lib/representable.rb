@@ -45,7 +45,7 @@ module Representable
   end
   
   # Reads values from +doc+ and sets properties accordingly.
-  def update_properties_from(doc, options, format, &block)
+  def update_properties_from(doc, options, format)
     representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       
@@ -57,7 +57,7 @@ module Representable
   
 private
   # Compiles the document going through all properties.
-  def create_representation_with(doc, options, format, &block)
+  def create_representation_with(doc, options, format)
     representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       

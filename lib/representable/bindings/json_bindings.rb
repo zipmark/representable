@@ -62,6 +62,7 @@ module Representable
     
     class HashBinding < JSONBinding
       def serialize_for(value)
+        # requires value to respond to #each with two block parameters.
         {}.tap do |hash|
           value.each { |key, obj| hash[key] = serialize(obj) }
         end
