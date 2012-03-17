@@ -49,8 +49,7 @@ module Representable
     representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       
-      value = bin.read(doc) || bin.definition.default
-      send(bin.definition.setter, value)
+      uncompile_fragment(bin, doc)
     end
     self
   end
@@ -61,8 +60,7 @@ private
     representable_bindings_for(format).each do |bin|
       next if skip_property?(bin, options)
       
-      value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
-      bin.write(doc, value) if value
+      compile_fragment(bin, doc)
     end
     doc
   end
@@ -72,6 +70,27 @@ private
     return unless props = options[:except] || options[:include]
     res = props.include?(binding.definition.name.to_sym)
     options[:include] ? !res : res
+  end
+  
+  # Retrieve value and write fragment to the doc.
+  def compile_fragment(bin, doc)
+    value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
+    write_fragment_for(bin, value, doc)
+  end
+  
+  # Parse value from doc and update the model property.
+  def uncompile_fragment(bin, doc)
+    value = read_fragment_for(bin, doc) || bin.definition.default
+    send(bin.definition.setter, value)
+  end
+  
+  def write_fragment_for(bin, value, doc) # DISCUSS: move to Binding?
+    return unless value
+    bin.write(doc, value)
+  end
+  
+  def read_fragment_for(bin, doc) # DISCUSS: move to Binding?
+    bin.read(doc)
   end
   
   def representable_attrs
