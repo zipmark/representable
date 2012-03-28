@@ -34,7 +34,7 @@ module Representable
       extend ClassMethods::Accessors
       
       def self.included(base)
-        base.representable_attrs.push(*representable_attrs) # "inherit".
+        base.representable_attrs.push(*representable_attrs.clone) # "inherit".
       end
       
       # Copies the representable_attrs to the extended object.
@@ -173,6 +173,10 @@ private
       return unless wrap
       return infer_name_for(name) if wrap === true
       wrap
+    end
+    
+    def clone
+      self.class.new(collect { |d| d.clone })
     end
     
   private

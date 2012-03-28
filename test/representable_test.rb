@@ -78,6 +78,21 @@ class RepresentableTest < MiniTest::Spec
       #  vd.name        = "Van Halen"
       #  assert_equal "{\"name\":\"Van Halen\"}", vd.to_json
       #end
+      
+      it "doesn't share inherited properties between family members" do
+        parent = Module.new do
+          include Representable
+          property :id
+        end
+        
+        child = Module.new do
+          include Representable
+          include parent
+        end
+        
+        assert parent.representable_attrs.first != child.representable_attrs.first, "definitions shouldn't be identical"
+      end
+      
     end
   end
   
@@ -282,6 +297,13 @@ class RepresentableTest < MiniTest::Spec
       it "can be set explicitely" do
         @config.wrap = "Descendents"
         assert_equal "Descendents", @config.wrap_for(PunkRock)
+      end
+    end
+    
+    describe "clone" do
+      it "clones all definitions" do
+        @config << Object.new
+        assert @config.first != @config.clone.first
       end
     end
   end
