@@ -1,3 +1,7 @@
+h2. 1.1.4
+
+* representable_attrs is now cloned when a representer module is included in an inheriting representer.
+
 h2. 1.1.3
 
 * Introduced `#compile_fragment` and friends to make it simpler overriding parsing and rendering steps.
