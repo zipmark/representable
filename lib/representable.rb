@@ -81,7 +81,8 @@ private
   
   # Parse value from doc and update the model property.
   def uncompile_fragment(bin, doc)
-    value = read_fragment_for(bin, doc) || bin.definition.default
+    value = read_fragment_for(bin, doc)
+    value = bin.definition.default if value.nil?
     send(bin.definition.setter, value)
   end
   

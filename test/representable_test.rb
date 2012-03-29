@@ -253,6 +253,11 @@ class RepresentableTest < MiniTest::Spec
     it "always returns self" do
       assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {}, Representable::JSON)
     end
+
+    it "allows false attributes" do
+      @band.update_properties_from({"groupies"=>false}, {}, Representable::JSON)
+      assert_equal false, @band.groupies
+    end
   end
   
   describe "#create_representation_with" do
