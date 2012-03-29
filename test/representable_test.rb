@@ -275,6 +275,11 @@ class RepresentableTest < MiniTest::Spec
       hash = @band.send(:create_representation_with, {}, {:include => [:groupies]}, Representable::JSON)
       assert_equal({"groupies"=>2}, hash)
     end
+
+    it "does not write nil attributes" do
+      @band.groupies = nil
+      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
+    end
   end
   
   
