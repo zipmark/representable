@@ -74,7 +74,8 @@ private
   
   # Retrieve value and write fragment to the doc.
   def compile_fragment(bin, doc)
-    value = send(bin.definition.getter) || bin.definition.default # DISCUSS: eventually move back to Ref.
+    value = send(bin.definition.getter)
+    value = bin.definition.default if value.nil? # DISCUSS: eventually move back to Ref.
     write_fragment_for(bin, value, doc)
   end
   
@@ -85,7 +86,7 @@ private
   end
   
   def write_fragment_for(bin, value, doc) # DISCUSS: move to Binding?
-    return unless value
+    return if value.nil?
     bin.write(doc, value)
   end
   

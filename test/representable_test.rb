@@ -280,6 +280,11 @@ class RepresentableTest < MiniTest::Spec
       @band.groupies = nil
       assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
     end
+
+    it "writes false attributes" do
+      @band.groupies = false
+      assert_equal({"name"=>"No One's Choice","groupies"=>false}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
+    end
   end
   
   
