@@ -8,6 +8,10 @@ module Representable
       @name     = sym.to_s
       @options  = options
     end
+    
+    def clone
+      self.class.new(name, options.clone) # DISCUSS: make generic Definition.cloned_attribute that passes list to constructor.
+    end
 
     def setter
       :"#{name}="

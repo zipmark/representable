@@ -42,6 +42,17 @@ class DefinitionTest < MiniTest::Spec
     it "responds to #sought_type" do
       assert_equal nil, @def.sought_type
     end
+    
+    describe "#clone" do
+      it "clones @options" do
+        @def.options[:volume] = 9
+        cloned = @def.clone
+        cloned.options[:volume] = 8
+        
+        assert_equal @def.options[:volume], 9
+        assert_equal cloned.options[:volume], 8
+      end
+    end
   end
   
     
