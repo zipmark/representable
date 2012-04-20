@@ -67,9 +67,21 @@ private
   
   # Checks and returns if the property should be included.
   def skip_property?(binding, options)
+    return true if skip_excluded_property?(binding, options)  # no need for further evaluation when :except'ed
+    
+    skip_conditional_property?(binding)
+  end
+  
+  def skip_excluded_property?(binding, options)
     return unless props = options[:except] || options[:include]
-    res = props.include?(binding.definition.name.to_sym)
+    props = options[:except] || options[:include]
+    res   = props.include?(binding.definition.name.to_sym)
     options[:include] ? !res : res
+  end
+  
+  def skip_conditional_property?(binding)
+    return unless condition = binding.definition.options[:if]
+    not instance_exec(&condition)
   end
   
   # Retrieve value and write fragment to the doc.

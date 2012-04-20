@@ -231,7 +231,7 @@ If your accessor name doesn't match the attribute name in the document, use the 
   peter.to_json #=> {"i_am_called":"Peter","surename":"Pan"}
 
 
-=== Filtering
+=== Filtering and Conditions
 
 Representable allows you to skip and include properties when rendering or parsing.
 
@@ -240,6 +240,13 @@ Representable allows you to skip and include properties when rendering or parsin
 
 It gives you convenient +:exclude+ and +:include+ options.
 
+You can also define conditions on properties on the class layer.
+
+  module HeroRepresenter
+    property :friends, :if => lambda { forename == "Peter" }
+  end
+  
+  When rendering or parsing, the +friends+ property is considered only if the condition block evals to true. Note that the block is executed in instance context, giving you access to instance methods.
 
 == DCI
 

@@ -244,6 +244,48 @@ class RepresentableTest < MiniTest::Spec
     it "always returns self" do
       assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {}, Representable::JSON)
     end
+    
+    describe ":if" do
+      before do
+        @pop = Class.new(PopBand) { attr_accessor :fame }
+      end
+      
+      it "respects property when condition true" do
+        @pop.class_eval { property :fame, :if => lambda { true } }
+        band = @pop.new
+        band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
+        assert_equal "oh yes", band.fame
+      end
+      
+      it "ignores property when condition false" do
+        @pop.class_eval { property :fame, :if => lambda { false } }
+        band = @pop.new
+        band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
+        assert_equal nil, band.fame
+      end
+      
+      it "ignores property when :except'ed even when condition is true" do
+        @pop.class_eval { property :fame, :if => lambda { true } }
+        band = @pop.new
+        band.update_properties_from({"fame"=>"oh yes"}, {:except => [:fame]}, Representable::JSON)
+        assert_equal nil, band.fame
+      end
+      
+      
+      it "executes block in instance context" do
+        @pop.class_eval { property :fame, :if => lambda { groupies } }
+        band = @pop.new
+        band.groupies = true
+        band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
+        assert_equal "oh yes", band.fame
+      end
+      
+    end
+    
+    it "what" do
+      
+    end
+    
   end
   
   describe "#create_representation_with" do
