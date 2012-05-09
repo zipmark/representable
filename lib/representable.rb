@@ -199,17 +199,4 @@ private
        downcase
     end
   end
-  
-  
-  # Allows mapping formats to representer classes.
-  # DISCUSS: this module might be removed soon.
-  module Represents
-    def represents(format, options)
-      representer[format] = options[:with]
-    end
-    
-    def representer
-      @represents_map ||= {}
-    end
-  end
 end
