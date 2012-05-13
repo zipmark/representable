@@ -13,8 +13,9 @@ This keeps your representation knowledge in one place when implementing REST ser
 == Features
 
 * Bidirectional - rendering and parsing
-* OOP documents
-* Support for JSON, XML and MessagePack
+* OOP access to documents
+* Support for JSON and XML
+* Coercion support with virtus[https://github.com/solnic/virtus.]
 
 
 == Example
@@ -52,7 +53,7 @@ Many people dislike including representers on class layer. You might also extend
 
   Hero.new.extend(HeroRepresenter)
 
-Alternatively, if you don't like modules (which you shouldn't),  declarations can be put into classes directly.
+Alternatively, if you don't like modules (which you shouldn't),  declarations can be put into classes directly. We call that inline representers.
 
   class Hero
     attr_accessor :forename, :surename
@@ -305,6 +306,25 @@ You can also map properties to tag attributes in representable.
   #=> <hero name="Peter Pan" />
 
 Naturally, this works for both ways.
+
+
+== Coercion
+
+If you fancy coercion when parsing a document you can use the Coercion module which uses virtus[https://github.com/solnic/virtus] for type conversion. Due to some virtus' nature this can be used on class layer with inline representers, only for now.
+
+Include virtus in your Gemfile, first.
+
+  gem 'virtus'
+  
+Use the +:type+ option to specify the conversion target. Note that +:default+ still works.
+
+  class Hero
+    include Representable::JSON
+    include Virtus
+    extend Representable::Coercion::ClassMethods
+      
+    property :born_at, :type => DateTime, :default => "May 12th, 2012"
+  end
 
 
 == More
