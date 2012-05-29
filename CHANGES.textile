@@ -1,6 +1,7 @@
 h2. 1.1.7
 
 * Deprecated @:except@ in favor of @:exclude@.
+* A property with `false` value will now be included in the rendered representation. Same applies to parsing, `false` values will now be included. That particularly means properties that used to be unset after parsing might be `false` now. `nil` values are still ignored in both rendering and parsing.
 
 h2. 1.1.6
 
