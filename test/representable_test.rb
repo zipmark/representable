@@ -249,41 +249,9 @@ class RepresentableTest < MiniTest::Spec
       assert_equal @band, @band.update_properties_from({"name"=>"Nofx"}, {}, Representable::JSON)
     end
     
-    describe ":if" do
-      before do
-        @pop = Class.new(PopBand) { attr_accessor :fame }
-      end
-      
-      it "respects property when condition true" do
-        @pop.class_eval { property :fame, :if => lambda { true } }
-        band = @pop.new
-        band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
-        assert_equal "oh yes", band.fame
-      end
-      
-      it "ignores property when condition false" do
-        @pop.class_eval { property :fame, :if => lambda { false } }
-        band = @pop.new
-        band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
-        assert_equal nil, band.fame
-      end
-      
-      it "ignores property when :exclude'ed even when condition is true" do
-        @pop.class_eval { property :fame, :if => lambda { true } }
-        band = @pop.new
-        band.update_properties_from({"fame"=>"oh yes"}, {:exclude => [:fame]}, Representable::JSON)
-        assert_equal nil, band.fame
-      end
-      
-      
-      it "executes block in instance context" do
-        @pop.class_eval { property :fame, :if => lambda { groupies } }
-        band = @pop.new
-        band.groupies = true
-        band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
-        assert_equal "oh yes", band.fame
-      end
-      
+    it "includes false attributes" do
+      @band.update_properties_from({"groupies"=>false}, {}, Representable::JSON)
+      assert_equal false, @band.groupies
     end
   end
   
@@ -311,8 +279,53 @@ class RepresentableTest < MiniTest::Spec
       hash = @band.send(:create_representation_with, {}, {:include => [:groupies]}, Representable::JSON)
       assert_equal({"groupies"=>2}, hash)
     end
+
+    it "does not write nil attributes" do
+      @band.groupies = nil
+      assert_equal({"name"=>"No One's Choice"}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
+    end
+
+    it "writes false attributes" do
+      @band.groupies = false
+      assert_equal({"name"=>"No One's Choice","groupies"=>false}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
+    end
   end
   
+  describe ":if" do
+    before do
+      @pop = Class.new(PopBand) { attr_accessor :fame }
+    end
+    
+    it "respects property when condition true" do
+      @pop.class_eval { property :fame, :if => lambda { true } }
+      band = @pop.new
+      band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
+      assert_equal "oh yes", band.fame
+    end
+    
+    it "ignores property when condition false" do
+      @pop.class_eval { property :fame, :if => lambda { false } }
+      band = @pop.new
+      band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
+      assert_equal nil, band.fame
+    end
+    
+    it "ignores property when :exclude'ed even when condition is true" do
+      @pop.class_eval { property :fame, :if => lambda { true } }
+      band = @pop.new
+      band.update_properties_from({"fame"=>"oh yes"}, {:exclude => [:fame]}, Representable::JSON)
+      assert_equal nil, band.fame
+    end
+    
+    
+    it "executes block in instance context" do
+      @pop.class_eval { property :fame, :if => lambda { groupies } }
+      band = @pop.new
+      band.groupies = true
+      band.update_properties_from({"fame"=>"oh yes"}, {}, Representable::JSON)
+      assert_equal "oh yes", band.fame
+    end
+  end
   
   describe "Config" do
     before do
