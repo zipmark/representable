@@ -229,10 +229,14 @@ class RepresentableTest < MiniTest::Spec
       assert_equal 2, @band.groupies
     end
     
-    it "accepts :except option" do
-      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {:except => [:groupies]}, Representable::JSON)
+    it "accepts :exclude option" do
+      @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {:exclude => [:groupies]}, Representable::JSON)
       assert_equal "No One's Choice", @band.name
       assert_equal nil, @band.groupies
+    end
+    
+    it "still accepts deprecated :except option" do # FIXME: remove :except option.
+      assert_equal @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {:except => [:groupies]}, Representable::JSON), @band.update_properties_from({"name"=>"No One's Choice", "groupies"=>2}, {:exclude => [:groupies]}, Representable::JSON)
     end
     
     it "accepts :include option" do
@@ -264,10 +268,10 @@ class RepresentableTest < MiniTest::Spec
         assert_equal nil, band.fame
       end
       
-      it "ignores property when :except'ed even when condition is true" do
+      it "ignores property when :exclude'ed even when condition is true" do
         @pop.class_eval { property :fame, :if => lambda { true } }
         band = @pop.new
-        band.update_properties_from({"fame"=>"oh yes"}, {:except => [:fame]}, Representable::JSON)
+        band.update_properties_from({"fame"=>"oh yes"}, {:exclude => [:fame]}, Representable::JSON)
         assert_equal nil, band.fame
       end
       
@@ -281,11 +285,6 @@ class RepresentableTest < MiniTest::Spec
       end
       
     end
-    
-    it "what" do
-      
-    end
-    
   end
   
   describe "#create_representation_with" do
@@ -299,9 +298,13 @@ class RepresentableTest < MiniTest::Spec
       assert_equal({"name"=>"No One's Choice", "groupies"=>2}, @band.send(:create_representation_with, {}, {}, Representable::JSON))
     end
     
-    it "accepts :except option" do
-      hash = @band.send(:create_representation_with, {}, {:except => [:groupies]}, Representable::JSON)
+    it "accepts :exclude option" do
+      hash = @band.send(:create_representation_with, {}, {:exclude => [:groupies]}, Representable::JSON)
       assert_equal({"name"=>"No One's Choice"}, hash)
+    end
+    
+    it "still accepts deprecated :except option" do # FIXME: remove :except option.
+      assert_equal @band.send(:create_representation_with, {}, {:except => [:groupies]}, Representable::JSON), @band.send(:create_representation_with, {}, {:exclude => [:groupies]}, Representable::JSON)
     end
     
     it "accepts :include option" do

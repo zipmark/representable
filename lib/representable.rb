@@ -1,4 +1,5 @@
 require 'representable/definition'
+require 'representable/deprecations'
 
 # Representable can be used in two ways.
 #
@@ -29,6 +30,7 @@ module Representable
   
   def self.included(base)
     base.class_eval do
+      include Deprecations
       extend ClassMethods
       extend ClassMethods::Declarations
       extend ClassMethods::Accessors
@@ -67,14 +69,14 @@ private
   
   # Checks and returns if the property should be included.
   def skip_property?(binding, options)
-    return true if skip_excluded_property?(binding, options)  # no need for further evaluation when :except'ed
+    return true if skip_excluded_property?(binding, options)  # no need for further evaluation when :exclude'ed
     
     skip_conditional_property?(binding)
   end
   
   def skip_excluded_property?(binding, options)
-    return unless props = options[:except] || options[:include]
-    props = options[:except] || options[:include]
+    return unless props = options[:exclude] || options[:include]
+    props = options[:exclude] || options[:include]
     res   = props.include?(binding.definition.name.to_sym)
     options[:include] ? !res : res
   end
