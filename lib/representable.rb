@@ -101,7 +101,6 @@ private
   end
   
   def write_fragment_for(bin, value, doc) # DISCUSS: move to Binding?
-    return if value.nil?
     bin.write(doc, value)
   end
   
